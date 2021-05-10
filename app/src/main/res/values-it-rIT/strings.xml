@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RunApp</string>
+    <string name="run">Corsa</string>
+    <string name="activity">Attività</string>
+    <string name="stop">Ferma</string>
+    <string name="start">Inizia</string>
+    <string name="resume">Riprendi</string>
+    <string name="titleRequestPermission">Richiesta di autorizzazione alla localizzazione</string>
+    <string name="messageRequestPermission">Per monitorare le corse, RunApp richiede l\'accesso alla posizione</string>
+    <string name="messageNoRun">"Mi dispiace, purtroppo non puoi correre fino a quando non ci fornirai il permesso alla geolocalizzazione.  Per favore, andare nelle impostazioni e abilitare la localizzazione. "</string>
+    <string name="titleNoRun">Errore. Non puoi correre</string>
+    <string name="account">Profilo</string>
+    <string name="setting">Impostazioni</string>
+    <string name="notificationTitle">RunApp ti sta monitorando</string>
+    <string name="notificationMessage">Non ti preoccupare, la tua sessione viene monitorata anche se non sei direttamente in app.</string>
+</resources>

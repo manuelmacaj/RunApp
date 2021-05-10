@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RunApp</string>
+    <string name="run">Run</string>
+    <string name="account">Account</string>
+    <string name="activity">Activity</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="resume">Resume</string>
+    <string name="titleRequestPermission">Location Permission Needed</string>
+    <string name="messageRequestPermission">To track runs, RunApp requires location access</string>
+    <string name="messageNoRun">I’m sorry. Unfortunately you can’t run unti you’ll give the permission for the GPS localization. Please go in settings and enable the localization.</string>
+    <string name="titleNoRun">Error. You can\'t run</string>
+    <string name="setting">Settings</string>
+    <string name="notificationTitle">RunApp is following you</string>
+    <string name="notificationMessage">Don\'t worry, your session is tracked even if you\'re not directly in the app.</string>
+</resources>
