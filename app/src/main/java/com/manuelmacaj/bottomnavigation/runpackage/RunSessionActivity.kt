@@ -59,7 +59,6 @@ class RunSessionActivity : AppCompatActivity() {
                 stopService(intent)
                 Log.d(TAG, PolyUtil.encode(track))
                 polylineText.setText(PolyUtil.encode(track))
-                //textView.append(PolyUtil.encode(track))
             }
         })
     }
