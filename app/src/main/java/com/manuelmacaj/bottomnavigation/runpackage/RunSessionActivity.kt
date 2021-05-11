@@ -8,12 +8,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.PolyUtil
 import com.manuelmacaj.bottomnavigation.Service.GPSService
 import com.manuelmacaj.bottomnavigation.R
+import kotlinx.android.synthetic.main.activity_run_session.*
 
 
 class RunSessionActivity : AppCompatActivity() {
@@ -23,6 +25,7 @@ class RunSessionActivity : AppCompatActivity() {
     private lateinit var btn_start: Button
     private lateinit var btn_stop: Button
     private lateinit var textView: TextView
+    private lateinit var polylineText: EditText
 
     private var broadcastReceiver: BroadcastReceiver? = null
 
@@ -33,6 +36,7 @@ class RunSessionActivity : AppCompatActivity() {
         btn_start = findViewById(R.id.btnStartService)
         btn_stop = findViewById(R.id.btnStopService)
         textView = findViewById(R.id.textViewCoordinate)
+        polylineText = findViewById(R.id.editTextPolyline)
 
         enable_buttons()
 
@@ -54,7 +58,8 @@ class RunSessionActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, GPSService::class.java)
                 stopService(intent)
                 Log.d(TAG, PolyUtil.encode(track))
-                textView.append(PolyUtil.encode(track))
+                polylineText.setText(PolyUtil.encode(track))
+                //textView.append(PolyUtil.encode(track))
             }
         })
     }

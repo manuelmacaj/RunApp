@@ -26,9 +26,17 @@
       android:id="@+id/textViewCoordinate"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Polyline encode: " />
+      android:text="Polyline encode: "/>
 
-    <Button
+  <EditText
+      android:id="@+id/editTextPolyline"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="Polyline"
+      android:inputType="textPersonName" />
+
+  <Button
         android:id="@+id/btnStartService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
