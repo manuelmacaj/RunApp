@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -39,8 +40,16 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private var locationRequest: LocationRequest? = null // l'oggetto LocationRequest permette di migliorare il servizio di localizzazione dell'utente
     private var locationCallback: LocationCallback? = null // oggetto che notifica il possibile cambiamento di posizione
     private var LocationPermission: Boolean? = null
+    private var GPScheck = false
+
+    private var manager: LocationManager? = null
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
+
+/*    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        GPScheck = checkGPSLocation()
+    }*/
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,6 +61,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         mapView = view.findViewById(R.id.mapRun) as MapView
         mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
@@ -74,7 +84,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!) // creo l'istanza per poter poi utilizzare le localizzazioni
-        mapView.getMapAsync(this)
 
         return view
     }
@@ -82,10 +91,17 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.uiSettings.setAllGesturesEnabled(false)
+        map.uiSettings.isMyLocationButtonEnabled = false
         map.isBuildingsEnabled = false
-
         checkPermissions()
     }
+
+ /*   private fun checkGPSLocation(): Boolean {
+        if (manager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+            return true
+        }
+        return false
+    }*/
 
 
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
@@ -100,12 +116,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 .setTitle(getString(R.string.titleRequestPermission))
                 .setMessage(getString(R.string.messageRequestPermission))
                 .setPositiveButton("Ok", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int)
-                    { //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
                         requestPermissions(
                             arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                            LOCATION_PERMISSION_REQUEST_CODE
-                        ) //invierò il risultato alla funzione override fun onRequestPermissionsResult, per comprendere se l'app ha l'autorizzazione o no
+                            LOCATION_PERMISSION_REQUEST_CODE) //invierò il risultato alla funzione override fun onRequestPermissionsResult, per comprendere se l'app ha l'autorizzazione o no
+
                     }
                 })
                 .create()
@@ -195,6 +211,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         super.onResume()
         mapView.onResume()
     }
+
 }
 
 /*map.addPolyline(

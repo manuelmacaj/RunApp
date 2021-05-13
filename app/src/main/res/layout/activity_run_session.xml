@@ -7,11 +7,7 @@
     android:padding="20dp"
     tools:context=".runpackage.RunSessionActivity">
 
-  <!--  <Chronometer
-        android:id="@+id/chronometer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp" />
+  <!--
 
     <Button
         android:id="@+id/button"
@@ -36,15 +32,23 @@
       android:hint="Polyline"
       android:inputType="textPersonName" />
 
+  <Chronometer
+      android:id="@+id/chronometer"
+      android:layout_width="331dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="20dp"
+      android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
   <Button
         android:id="@+id/btnStartService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Service" />
 
-    <Button
+  <Button
         android:id="@+id/btnStopService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Stop service" />
+
 </LinearLayout>
