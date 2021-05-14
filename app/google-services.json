@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "292141364719",
+    "project_id": "runapp-3ac2f",
+    "storage_bucket": "runapp-3ac2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292141364719:android:58bb94dc33a207157bb21a",
+        "android_client_info": {
+          "package_name": "com.manuelmacaj.bottomnaigation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292141364719-gsml7o0bg87nmkh0fg6pguna132ducdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpZCNMTQkTXR0yY7b1AyAJwjvItAoJTlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292141364719-gsml7o0bg87nmkh0fg6pguna132ducdm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
