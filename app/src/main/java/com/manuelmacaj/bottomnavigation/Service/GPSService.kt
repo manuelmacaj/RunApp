@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
@@ -31,7 +30,6 @@ class GPSService: Service() {
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT >= 26) {
             val CHANNEL_ID = "my_channel_01"
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -49,7 +47,6 @@ class GPSService: Service() {
                 .build()
 
             startForeground(1, notification)
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

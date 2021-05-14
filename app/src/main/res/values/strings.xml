@@ -12,5 +12,5 @@
     <string name="titleNoRun">Error. You can\'t run</string>
     <string name="setting">Settings</string>
     <string name="notificationTitle">RunApp is following you</string>
-    <string name="notificationMessage">Don\'t worry, your session is tracked even if you\'re not directly in the app.</string>
+    <string name="notificationMessage">Your session is tracked even if you\'re not directly in the app.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.manuelmacaj.bottomnavigation.runpackage
+package com.manuelmacaj.bottomnavigation.View.runpackage
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -45,11 +45,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private var manager: LocationManager? = null
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
-
-/*    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        GPScheck = checkGPSLocation()
-    }*/
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

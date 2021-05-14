@@ -1,9 +1,12 @@
-package com.manuelmacaj.bottomnavigation
+package com.manuelmacaj.bottomnavigation.View
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.manuelmacaj.bottomnavigation.runpackage.RunFragment
+import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.View.accountPackage.PersonalAccountFragment
+import com.manuelmacaj.bottomnavigation.View.activitiesPackage.ActivitiesFragment
+import com.manuelmacaj.bottomnavigation.View.runpackage.RunFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

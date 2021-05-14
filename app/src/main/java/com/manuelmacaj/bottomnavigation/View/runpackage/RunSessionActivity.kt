@@ -1,4 +1,4 @@
-package com.manuelmacaj.bottomnavigation.runpackage
+package com.manuelmacaj.bottomnavigation.View.runpackage
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -68,7 +68,7 @@ class RunSessionActivity : AppCompatActivity() {
             override fun onClick(v: View?) {
                 Log.d(TAG, "Fine del servizio")
 
-                timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale delcronometro e il tempo trascorso dalla pausa
+                timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
                 chronometer.stop() // pausa cronometro
 
                 btn_stop.isClickable = false
@@ -84,13 +84,7 @@ class RunSessionActivity : AppCompatActivity() {
 
     private fun startGPSService() {
         val intent = Intent(applicationContext, GPSService::class.java)
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        }
-        else {
-            startService(intent)
-        }
+        startForegroundService(intent)
     }
 
     override fun onResume() {

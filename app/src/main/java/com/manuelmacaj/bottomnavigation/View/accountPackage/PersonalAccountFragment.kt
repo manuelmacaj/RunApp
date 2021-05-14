@@ -1,10 +1,11 @@
-package com.manuelmacaj.bottomnavigation
+package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.manuelmacaj.bottomnavigation.R
 
 class PersonalAccountFragment : Fragment() {
 

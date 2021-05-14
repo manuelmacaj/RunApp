@@ -1,4 +1,4 @@
-package com.manuelmacaj.bottomnavigation
+package com.manuelmacaj.bottomnavigation.View.activitiesPackage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import com.manuelmacaj.bottomnavigation.R
 
 class ActivitiesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
