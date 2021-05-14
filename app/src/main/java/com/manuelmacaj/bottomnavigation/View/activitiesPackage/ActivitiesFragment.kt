@@ -15,7 +15,7 @@ class ActivitiesFragment : Fragment() {
 
         requireActivity().title = getString(R.string.activity)
 
-        var listView = view.findViewById(R.id.activitiesList) as ListView
+        val listView = view.findViewById(R.id.activitiesList) as ListView
 
         val something = arrayOf(
             "Ciao",
