@@ -14,4 +14,7 @@
     <string name="setting">Impostazioni</string>
     <string name="notificationTitle">RunApp ti sta monitorando</string>
     <string name="notificationMessage">La tua sessione viene monitorata anche se non sei direttamente in app.</string>
+    <string name="time">Giorno:</string>
+    <string name="km_total">Km totali:</string>
+    <string name="average_pace">Andatura media:</string>
 </resources>

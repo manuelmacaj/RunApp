@@ -13,4 +13,8 @@
     <string name="setting">Settings</string>
     <string name="notificationTitle">RunApp is following you</string>
     <string name="notificationMessage">Your session is tracked even if you\'re not directly in the app.</string>
+    <string name="day">Day:</string>
+    <string name="time">Time:</string>
+    <string name="km_total">Km total:</string>
+    <string name="average_pace">Average pace:</string>
 </resources>
