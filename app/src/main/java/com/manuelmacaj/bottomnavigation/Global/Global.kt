@@ -8,6 +8,6 @@ Questa classe mi permette di dichiarare degli oggetti che sono globali all'inter
 
 class Global {
 
-    var utenteLoggato: Utente? = null // utente loggato mi tiene il riferimento dell'utente loggato in questo momento
+    var utenteLoggato: Utente? = null // utenteLoggato è una variabile che salva i dati dell'utente connesso in quel momento nell'app
 
 }
