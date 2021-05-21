@@ -13,8 +13,20 @@
     <string name="setting">Settings</string>
     <string name="notificationTitle">RunApp is following you</string>
     <string name="notificationMessage">Your session is tracked even if you\'re not directly in the app.</string>
-    <string name="day">Day:</string>
     <string name="time">Time:</string>
     <string name="km_total">Km total:</string>
     <string name="average_pace">Average pace:</string>
+    <string name="email_address">email</string>
+    <string name="password">password</string>
+    <string name="signin">SIGNIN</string>
+    <string name="register">REGISTER</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="register_app">RegisterForm</string>
+    <string name="first_second_name">name and surname</string>
+    <string name="empty_name_surname">Empty field</string>
+    <string name="password_check">Passwords don\'t match</string>
+    <string name="image_view">TODO</string>
+    <string name="day">Day</string>
 </resources>

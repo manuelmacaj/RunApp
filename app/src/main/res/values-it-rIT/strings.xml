@@ -17,4 +17,18 @@
     <string name="time">Giorno:</string>
     <string name="km_total">Km totali:</string>
     <string name="average_pace">Andatura media:</string>
+
+    <string name="email_address">indirizzo email</string>
+    <string name="password">password</string>
+    <string name="signin">accedi</string>
+    <string name="register">registrati</string>
+    <string name="invalid_email">Email non valida</string>
+    <string name="invalid_password">Password non valida</string>
+    <string name="confirm_password">conferma password</string>
+    <string name="register_app">RegisterForm</string>
+    <string name="first_second_name">nome e cognome</string>
+    <string name="empty_name_surname">Campo vuoto</string>
+    <string name="password_check">Le password non corrispondono</string>
+    <string name="image_view">TODO</string>
+    <string name="day">Giorno</string>
 </resources>
