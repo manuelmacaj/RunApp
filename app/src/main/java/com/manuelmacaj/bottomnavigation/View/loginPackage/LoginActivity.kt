@@ -7,13 +7,18 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.manuelmacaj.bottomnavigation.Global.Global
+import com.manuelmacaj.bottomnavigation.Model.Utente
 import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.View.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
     private val mAuth = FirebaseAuth.getInstance() //istanza firebase, sezione autenticazione
+    private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
     private val TAG = "LoginActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,11 +26,25 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
     }
 
-    override fun onStart() {
+   override fun onStart() {
         super.onStart()
         //verifico se l'utente ha fatto la login o meno
-
+        val user = mAuth.currentUser //credenziali utente loggato
+        if(user != null){ //utente ha già fatto accesso
+            readUserDocument(user.uid)
+            openMainActivity()
+        }
+   }
+    private fun openMainActivity(){
+        val intent = Intent( //apriamo l'altra activity
+            this@LoginActivity,
+            MainActivity::class.java
+        )
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
+
 
     fun openRegisterActivity(v: View?){ //funzione consente di aprire activity per la registrazione
         val intent = Intent(this@LoginActivity, RegisterActivity::class.java) //primo paramatro->context;secondo parametro->activity che deve essere eseguita
@@ -47,6 +66,27 @@ class LoginActivity : AppCompatActivity() {
         ChecktoFirebase(email, pwd)
     }
 
+    private fun readUserDocument(documentID: String) { // funzione per la lettura del documento su firestore.
+        mFireStore.document(documentID).get()
+            .addOnSuccessListener { documentSnapshot -> //caso successo
+                if (documentSnapshot.exists()) { //se il documento esiste
+                    val idutente = documentSnapshot.getString("ID utente")
+                    val nomeCognome = documentSnapshot.getString("Nome e Cognome")
+                    val emailFirestore = documentSnapshot.getString("Email")
+
+                    Global.utenteLoggato = Utente(
+                        idutente.toString(),
+                        nomeCognome.toString(),
+                        emailFirestore.toString()
+                    )
+                    Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
+                    openMainActivity()
+                } else {
+                    Log.d(TAG, "Non disp su firestore")
+                }
+            }
+    }
+
     private fun ChecktoFirebase(email: String, password: String){ //verifichiamo se utente è autenticato o meno
         //verifichiamo email e password utente
         mAuth.signInWithEmailAndPassword(email, password)
@@ -54,6 +94,12 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this){ task ->
                 if (task.isSuccessful) { //tutto ok
                     Toast.makeText(this, "Accesso effettuato", Toast.LENGTH_LONG).show()
+
+                    val user = mAuth.currentUser //credenziali utente loggato
+                    //preleviamo dati utenti
+                    if (user != null) {
+                        readUserDocument(user.uid)
+                    }
                 }
                 else { //autenticazione non è andata a buon fine
                     Toast.makeText(this, "Accesso negato, registrati", Toast.LENGTH_LONG).show()
