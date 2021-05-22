@@ -80,7 +80,6 @@ class LoginActivity : AppCompatActivity() {
                         emailFirestore.toString()
                     )
                     Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
-                    openMainActivity()
                 } else {
                     Log.d(TAG, "Non disp su firestore")
                 }
@@ -99,6 +98,7 @@ class LoginActivity : AppCompatActivity() {
                     //preleviamo dati utenti
                     if (user != null) {
                         readUserDocument(user.uid)
+                        openMainActivity()
                     }
                 }
                 else { //autenticazione non è andata a buon fine
