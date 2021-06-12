@@ -86,7 +86,7 @@ class GPSService: Service() {
         }
 
         locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0f, listener)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, listener)
     }
 
     override fun onDestroy() {

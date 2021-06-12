@@ -39,6 +39,15 @@
       android:layout_margin="20dp"
       android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+  <TextView
+      android:id="@+id/textViewTotalKm"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text = "0.00 Km"
+      android:textAppearance="@style/TextAppearance.AppCompat.Large"
+      />
+
+
   <Button
         android:id="@+id/btnStartService"
         android:layout_width="match_parent"

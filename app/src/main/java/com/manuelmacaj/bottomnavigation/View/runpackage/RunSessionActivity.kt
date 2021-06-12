@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
+import android.location.Location
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
@@ -29,6 +32,8 @@ class RunSessionActivity : AppCompatActivity() {
     private lateinit var textView: TextView
     private lateinit var polylineText: EditText
     private lateinit var chronometer: Chronometer
+    private lateinit var textKM: TextView
+    private var totalKM: Double = 0.0
 
     private var timeWhenStop = 0L
 
@@ -43,6 +48,7 @@ class RunSessionActivity : AppCompatActivity() {
         textView = findViewById(R.id.textViewCoordinate)
         polylineText = findViewById(R.id.editTextPolyline)
         chronometer = findViewById(R.id.chronometer)
+        textKM = findViewById(R.id.textViewTotalKm)
 
         enable_buttons()
 
@@ -96,7 +102,11 @@ class RunSessionActivity : AppCompatActivity() {
                         val lat = intent.extras?.get("Lat") as Double
                         val lng = intent.extras?.get("Lng") as Double
 
+                        calculateKilometersDuringRun(lat, lng)
+
                         track.add(LatLng(lat, lng))
+                        textKM.text = String.format("%.2f", totalKM)
+                        textKM.append(" Km")
 
                     }
                 }
@@ -104,6 +114,28 @@ class RunSessionActivity : AppCompatActivity() {
         }
         registerReceiver(broadcastReceiver, IntentFilter("location_update"))
     }
+
+    private fun calculateKilometersDuringRun(lat: Double, lng: Double) {
+
+        val currentLocation = Location("")
+        currentLocation.latitude = lat
+        currentLocation.longitude = lng
+
+        if (track.isNotEmpty()) {
+            val previousLocation = Location("")
+            previousLocation.latitude = track[track.size - 1].latitude
+            previousLocation.longitude = track[track.size - 1].longitude
+
+            //val distanceInMeters = previousLocation.distanceTo(currentLocation)
+            val metersToKm = Measure(previousLocation.distanceTo(currentLocation)/1000, MeasureUnit.KILOMETER)
+
+            totalKM += metersToKm.number.toDouble()
+
+            Log.d(TAG, "km percorsi: $totalKM ${metersToKm.unit} ")
+
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -113,28 +145,3 @@ class RunSessionActivity : AppCompatActivity() {
         finish()
     }
 }
-
-
-/*  val chronometer = findViewById<Chronometer>(R.id.chronometer)
-    val button = findViewById<Button>(R.id.button)
-
-    var timeWhenStop = 0L //variabile di tipo long che mi servirà durante l'uso del cronometro
-
-    button.setOnClickListener(object : View.OnClickListener {
-        var isPlaying = false //variabile inizializzata a false
-        override fun onClick(v: View?) {
-            if (!isPlaying) { //se isPlaying è diverso da false avvio il cronometro
-
-                chronometer.base = SystemClock.elapsedRealtime() + timeWhenStop
-                chronometer.start() // avvio cronometro
-                isPlaying = true
-
-            } else { //altrimenti metto in pausa il cronometro
-                timeWhenStop =
-                    chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale delcronometro e il tempo trascorso dalla pausa
-                chronometer.stop() // pausa cronometro
-                isPlaying = false
-            }
-            button.setText(if (!isPlaying) R.string.start else R.string.stop)
-        }
-    })*/
