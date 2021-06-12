@@ -17,7 +17,6 @@
     <string name="time">Giorno:</string>
     <string name="km_total">Km totali:</string>
     <string name="average_pace">Andatura media:</string>
-
     <string name="email_address">indirizzo email</string>
     <string name="password">password</string>
     <string name="signin">accedi</string>
@@ -31,4 +30,5 @@
     <string name="password_check">Le password non corrispondono</string>
     <string name="image_view">TODO</string>
     <string name="day">Giorno</string>
+    <string name="modify_profile">Modifica profilo</string>
 </resources>
