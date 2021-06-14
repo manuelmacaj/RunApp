@@ -31,4 +31,5 @@
     <string name="password_check">Le password non corrispondono</string>
     <string name="image_view">TODO</string>
     <string name="day">Giorno</string>
+    <string name="start_Run">Corri</string>
 </resources>

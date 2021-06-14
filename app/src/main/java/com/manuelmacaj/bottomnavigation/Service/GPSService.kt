@@ -92,5 +92,6 @@ class GPSService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         locationManager?.removeUpdates(listener)
+        stopSelf() // fermo il servizio, qualora l'utente chiudesse l'app durante la sessione
     }
 }

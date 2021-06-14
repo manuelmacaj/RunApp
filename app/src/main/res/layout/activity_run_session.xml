@@ -7,54 +7,53 @@
     android:padding="20dp"
     tools:context=".View.runpackage.RunSessionActivity">
 
-  <!--
+    <!--
+
+      <Button
+          android:id="@+id/button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="20dp"
+          android:paddingRight="20dp"
+          android:text="@string/start" />-->
+
+
+    <TextView
+        android:id="@+id/textViewCoordinate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Polyline encode: " />
+
+    <EditText
+        android:id="@+id/editTextPolyline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Polyline"
+        android:inputType="textPersonName" />
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="331dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/textViewTotalKm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0.00 Km"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="@string/start" />-->
-
-
-  <TextView
-      android:id="@+id/textViewCoordinate"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Polyline encode: "/>
-
-  <EditText
-      android:id="@+id/editTextPolyline"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:ems="10"
-      android:hint="Polyline"
-      android:inputType="textPersonName" />
-
-  <Chronometer
-      android:id="@+id/chronometer"
-      android:layout_width="331dp"
-      android:layout_height="wrap_content"
-      android:layout_margin="20dp"
-      android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-  <TextView
-      android:id="@+id/textViewTotalKm"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text = "0.00 Km"
-      android:textAppearance="@style/TextAppearance.AppCompat.Large"
-      />
-
-
-  <Button
         android:id="@+id/btnStartService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Service" />
+        android:text="@string/start_Run" />
 
-  <Button
+    <Button
         android:id="@+id/btnStopService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
