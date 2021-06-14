@@ -31,4 +31,8 @@
     <string name="image_view">TODO</string>
     <string name="day">Giorno</string>
     <string name="modify_profile">Modifica profilo</string>
+    <string name="male">Maschio</string>
+    <string name="female">Femmina</string>
+    <string name="date_of_birth">Data di nascita (cliccami)</string>
+    <string name="gender">Genere</string>
 </resources>

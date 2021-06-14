@@ -26,16 +26,17 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
     }
 
-   override fun onStart() {
+    override fun onStart() {
         super.onStart()
         //verifico se l'utente ha fatto la login o meno
         val user = mAuth.currentUser //credenziali utente loggato
-        if(user != null){ //utente ha già fatto accesso
+        if (user != null) { //utente ha già fatto accesso
             readUserDocument(user.uid)
             openMainActivity()
         }
-   }
-    private fun openMainActivity(){
+    }
+
+    private fun openMainActivity() {
         val intent = Intent( //apriamo l'altra activity
             this@LoginActivity,
             MainActivity::class.java
@@ -45,21 +46,23 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-
-    fun openRegisterActivity(v: View?){ //funzione consente di aprire activity per la registrazione
-        val intent = Intent(this@LoginActivity, RegisterActivity::class.java) //primo paramatro->context;secondo parametro->activity che deve essere eseguita
+    fun openRegisterActivity(v: View?) { //funzione consente di aprire activity per la registrazione
+        val intent = Intent(
+            this@LoginActivity,
+            RegisterActivity::class.java
+        ) //primo paramatro->context;secondo parametro->activity che deve essere eseguita
         startActivity(intent)
     }
 
     fun checkLogin(v: View?) { //deve capire se quello inserito in username e password è valido o meno e nel caso segnalare
         val email: String = editTextEmailLogin.getText().toString()
-        if(!isValidEmail(email)){
+        if (!isValidEmail(email)) {
             editTextEmailLogin.setError(getResources().getString(R.string.invalid_email))
             return
         }
 
         val pwd = editTextPasswordRegister.getText().toString()
-        if(!isValidPassword(pwd)){
+        if (!isValidPassword(pwd)) {
             editTextPasswordRegister.setError(getResources().getString(R.string.invalid_password)) //...settiamo un errore
             return //non proseguo (guard)
         }
@@ -73,11 +76,15 @@ class LoginActivity : AppCompatActivity() {
                     val idutente = documentSnapshot.getString("ID utente")
                     val nomeCognome = documentSnapshot.getString("Nome e Cognome")
                     val emailFirestore = documentSnapshot.getString("Email")
+                    val dataNascita = documentSnapshot.getString("Data di nascita")
+                    val genere = documentSnapshot.getString("Genere")
 
                     Global.utenteLoggato = Utente(
                         idutente.toString(),
                         nomeCognome.toString(),
-                        emailFirestore.toString()
+                        emailFirestore.toString(),
+                        dataNascita.toString(),
+                        genere.toString()
                     )
                     Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
                 } else {
@@ -86,11 +93,14 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun ChecktoFirebase(email: String, password: String){ //verifichiamo se utente è autenticato o meno
+    private fun ChecktoFirebase(
+        email: String,
+        password: String
+    ) { //verifichiamo se utente è autenticato o meno
         //verifichiamo email e password utente
         mAuth.signInWithEmailAndPassword(email, password)
             //verifico ciò che è successo
-            .addOnCompleteListener(this){ task ->
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) { //tutto ok
                     Toast.makeText(this, "Accesso effettuato", Toast.LENGTH_LONG).show()
 
@@ -100,8 +110,7 @@ class LoginActivity : AppCompatActivity() {
                         readUserDocument(user.uid)
                         openMainActivity()
                     }
-                }
-                else { //autenticazione non è andata a buon fine
+                } else { //autenticazione non è andata a buon fine
                     Toast.makeText(this, "Accesso negato, registrati", Toast.LENGTH_LONG).show()
                     Log.w(TAG, "Accesso fallito", task.exception)
                 }
@@ -109,9 +118,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isValidPassword(pwd: String): Boolean {
-        return if ((pwd != null) && (pwd.length >= 4))
-            true
-        else false
+        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")
+        val pattern = Pattern.compile(PASSWORD_PATTERN)
+        val matcher = pattern.matcher(pwd)
+        return matcher.matches()
     }
 
     // validating email id

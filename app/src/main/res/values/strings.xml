@@ -30,4 +30,8 @@
     <string name="image_view">TODO</string>
     <string name="day">Day</string>
     <string name="modify_profile">Modify Profile</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="date_of_birth">Date of birth (click me)</string>
+    <string name="gender">Gender</string>
 </resources>

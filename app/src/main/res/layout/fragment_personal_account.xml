@@ -25,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Daniel Malone"
         android:textColor="#000"
         android:textSize="32sp"
         android:textStyle="bold"
@@ -38,7 +37,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="daniel@example.com"
         android:textAlignment="center"
         android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,11 +75,10 @@
         app:layout_constraintTop_toBottomOf="@id/age" />
 
     <TextView
-        android:id="@+id/interests"
+        android:id="@+id/userGender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="likes to play with dirt"
         android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,14 +92,13 @@
         android:background="#888"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/interests" />
+        app:layout_constraintTop_toBottomOf="@id/userGender" />
 
     <TextView
-        android:id="@+id/music"
+        android:id="@+id/userBirthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="digs Justin Bieber"
         android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,6 +112,6 @@
         android:text="@string/modify_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/music" />
+        app:layout_constraintTop_toBottomOf="@id/userBirthday" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
