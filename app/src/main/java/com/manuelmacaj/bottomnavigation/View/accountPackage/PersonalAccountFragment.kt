@@ -34,11 +34,6 @@ class PersonalAccountFragment : Fragment() {
         textGender = view.findViewById(R.id.userGender)
         textDateofBirth = view.findViewById(R.id.userBirthday)
 
-        textFullName.text = Global.utenteLoggato?.nomeCognomeUtente
-        textEmail.text = Global.utenteLoggato?.emailUtente
-        textGender.text = Global.utenteLoggato?.genere
-        textDateofBirth.text = Global.utenteLoggato?.dataNascita
-
         view.ModifyProfile.setOnClickListener {
             openEditProfileActivity()
         }
@@ -50,5 +45,14 @@ class PersonalAccountFragment : Fragment() {
         val intent = Intent(requireActivity(), EditProfileActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //aggiorno i dati dell'utente che sono stati modificati
+        textFullName.text = Global.utenteLoggato?.nomeCognomeUtente
+        textEmail.text = Global.utenteLoggato?.emailUtente
+        textGender.text = Global.utenteLoggato?.genere
+        textDateofBirth.text = Global.utenteLoggato?.dataNascita
     }
 }

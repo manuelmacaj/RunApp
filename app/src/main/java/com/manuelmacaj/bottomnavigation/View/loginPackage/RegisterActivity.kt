@@ -15,7 +15,6 @@ import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.activity_register.*
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Pattern
@@ -33,6 +32,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var genderRadio: RadioButton
     private lateinit var radioGroupGender: RadioGroup
     private lateinit var dateOfBirth: LocalDate
+    private lateinit var genderSelection : String
 
     private val mRegister =
         FirebaseAuth.getInstance() //istanza firebase riferita alla sezione di autenticazione
@@ -48,7 +48,7 @@ class RegisterActivity : AppCompatActivity() {
         emailField = findViewById(R.id.editTextEmailRegister)
         firstPasswordField = findViewById(R.id.editTextPasswordRegister)
         confirmPasswordField = findViewById(R.id.editTextConfirmPassword)
-        radioGroupGender = findViewById(R.id.radioGroupGender)
+        radioGroupGender = findViewById(R.id.radioGroupGenderModify)
 
         radioGroupGender.setOnCheckedChangeListener { group, checkedId ->
             genderRadio = findViewById(checkedId)
@@ -100,7 +100,9 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         if (radioGroupGender.checkedRadioButtonId == -1) { //nessun radio button selezionato da parte dell'utente
-            Toast.makeText(this, "Per favore selezionare il genere", Toast.LENGTH_LONG).show()
+            //genderSelection.error = resources.getString(R.string.gender_not_selected)
+            genderSelection = resources.getString(R.string.gender_not_selected)
+            Toast.makeText(this, ""+genderSelection, Toast.LENGTH_LONG).show()
             return
         }
 
@@ -129,12 +131,14 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerNewAccount(nomeCognome: String, email: String, password: String) {
+
         mRegister.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task -> //proviamo a registrare utente
                 if (task.isSuccessful) { //email utente non era presente nella sezione di autenticazione
                     val userAuth = mRegister.currentUser //prelevo informazioni utente
                     val id = userAuth!!.uid
                     val userMap = HashMap<String, Any>()
+
                     userMap["ID utente"] = id
                     userMap["Nome e Cognome"] = nomeCognome
                     userMap["Email"] = email
