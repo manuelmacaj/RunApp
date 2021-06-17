@@ -12,7 +12,7 @@
         android:layout_width="371dp"
         android:layout_height="wrap_content"
         android:onClick="checkFields"
-        android:text="Update account"
+        android:text="@string/update_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

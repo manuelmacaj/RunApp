@@ -11,7 +11,7 @@
         android:id="@+id/buttonUpdateAccount"
         android:layout_width="371dp"
         android:layout_height="wrap_content"
-        android:onClick="checkFields"
+        android:onClick="checkRegister"
         android:text="@string/register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

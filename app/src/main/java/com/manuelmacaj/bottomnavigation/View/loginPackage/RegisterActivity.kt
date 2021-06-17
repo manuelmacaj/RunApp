@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.activity_register.*
 import java.time.LocalDate
@@ -33,6 +34,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var radioGroupGender: RadioGroup
     private lateinit var dateOfBirth: LocalDate
     private lateinit var genderSelection : String
+    private lateinit var BASE64: BASE64
 
     private val mRegister =
         FirebaseAuth.getInstance() //istanza firebase riferita alla sezione di autenticazione
@@ -126,7 +128,7 @@ class RegisterActivity : AppCompatActivity() {
             editTextConfirmPassword.error = resources.getString((R.string.password_check))
             return
         }
-
+        BASE64 = BASE64(password)
         registerNewAccount(nomeCognome, email, password)
     }
 
@@ -147,6 +149,7 @@ class RegisterActivity : AppCompatActivity() {
                     val dateTime = LocalDateTime.now()
                     userMap["Data registrazione"] =
                         dateTime.format(DateTimeFormatter.ofPattern("d/M/y H:m:ss"))
+                    userMap["EncryptedPassword"] = BASE64.encrypt().toString()
 
                     //creazione documento
                     mFireStore.document(id).set(userMap).addOnCompleteListener(this) { task ->

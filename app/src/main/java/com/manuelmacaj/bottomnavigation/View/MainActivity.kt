@@ -1,15 +1,29 @@
 package com.manuelmacaj.bottomnavigation.View
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseAuth
 import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.View.accountPackage.EditProfileActivity
 import com.manuelmacaj.bottomnavigation.View.accountPackage.PersonalAccountFragment
 import com.manuelmacaj.bottomnavigation.View.activitiesPackage.ActivitiesFragment
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
 import com.manuelmacaj.bottomnavigation.View.runpackage.RunFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity() {
+
+    private val mFirebaseAuth =
+        FirebaseAuth.getInstance() //istanza firebase, sezione autenticazione
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -31,11 +45,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragmentContainer, fragment)
             commit()
         }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //facciamo l'inflate della risorsa di menu nel Menu fornito nella callback
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_profile, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.account -> {
+                Toast.makeText(this, "Modifica il tuo account", Toast.LENGTH_SHORT).show()
+                openEditProfileActivity()
+            }
+            R.id.password -> Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show()
+            R.id.logout -> {
+                Toast.makeText(this, "Disconnesso dall'app", Toast.LENGTH_SHORT).show()
+                signOut()
+            }
+        }
+        return true
+    }
+
+    private fun signOut() {
+        mFirebaseAuth.signOut()
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    private fun openEditProfileActivity() {
+        val intent = Intent(this@MainActivity, EditProfileActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
 }

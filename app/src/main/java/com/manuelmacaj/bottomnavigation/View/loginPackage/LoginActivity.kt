@@ -78,13 +78,15 @@ class LoginActivity : AppCompatActivity() {
                     val emailFirestore = documentSnapshot.getString("Email")
                     val dataNascita = documentSnapshot.getString("Data di nascita")
                     val genere = documentSnapshot.getString("Genere")
+                    val pwdCriptata = documentSnapshot.getString("EncryptedPassword")
 
                     Global.utenteLoggato = Utente(
                         idutente.toString(),
                         nomeCognome.toString(),
                         emailFirestore.toString(),
                         dataNascita.toString(),
-                        genere.toString()
+                        genere.toString(),
+                        pwdCriptata.toString()
                     )
                     Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
                 } else {

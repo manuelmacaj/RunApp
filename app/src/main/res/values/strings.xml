@@ -35,4 +35,8 @@
     <string name="date_of_birth">Date of birth (click me)</string>
     <string name="gender">Gender</string>
     <string name="gender_not_selected">Please select the gender</string>
+    <string name="logout">Logout</string>
+    <string name="edit_account">Edit account</string>
+    <string name="edit_password">Edit password</string>
+    <string name="update_account">Update account</string>
 </resources>

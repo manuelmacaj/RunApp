@@ -2,15 +2,16 @@ package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -20,15 +21,18 @@ import java.util.regex.Pattern
 
 class EditProfileActivity : AppCompatActivity() {
 
+    private val TAG = "EditProfileActivity"
     private lateinit var nameSurname: EditText
     private lateinit var emailField: EditText
     private lateinit var radioGroup: RadioGroup
     private lateinit var genderRadio: RadioButton
     private lateinit var genderSelection: String
+    private lateinit var passwordUtente: String
+    private val BASE64Password: BASE64 = BASE64("")
 
     //istanza firestore riferita alla collezione utenti. Se non esiste, la crea
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
-    private val mAuth = FirebaseAuth.getInstance()
+    private val mAuthUser = FirebaseAuth.getInstance().currentUser
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,26 +81,34 @@ class EditProfileActivity : AppCompatActivity() {
             editTextModifyEmail.error = resources.getString(R.string.invalid_email)
             return
         }
-
-        updateInformation(nomeCognome)
-
+        updateInformation(nomeCognome, email)
     }
 
-    private fun updateInformation(nomeCognome: String) {
+    private fun updateInformation(nomeCognome: String, email: String) {
 
-        //val userAuth = mAuth.currentUser //accesso account utente corrente
+        if(email != Global.utenteLoggato?.emailUtente){
+            if (mAuthUser == null)
+                return
+            mAuthUser.updateEmail(email)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d(TAG, "Cambio email avvenuta con successo")
 
-        //val credential = EmailAuthProvider.getCredential(email)
-
-        //userAuth?.updateEmail(email)
+                    } else {
+                        Log.d(TAG, "Cambio email non avvenuta.")
+                    }
+                }
+        }
 
         mFireStore.document(Global.utenteLoggato!!.idUtente).update(
             "Nome e Cognome", nomeCognome,
-            "Genere", genderRadio.text
+            "Genere", genderRadio.text,
+            "Email", email
         )
 
         Global.utenteLoggato?.nomeCognomeUtente = nomeCognome
         Global.utenteLoggato?.genere = genderRadio.text.toString()
+        Global.utenteLoggato?.emailUtente = email
         finish()
     }
 

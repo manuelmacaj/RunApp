@@ -36,4 +36,8 @@
     <string name="date_of_birth">Data di nascita (cliccami)</string>
     <string name="gender">Genere</string>
     <string name="gender_not_selected">Per favore selezionare il genere</string>
+    <string name="logout">Disconnettiti</string>
+    <string name="edit_account">Modifica account</string>
+    <string name="edit_password">Modifica password</string>
+    <string name="update_account">Aggiorna account</string>
 </resources>

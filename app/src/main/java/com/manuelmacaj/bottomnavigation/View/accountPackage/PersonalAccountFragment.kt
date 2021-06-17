@@ -10,6 +10,11 @@ import androidx.fragment.app.Fragment
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.fragment_personal_account.view.*
+import java.time.LocalDate
+import java.time.Period
+import java.time.Year
+import java.time.YearMonth
+import java.util.*
 
 class PersonalAccountFragment : Fragment() {
 
@@ -17,8 +22,12 @@ class PersonalAccountFragment : Fragment() {
 
     private lateinit var textFullName: TextView
     private lateinit var textEmail: TextView
+    private lateinit var textAge : TextView
     private lateinit var textGender: TextView
     private lateinit var textDateofBirth: TextView
+    private lateinit var dateOfBirth: LocalDate
+   // private var currentTime: Date = Calendar.getInstance().time
+    private var currentTime: LocalDate = LocalDate.now()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +40,20 @@ class PersonalAccountFragment : Fragment() {
 
         textFullName = view.findViewById(R.id.fullName)
         textEmail = view.findViewById(R.id.email)
+        textAge = view.findViewById(R.id.age)
         textGender = view.findViewById(R.id.userGender)
         textDateofBirth = view.findViewById(R.id.userBirthday)
+
+        val arrayDate: List<String> = Global.utenteLoggato?.dataNascita?.split("-")!!
+
+        dateOfBirth = LocalDate.of(arrayDate[0].toInt(), arrayDate[1].toInt(), arrayDate[2].toInt())
+
+        if((currentTime.month <= dateOfBirth.month) && (currentTime.dayOfMonth < dateOfBirth.dayOfMonth))
+            textAge.text = ((currentTime.year - dateOfBirth.year) -1).toString()
+        else
+            textAge.text = (currentTime.year - dateOfBirth.year).toString()
+
+        textAge.append(" years")
 
         view.ModifyProfile.setOnClickListener {
             openEditProfileActivity()
