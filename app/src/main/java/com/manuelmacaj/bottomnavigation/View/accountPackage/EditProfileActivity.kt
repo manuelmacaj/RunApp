@@ -28,7 +28,6 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var genderRadio: RadioButton
     private lateinit var genderSelection: String
     private lateinit var passwordUtente: String
-    private val BASE64Password: BASE64 = BASE64("")
 
     //istanza firestore riferita alla collezione utenti. Se non esiste, la crea
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
