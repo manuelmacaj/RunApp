@@ -30,4 +30,7 @@
     <string name="image_view">TODO</string>
     <string name="day">Day</string>
     <string name="start_Run">Run</string>
+    <string name="titleEndRun">Are you sure you want to finish your run?</string>
+    <string name="messageEndRun">By pressing yes, the run will end completely</string>
+    <string name="yesButton">Yes</string>
 </resources>

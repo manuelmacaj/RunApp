@@ -1,24 +1,24 @@
 package com.manuelmacaj.bottomnavigation.View.runpackage
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.AlertDialog
+import android.content.*
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import android.location.Location
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
-import android.widget.Button
-import android.widget.Chronometer
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.maps.android.PolyUtil
-import com.manuelmacaj.bottomnavigation.Service.GPSService
+import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.Service.GPSService
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class RunSessionActivity : AppCompatActivity() {
@@ -27,15 +27,14 @@ class RunSessionActivity : AppCompatActivity() {
     private val TAG = "RunSessionActivity"
 
     private lateinit var btnRunSession: Button
-    private lateinit var btn_stop: Button
-    private lateinit var textView: TextView
-    private lateinit var polylineText: EditText
+    private lateinit var btn_endRun: Button
     private lateinit var chronometer: Chronometer
 
     private lateinit var textKM: TextView
-    private var isRuning: Boolean = false
+    private var isRunning: Boolean = false
     private var totalKM: Double = 0.0
     private var timeWhenStop = 0L
+    private var currentTime: Date = Calendar.getInstance().time
 
     private var broadcastReceiver: BroadcastReceiver? = null
 
@@ -44,11 +43,20 @@ class RunSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_run_session)
 
         btnRunSession = findViewById(R.id.btnStartService)
-        btn_stop = findViewById(R.id.btnStopService)
-        textView = findViewById(R.id.textViewCoordinate)
-        polylineText = findViewById(R.id.editTextPolyline)
+        btn_endRun = findViewById(R.id.btnStopService)
         chronometer = findViewById(R.id.chronometer)
         textKM = findViewById(R.id.textViewTotalKm)
+
+        chronometer.setOnChronometerTickListener {
+            val time = SystemClock.elapsedRealtime() - chronometer.base
+            val h = (time / 3600000).toInt()
+            val m = (time - h * 3600000).toInt() / 60000
+            val s = (time - h * 3600000 - m * 60000).toInt() / 1000
+            val t = (if (h < 10) "0$h" else h).toString() + ":" + (if (m < 10) "0$m" else m) + ":" + if (s < 10) "0$s" else s
+            chronometer.text = t
+        }
+        chronometer.base = SystemClock.elapsedRealtime()
+        chronometer.text = "00:00:00"
 
         enableButtons()
     }
@@ -57,41 +65,73 @@ class RunSessionActivity : AppCompatActivity() {
 
         btnRunSession.setOnClickListener {
 
-            if (!isRuning) {
+            if (!isRunning) {
                 startGPSService()
                 chronometer.base = SystemClock.elapsedRealtime() + timeWhenStop
                 chronometer.start()
-                isRuning = true
+                isRunning = true
                 Log.d(TAG, "Avvio corsa")
             } else {
                 timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
                 chronometer.stop() // pausa cronometro
-                isRuning = false
+                isRunning = false
                 Log.d(TAG, "Stop corsa")
             }
-            btnRunSession.setText(if (!isRuning) R.string.resume else R.string.stop)
+            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.stop)
 
         }
 
-        btn_stop.setOnClickListener {
-            Log.d(TAG, "Fine del servizio")
+        btn_endRun.setOnClickListener {
+            Log.d(TAG, "Fine della corsa")
 
-            timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
-            chronometer.stop() // pausa cronometro
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.titleEndRun))
+                .setMessage(getString(R.string.messageEndRun))
+                .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
 
-            btn_stop.isClickable = false
-            btnRunSession.isClickable = true
+                    timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
+                    chronometer.stop() //fermo il cronometro
+                    isRunning = false //l'utente non corre più, lo imposto a false
 
-            val intent = Intent(applicationContext, GPSService::class.java)
-            stopService(intent)
-            Log.d(TAG, PolyUtil.encode(track))
-            polylineText.setText(PolyUtil.encode(track))
+                    val intent = Intent(applicationContext, GPSService::class.java)
+                    stopService(intent) //fermo il servizio
+                    Log.d(TAG, PolyUtil.encode(track))
+
+                    sendToFirebase()
+                }
+                .setNegativeButton("No") { _, _ ->
+                    //non faccio niente, proseguo la corsa
+                }
+                .create()
+                .show()
         }
     }
 
     private fun startGPSService() {
         val intent = Intent(applicationContext, GPSService::class.java)
         startForegroundService(intent)
+    }
+
+    private fun sendToFirebase() {
+        //Creo una HashMap che mi servità quando caricherò i dati della sessione appena conclusa
+        val sessionMap = HashMap<String, Any>()
+        sessionMap["TimeWhenStart"] = currentTime
+        sessionMap["Polyline encode"] = PolyUtil.encode(track)
+        sessionMap["Chilometri prercorsi"] = textKM.text.toString()
+        sessionMap["Tempo"] = chronometer.text.toString()
+
+        /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
+         alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
+
+        val mFirestore = FirebaseFirestore.getInstance().collection("Utenti").document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
+        mFirestore.document().set(sessionMap).addOnCompleteListener { task -> //creo un nuovo documento (document è senza parametro, Firebase provvederà alla creazione di un documento un id generato)
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Caricamento della sessione eseguita", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this, "Impossibile caricare la sessione", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onResume() {
@@ -105,18 +145,17 @@ class RunSessionActivity : AppCompatActivity() {
                         val lat = intent.extras?.get("Lat") as Double
                         val lng = intent.extras?.get("Lng") as Double
 
-                        if(isRuning) { //se l'utente sta correndo allora calcolo i km, se è in pausa non li calcolo
+                        if(isRunning) { //se l'utente sta correndo allora calcolo i km, se è in pausa non li calcolo
                             calculateKilometersDuringRun(lat, lng) //chiamata del metodo di calcolo dei km percorsi
                             textKM.text = String.format("%.2f", totalKM) //inserisco il risultato finale dei km percorsi
-                            textKM.append(" Km")
+                            textKM.append(" Km") //aggiungo la stringa contenente l'unità di misura utilizzata
                         }
 
-                        addCoordinates(lat, lng)
+                        addCoordinates(lat, lng) //chiamata del metodo per l'aggiunta delle coordinate
                     }
                 }
             }
         }
-
         registerReceiver(broadcastReceiver, IntentFilter("location_update"))
     }
 
@@ -160,14 +199,11 @@ class RunSessionActivity : AppCompatActivity() {
             } else {
                 Log.d(TAG, "Non acquisisco la posizione")
             }
-
         }
         else {
             track.add(LatLng(lat, lng)) // aggiungo alla lista le coordinate che il service mi ha fornito
         }
-
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -65,7 +64,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 startActivity(intent)
             }
             else{
-                val alertMessage = AlertDialog.Builder(activity!!)
+                val alertMessage = AlertDialog.Builder(requireActivity())
                     .setTitle(getString(R.string.titleNoRun))
                     .setMessage(getString(R.string.messageNoRun))
                     .setPositiveButton(getString(R.string.setting), object : DialogInterface.OnClickListener {
@@ -78,7 +77,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!) // creo l'istanza per poter poi utilizzare le localizzazioni
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity()) // creo l'istanza per poter poi utilizzare le localizzazioni
 
         return view
     }
@@ -102,23 +101,21 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
 
         //Se l'utente non ha mai dato il consenso alla localizzazione o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso alla posizione
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro il popUp in cui chiedo il consenso
             //Alert dialog che permette di informare l'utente il motivo della richiesta di autorizzazione
 
-            val alertMessage = AlertDialog.Builder(activity!!)
+            val alertMessage = AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.titleRequestPermission))
                 .setMessage(getString(R.string.messageRequestPermission))
-                .setPositiveButton("Ok", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
-                        requestPermissions(
-                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                            LOCATION_PERMISSION_REQUEST_CODE) //invierò il risultato alla funzione override fun onRequestPermissionsResult, per comprendere se l'app ha l'autorizzazione o no
-
-                    }
-                })
+                .setPositiveButton("Ok"
+                ) { _, _ ->
+                    //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
+                    requestPermissions(
+                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                        LOCATION_PERMISSION_REQUEST_CODE
+                    ) //invierò il risultato alla funzione override fun onRequestPermissionsResult, per comprendere se l'app ha l'autorizzazione o no
+                }
                 .create()
                 .show()
         }
