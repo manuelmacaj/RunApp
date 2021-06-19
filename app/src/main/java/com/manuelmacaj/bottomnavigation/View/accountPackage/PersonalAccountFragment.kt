@@ -53,11 +53,8 @@ class PersonalAccountFragment : Fragment() {
         else
             textAge.text = (currentTime.year - dateOfBirth.year).toString()
 
-        textAge.append(" years")
-
-        view.ModifyProfile.setOnClickListener {
-            openEditProfileActivity()
-        }
+        val age = resources.getString(R.string.user_years)
+        textAge.append(" $age")
 
         return view
     }

@@ -40,4 +40,9 @@
     <string name="edit_account">Modifica account</string>
     <string name="edit_password">Modifica password</string>
     <string name="update_account">Aggiorna account</string>
+    <string name="user_years">anni</string>
+    <string name="old_password">vecchia password</string>
+    <string name="update_password">Aggiorna password</string>
+    <string name="old_password_check">La vecchia password non corrisponde</string>
+    <string name="choose_another_password">Scegliere una password diversa da quella usata precedentemente</string>
 </resources>

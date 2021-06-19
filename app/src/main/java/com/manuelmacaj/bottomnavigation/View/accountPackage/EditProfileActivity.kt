@@ -86,14 +86,17 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun updateInformation(nomeCognome: String, email: String) {
 
-        if(email != Global.utenteLoggato?.emailUtente){
+        if (email != Global.utenteLoggato?.emailUtente) {
             if (mAuthUser == null)
                 return
             mAuthUser.updateEmail(email)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         Log.d(TAG, "Cambio email avvenuta con successo")
-
+                        mFireStore.document(Global.utenteLoggato!!.idUtente).update(
+                            "Email", email
+                        )
+                        Global.utenteLoggato?.emailUtente = email
                     } else {
                         Log.d(TAG, "Cambio email non avvenuta.")
                     }
@@ -103,12 +106,9 @@ class EditProfileActivity : AppCompatActivity() {
         mFireStore.document(Global.utenteLoggato!!.idUtente).update(
             "Nome e Cognome", nomeCognome,
             "Genere", genderRadio.text,
-            "Email", email
         )
-
         Global.utenteLoggato?.nomeCognomeUtente = nomeCognome
         Global.utenteLoggato?.genere = genderRadio.text.toString()
-        Global.utenteLoggato?.emailUtente = email
         finish()
     }
 

@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RunApp">
-        <activity android:name=".View.accountPackage.EditProfileActivity"></activity>
+        <activity android:name=".View.accountPackage.EditProfileActivity" />
         <activity
             android:name=".View.loginPackage.RegisterActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.loginPackage.LoginActivity"
             android:screenOrientation="portrait">
@@ -36,7 +36,11 @@
 
         <activity
             android:name=".View.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".View.accountPackage.EditPasswordActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".Service.GPSService"

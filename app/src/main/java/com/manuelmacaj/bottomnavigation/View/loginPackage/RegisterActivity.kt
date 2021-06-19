@@ -46,11 +46,12 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        this.title = resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
 
         nameSurname = findViewById(R.id.editTextPersonNameSurname)
         emailField = findViewById(R.id.editTextEmailRegister)
         firstPasswordField = findViewById(R.id.editTextPasswordRegister)
-        confirmPasswordField = findViewById(R.id.editTextConfirmPassword)
+        confirmPasswordField = findViewById(R.id.editTextConfirmPassword2)
         radioGroupGender = findViewById(R.id.radioGroupGenderModify)
 
         radioGroupGender.setOnCheckedChangeListener { group, checkedId ->
@@ -126,7 +127,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (!isValidPassword(confermaPassword) && (confermaPassword != password)) {
             //settiamo un errore se le password non combaciano tra loro
-            editTextConfirmPassword.error = resources.getString((R.string.password_check))
+            editTextConfirmPassword2.error = resources.getString((R.string.password_check))
             return
         }
         registerNewAccount(nomeCognome, email, password)

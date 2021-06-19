@@ -24,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        this.title = resources.getString(R.string.signin) //imposto il titolo che verrà visualizzato sulla toolbar
     }
 
     override fun onStart() {
