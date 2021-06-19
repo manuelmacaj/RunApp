@@ -35,4 +35,19 @@
     <string name="titleEndRun">"Sei sicuro di voler terminare la tua corsa? "</string>
     <string name="messageEndRun">Premendo si, la corsa terminerà completamente</string>
     <string name="yesButton">Si</string>
+    <string name="modify_profile">Modifica profilo</string>
+    <string name="male">Maschio</string>
+    <string name="female">Femmina</string>
+    <string name="date_of_birth">Data di nascita (cliccami)</string>
+    <string name="gender">Genere</string>
+    <string name="gender_not_selected">Per favore selezionare il genere</string>
+    <string name="logout">Disconnettiti</string>
+    <string name="edit_account">Modifica account</string>
+    <string name="edit_password">Modifica password</string>
+    <string name="update_account">Aggiorna account</string>
+    <string name="user_years">anni</string>
+    <string name="old_password">vecchia password</string>
+    <string name="update_password">Aggiorna password</string>
+    <string name="old_password_check">La vecchia password non corrisponde</string>
+    <string name="choose_another_password">Scegliere una password diversa da quella usata precedentemente</string>
 </resources>

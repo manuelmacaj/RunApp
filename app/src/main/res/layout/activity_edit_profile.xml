@@ -5,22 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.loginPackage.RegisterActivity">
+    tools:context=".View.accountPackage.EditProfileActivity">
 
     <android.widget.Button
         android:id="@+id/buttonUpdateAccount"
         android:layout_width="371dp"
         android:layout_height="wrap_content"
-        android:onClick="checkRegister"
-        android:text="@string/register"
+        android:onClick="checkFields"
+        android:text="@string/update_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextModifyEmail" />
 
     <EditText
-        android:id="@+id/editTextPersonNameSurname"
+        android:id="@+id/editTextModifyNameSurname"
         android:layout_width="371dp"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -34,56 +34,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextEmailRegister"
+        android:id="@+id/editTextModifyEmail"
         android:layout_width="371dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="86dp"
+        android:layout_marginBottom="178dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/editTextPasswordRegister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
-
-    <EditText
-        android:id="@+id/editTextPasswordRegister"
-        android:layout_width="371dp"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/editTextConfirmPassword2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmailRegister" />
-
-    <EditText
-        android:id="@+id/editTextConfirmPassword2"
-        android:layout_width="371dp"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/confirm_password"
-        android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/buttonUpdateAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupGenderModify" />
 
     <RadioGroup
         android:id="@+id/radioGroupGenderModify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/textViewDate"
+        app:layout_constraintBottom_toTopOf="@+id/editTextModifyEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPersonNameSurname">
+        app:layout_constraintTop_toBottomOf="@+id/editTextModifyNameSurname">
 
         <RadioButton
             android:id="@+id/radioButtonMaleModify"
@@ -99,18 +73,6 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date_of_birth"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toTopOf="@+id/editTextEmailRegister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupGenderModify" />
-
-    <TextView
         android:id="@+id/textViewGender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,9 +80,9 @@
         android:layout_marginBottom="164dp"
         android:text="@string/gender"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toTopOf="@+id/editTextEmailRegister"
+        app:layout_constraintBottom_toTopOf="@+id/editTextModifyEmail"
         app:layout_constraintEnd_toStartOf="@+id/radioGroupGenderModify"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPersonNameSurname" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextModifyNameSurname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
