@@ -3,7 +3,7 @@
     <string name="run">Run</string>
     <string name="account">Account</string>
     <string name="activity">Activity</string>
-    <string name="stop">Stop</string>
+    <string name="pause">Pause</string>
     <string name="start">Start</string>
     <string name="resume">Resume</string>
     <string name="titleRequestPermission">Location Permission Needed</string>
@@ -48,4 +48,5 @@
     <string name="update_password">Update password</string>
     <string name="old_password_check">The old password does not match</string>
     <string name="choose_another_password">Choose a different password from the one used previously</string>
+    <string name="end_run">End your run</string>
 </resources>

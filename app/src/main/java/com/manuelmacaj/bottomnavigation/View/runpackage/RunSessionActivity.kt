@@ -27,7 +27,7 @@ class RunSessionActivity : AppCompatActivity() {
     private val TAG = "RunSessionActivity"
 
     private lateinit var btnRunSession: Button
-    private lateinit var btn_endRun: Button
+    private lateinit var btnEndRun: Button
     private lateinit var chronometer: Chronometer
 
     private lateinit var textKM: TextView
@@ -43,7 +43,7 @@ class RunSessionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_run_session)
 
         btnRunSession = findViewById(R.id.btnStartService)
-        btn_endRun = findViewById(R.id.btnStopService)
+        btnEndRun = findViewById(R.id.btnStopService)
         chronometer = findViewById(R.id.chronometer)
         textKM = findViewById(R.id.textViewTotalKm)
 
@@ -77,11 +77,11 @@ class RunSessionActivity : AppCompatActivity() {
                 isRunning = false
                 Log.d(TAG, "Stop corsa")
             }
-            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.stop)
+            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.pause)
 
         }
 
-        btn_endRun.setOnClickListener {
+        btnEndRun.setOnClickListener {
             Log.d(TAG, "Fine della corsa")
 
             AlertDialog.Builder(this)

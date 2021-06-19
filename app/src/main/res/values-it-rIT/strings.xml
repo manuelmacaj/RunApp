@@ -3,8 +3,8 @@
     <string name="app_name">RunApp</string>
     <string name="run">Corsa</string>
     <string name="activity">Attività</string>
-    <string name="stop">Ferma</string>
-    <string name="start">Inizia</string>
+    <string name="pause">Pausa</string>
+    <string name="start">Avvia</string>
     <string name="resume">Riprendi</string>
     <string name="titleRequestPermission">Richiesta di autorizzazione alla localizzazione</string>
     <string name="messageRequestPermission">Per monitorare le corse, RunApp richiede l\'accesso alla posizione</string>
@@ -50,4 +50,5 @@
     <string name="update_password">Aggiorna password</string>
     <string name="old_password_check">La vecchia password non corrisponde</string>
     <string name="choose_another_password">Scegliere una password diversa da quella usata precedentemente</string>
+    <string name="end_run">Termina la tua corsa</string>
 </resources>

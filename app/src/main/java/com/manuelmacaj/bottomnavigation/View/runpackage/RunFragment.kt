@@ -2,7 +2,7 @@ package com.manuelmacaj.bottomnavigation.View.runpackage
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -38,10 +38,10 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private lateinit var lastLocation: Location
     private var locationRequest: LocationRequest? = null // l'oggetto LocationRequest permette di migliorare il servizio di localizzazione dell'utente
     private var locationCallback: LocationCallback? = null // oggetto che notifica il possibile cambiamento di posizione
-    private var LocationPermission: Boolean? = null
+    private var locationPermission: Boolean? = null
     private var GPScheck = false
 
-    private var manager: LocationManager? = null
+    private lateinit var manager: LocationManager
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
 
@@ -59,7 +59,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
-            if(LocationPermission == true) {
+            if(locationPermission == true && GPScheck) {
                 val intent = Intent(activity, RunSessionActivity::class.java)
                 startActivity(intent)
             }
@@ -67,11 +67,9 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 val alertMessage = AlertDialog.Builder(requireActivity())
                     .setTitle(getString(R.string.titleNoRun))
                     .setMessage(getString(R.string.messageNoRun))
-                    .setPositiveButton(getString(R.string.setting), object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface?, which: Int) {
-                            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                        }
-                    })
+                    .setPositiveButton(getString(R.string.setting)) { _, _ ->
+                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
                     .create()
                     .show()
             }
@@ -82,6 +80,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+        checkGPSIsEnable()
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.uiSettings.setAllGesturesEnabled(false)
@@ -90,21 +94,38 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         checkPermissions()
     }
 
- /*   private fun checkGPSLocation(): Boolean {
-        if (manager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
-            return true
+    private fun checkGPSIsEnable() {
+        manager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled( LocationManager.GPS_PROVIDER)){
+            buildAlertMessageNoGps()
+            GPScheck = false
         }
-        return false
-    }*/
+        else
+            GPScheck = true
+    }
+
+    private fun buildAlertMessageNoGps() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle("GPS isn't enable")
+            .setMessage("Your GPS seems to be disabled, do you want to enable it?")
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create()
+            .show()
+    }
 
 
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
 
         //Se l'utente non ha mai dato il consenso alla localizzazione o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso alla posizione
         if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro il popUp in cui chiedo il consenso
-            //Alert dialog che permette di informare l'utente il motivo della richiesta di autorizzazione
-
+            ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro un AlertDialog
+            //L'alert dialog informerà che dovrà fornire il consenso alla localizzazione
             val alertMessage = AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.titleRequestPermission))
                 .setMessage(getString(R.string.messageRequestPermission))
@@ -130,14 +151,14 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
         grantResults: IntArray) { // metodo che permette di verificare i permessi che l'utente ha fornito
-        LocationPermission = false //inizializzo la variabile booleana a false
+        locationPermission = false //inizializzo la variabile booleana a false
 
         when(requestCode) { //switch che verifica il tipo di request code restituito
             LOCATION_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato alla geolarizzazione, allora verifico
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { // se l'utente mi ha fornito l'autorizzazione...
                     Log.d("", "Localizzazione abilitata")
                     mapView.invalidate()
-                    LocationPermission = true // variabile booleana settata a true
+                    locationPermission = true // variabile booleana settata a true
                     getLocation() //... avvio la localizzazione dell'utente
 
                 } else { //se ha rifiutato allora la localizzazione non è abilitata
@@ -182,7 +203,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             locationRequest?.let { locationRequest ->
                 locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-                locationRequest.interval = 5000
+                locationRequest.interval = 2500
                 locationRequest.fastestInterval = 1000
 
                 locationCallback = object : LocationCallback() {
@@ -197,11 +218,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 )
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
     }
 
 }
