@@ -7,18 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".View.loginPackage.RegisterActivity">
 
-    <android.widget.Button
-        android:id="@+id/buttonUpdateAccount"
-        android:layout_width="371dp"
-        android:layout_height="wrap_content"
-        android:onClick="checkRegister"
-        android:text="@string/register"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword2" />
-
     <EditText
         android:id="@+id/editTextPersonNameSurname"
         android:layout_width="371dp"
@@ -122,5 +110,20 @@
         app:layout_constraintEnd_toStartOf="@+id/radioGroupGenderModify"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPersonNameSurname" />
+
+    <android.widget.Button
+        android:id="@+id/buttonUpdateAccount"
+        android:layout_width="371dp"
+        android:layout_height="wrap_content"
+        android:onClick="checkRegister"
+        android:text="@string/register"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#03A9F4"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

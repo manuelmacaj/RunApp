@@ -1,5 +1,6 @@
 package com.manuelmacaj.bottomnavigation.View.loginPackage
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.graphics.Color
@@ -32,8 +33,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var mDateSetListener: OnDateSetListener
     private lateinit var genderRadio: RadioButton
     private lateinit var radioGroupGender: RadioGroup
-    private lateinit var dateOfBirth: LocalDate
-    private lateinit var genderSelection : String
+    private var dateOfBirth: LocalDate? = null
+    private lateinit var genderSelection: String
 
     private val BASE64: BASE64 = BASE64()
 
@@ -46,7 +47,8 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-        this.title = resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
+        this.title =
+            resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
 
         nameSurname = findViewById(R.id.editTextPersonNameSurname)
         emailField = findViewById(R.id.editTextEmailRegister)
@@ -60,19 +62,29 @@ class RegisterActivity : AppCompatActivity() {
 
         mDisplayDate = findViewById(R.id.textViewDate)
         mDisplayDate.setOnClickListener {
-            val cal = Calendar.getInstance()
-            val year = cal[Calendar.YEAR]
-            val month = cal[Calendar.MONTH]
-            val day = cal[Calendar.DAY_OF_MONTH]
 
-            val dialog = DatePickerDialog(
-                this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener,
-                year, month, day
-            )
-            dialog.datePicker.maxDate =
-                System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corremte
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.show()
+            //AlertDialog per la data di nascita utente
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.titleDateofBirth))
+                .setMessage(getString(R.string.messageDateofBirth))
+                .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
+                    val cal = Calendar.getInstance()
+                    val year = cal[Calendar.YEAR]
+                    val month = cal[Calendar.MONTH]
+                    val day = cal[Calendar.DAY_OF_MONTH]
+
+                    val dialog = DatePickerDialog(
+                        this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener,
+                        year, month, day
+                    )
+                    dialog.datePicker.maxDate =
+                        System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corremte
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.show()
+                }
+                .setCancelable(false)
+                .create()
+                .show()
         }
         mDateSetListener =
             OnDateSetListener { datePicker, year, month, day ->
@@ -91,43 +103,45 @@ class RegisterActivity : AppCompatActivity() {
         val password = firstPasswordField.text.toString()
         val confermaPassword = confirmPasswordField.text.toString()
 
-        if (nomeCognome.isEmpty()) {
+        if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
             //settiamo un errore se il campo in cui inserire nome e cognome è vuoto
-            editTextPersonNameSurname.error = resources.getString(R.string.empty_name_surname)
-            return
-        }
-
-        if (!isValidEmail(email)) {
-            //settiamo un errore se l'email inserita dall'utente non è valida
-            editTextEmailRegister.error = resources.getString(R.string.invalid_email)
+            nameSurname.error = resources.getString(R.string.empty_name_surname)
             return
         }
 
         if (radioGroupGender.checkedRadioButtonId == -1) { //nessun radio button selezionato da parte dell'utente
             //genderSelection.error = resources.getString(R.string.gender_not_selected)
             genderSelection = resources.getString(R.string.gender_not_selected)
-            Toast.makeText(this, ""+genderSelection, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
             return
         }
 
-        /*if (dateOfBirth.toString() == "") {
+        if (dateOfBirth == null) {
             Toast.makeText(
                 this,
-                "Per favore inserire la propria data di nascita",
+                getString(R.string.enterDateofBirth),
                 Toast.LENGTH_LONG
             ).show()
             return
-        }*/
+        }
+
+        if (!isValidEmail(email)) {
+            //settiamo un errore se l'email inserita dall'utente non è valida
+            emailField.error = resources.getString(R.string.invalid_email)
+            return
+        }
+
+
 
         if (!isValidPassword(password)) {
             //settiamo un errore se la password inserita dall'utente non soddisfa i requisiti di lunghezza
-            editTextPasswordRegister.error = resources.getString(R.string.invalid_password)
+            firstPasswordField.error = resources.getString(R.string.invalid_password)
             return
         }
 
         if (!isValidPassword(confermaPassword) && (confermaPassword != password)) {
             //settiamo un errore se le password non combaciano tra loro
-            editTextConfirmPassword2.error = resources.getString((R.string.password_check))
+            confirmPasswordField.error = resources.getString((R.string.password_check))
             return
         }
         registerNewAccount(nomeCognome, email, password)
@@ -183,5 +197,12 @@ class RegisterActivity : AppCompatActivity() {
         val pattern = Pattern.compile(EMAIL_PATTERN)
         val matcher = pattern.matcher(email)
         return matcher.matches() //se indirizzo email è soddisfatto, tutto bene sennò...
+    }
+
+    private fun isValidNameSurname(nameSurname: String): Boolean {
+        val NAMESURNAME_PATTERN = "^([a-zA-Z]{2,}\\s[a-zA-Z]+'?-?[a-zA-Z]{2,}\\s?([a-zA-Z]+)?)"
+        val pattern = Pattern.compile(NAMESURNAME_PATTERN)
+        val matcher = pattern.matcher(nameSurname)
+        return matcher.matches()
     }
 }

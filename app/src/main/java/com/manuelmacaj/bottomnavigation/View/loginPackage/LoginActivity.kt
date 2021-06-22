@@ -1,11 +1,13 @@
 package com.manuelmacaj.bottomnavigation.View.loginPackage
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.Global.Global
@@ -14,6 +16,7 @@ import com.manuelmacaj.bottomnavigation.R
 import com.manuelmacaj.bottomnavigation.View.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.regex.Pattern
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -25,6 +28,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         this.title = resources.getString(R.string.signin) //imposto il titolo che verrà visualizzato sulla toolbar
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //la night mode viene disabilata
     }
 
     override fun onStart() {
@@ -51,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(
             this@LoginActivity,
             RegisterActivity::class.java
-        ) //primo paramatro->context;secondo parametro->activity che deve essere eseguita
+        )
         startActivity(intent)
     }
 
@@ -59,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         val email: String = editTextEmailLogin.getText().toString()
         if (!isValidEmail(email)) {
             editTextEmailLogin.setError(getResources().getString(R.string.invalid_email))
-            return
+            return //non proseguo (guard)
         }
 
         val pwd = editTextPasswordRegister.getText().toString()
