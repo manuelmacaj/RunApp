@@ -8,7 +8,7 @@
     <string name="resume">Resume</string>
     <string name="titleRequestPermission">Location Permission Needed</string>
     <string name="messageRequestPermission">To track runs, RunApp requires location access</string>
-    <string name="messageNoRun">I’m sorry. Unfortunately you can’t run unti you’ll give the permission for the GPS localization. Please go in settings and enable the localization.</string>
+    <string name="messageNoRun">I’m sorry. Unfortunately you can’t run until you’ll give the permission for the GPS localization. Please go in settings and enable the localization.</string>
     <string name="titleNoRun">Error. You can\'t run</string>
     <string name="setting">Settings</string>
     <string name="notificationTitle">RunApp is following you</string>
@@ -58,4 +58,16 @@
     <string name="sendToFirebaseOk">Session loaded</string>
     <string name="sendToFirebaseFailed">Unable to load session</string>
 
+    <string name="edit_your_account">Edit your account</string>
+    <string name="edit_your_password">Edit your password</string>
+    <string name="signout_app">Disconnected from the app</string>
+    <string name="titlePassword">Attention password update</string>
+    <string name="messagePassword">Are you sure you want to update your password?</string>
+    <string name="titleInformation">Attention updating information</string>
+    <string name="messaggeInformation">Are you sure you want to update your information?</string>
+    <string name="titleDateofBirth">Attention</string>
+    <string name="messageDateofBirth">Once registration is complete, the date of birth cannot be changed anymore</string>
+    <string name="enterDateofBirth">Please enter your date of birth</string>
+    <string name="titleUpdatePassword">Impossible to update password</string>
+    <string name="messageUpdatePassword">Sorry, the password could not be updated</string>
 </resources>

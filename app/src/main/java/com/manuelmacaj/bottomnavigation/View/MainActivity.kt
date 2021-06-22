@@ -59,18 +59,19 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    //Metodo chiamato ogni volta che viene selezionato un elemento dall'option menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.account -> {
-                Toast.makeText(this, "Modifica il tuo account", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.edit_your_account), Toast.LENGTH_SHORT).show()
                 openEditProfileActivity()
             }
             R.id.password -> {
-                Toast.makeText(this, "Modifica la tua password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.edit_your_password), Toast.LENGTH_SHORT).show()
                 openEditPasswordActivity()
             }
             R.id.logout -> {
-                Toast.makeText(this, "Disconnesso dall'app", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.signout_app), Toast.LENGTH_SHORT).show()
                 signOut()
             }
         }

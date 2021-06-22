@@ -8,7 +8,7 @@
     <string name="resume">Riprendi</string>
     <string name="titleRequestPermission">Richiesta di autorizzazione alla localizzazione</string>
     <string name="messageRequestPermission">Per monitorare le corse, RunApp richiede l\'accesso alla posizione</string>
-    <string name="messageNoRun">"Mi dispiace, purtroppo non puoi correre fino a quando non ci fornirai il permesso alla geolocalizzazione.  Per favore, andare nelle impostazioni e abilitare la localizzazione. "</string>
+    <string name="messageNoRun">"Mi dispiace, purtroppo non puoi correre fino a quando non ci fornirai il permesso alla geolocalizzazione. Andare nelle impostazioni e abilitare la localizzazione. "</string>
     <string name="titleNoRun">Errore. Non puoi correre</string>
     <string name="account">Profilo</string>
     <string name="setting">Impostazioni</string>
@@ -17,7 +17,6 @@
     <string name="time">Giorno:</string>
     <string name="km_total">Km totali:</string>
     <string name="average_pace">Andatura media:</string>
-
     <string name="email_address">indirizzo email</string>
     <string name="password">password</string>
     <string name="signin">accedi</string>
@@ -59,4 +58,16 @@
     <string name="messageNoGooglePlayService">Questa app richiede Google Play Service, installa e riprova</string>
     <string name="sendToFirebaseOk">Caricamento della sessione eseguita</string>
     <string name="sendToFirebaseFailed">Impossibile caricare la sessione</string>
+    <string name="edit_your_account">Modifica il tuo account</string>
+    <string name="edit_your_password">Modifica la tua password</string>
+    <string name="signout_app">Disconnesso dall\'app</string>
+    <string name="titlePassword">"Attenzione aggiornamento password "</string>
+    <string name="messagePassword">"Sei sicuro di voler aggiornare la tua password? "</string>
+    <string name="titleInformation">Attenzione aggiornamento informazioni</string>
+    <string name="messaggeInformation">Sei sicuro di volere aggiornare le tue informazioni?</string>
+    <string name="titleDateofBirth">Attenzione</string>
+    <string name="messageDateofBirth">Una volta completata la registrazione, la data di nascita non potrà essere più modificata</string>
+    <string name="enterDateofBirth">Per favore inserire la propria data di nascita</string>
+    <string name="titleUpdatePassword">Impossibile aggiornare la password</string>
+    <string name="messageUpdatePassword">"Spiacenti, non è stato possibile aggiornare la password "</string>
 </resources>

@@ -15,7 +15,6 @@ import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import java.util.regex.Pattern
 
-
 class EditPasswordActivity : AppCompatActivity() {
 
     private val TAG = "EditPasswordActivity"
@@ -24,72 +23,85 @@ class EditPasswordActivity : AppCompatActivity() {
     private lateinit var confirmPassword: EditText
     private val BASE64: BASE64 = BASE64()
 
-    //istanza firestore riferita alla collezione utenti. Se non esiste, la crea
+    //istanza firestore riferita alla collezione utenti. Se non esiste, viene creata
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
-    private val mAuthUser = FirebaseAuth.getInstance().currentUser
+    private val mAuthUser = FirebaseAuth.getInstance().currentUser //istanza firebase riferita alla sezione di autenticazione
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_password)
-        this.title = resources.getString(R.string.edit_password)
+        this.title = resources.getString(R.string.edit_password) //imposto un titolo per questa activity
 
         oldPassword = findViewById(R.id.editTextOldPassword)
         newPassword = findViewById(R.id.editTextNewPassword)
         confirmPassword = findViewById(R.id.editTextConfirmThePassword)
     }
 
-    fun checkPasswordFields(v: View?) { //deve capire se quello inserito in username e password è valido o meno e nel caso segnalare
+    fun checkPasswordFields(v: View?) { //funzione di verifica delle password inserite dall'utente
 
         val vecchiaPassword = oldPassword.text.toString()
         val password = newPassword.text.toString()
         val confermaPassword = confirmPassword.text.toString()
         val oldPasswordEncrypt = BASE64.encrypt(vecchiaPassword)
 
-        if (oldPasswordEncrypt != Global.utenteLoggato?.encryptedPassword) {
-            Log.d(TAG, "La vecchia password non corrisponde alla password utilizzata fino adesseo")
-            oldPassword.error = resources.getString(R.string.old_password_check)
+        if (oldPasswordEncrypt != Global.utenteLoggato?.encryptedPassword) { //controllo se la vecchia password corrisponde a quella che abbiamo salvato
+            Log.d(TAG, "La vecchia password non corrisponde alla password utilizzata fino adesso")
+            oldPassword.error = resources.getString(R.string.old_password_check) //messaggio di errore
             return
         }
 
         if (vecchiaPassword == password) { //controllo se la nuova password è diversa da quella usata in precedenza
-            newPassword.error = resources.getString(R.string.choose_another_password)
+            newPassword.error = resources.getString(R.string.choose_another_password) //messaggio di errore
             return
         }
 
-        if (!isValidPassword(password)) {
-            //settiamo un errore se la password inserita dall'utente non soddisfa i requisiti di lunghezza
-            newPassword.error = resources.getString(R.string.invalid_password)
+        if (!isValidPassword(password)) { //controllo se la password inserita dall'utente soddisfa i requisiti
+            newPassword.error = resources.getString(R.string.invalid_password) //messaggio di errore
             return
         }
 
-        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) {
-            //settiamo un errore se le password non corrispondono
-            confirmPassword.error = resources.getString(R.string.password_check)
+        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) { //controllo se le password corrispondono
+            confirmPassword.error = resources.getString(R.string.password_check) //messaggio di errore
             return
         }
 
-        updatePassword(password, vecchiaPassword)
+        //AlertDialog per l'aggiornamento di password
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.titlePassword))
+            .setMessage(getString(R.string.messagePassword))
+            .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su si...
+                updatePassword(password, vecchiaPassword) //...verrà aggiornata la password
+            }
+            .setNegativeButton("No") { _, _ -> //se l'utente clicca su no...
+                finish() //...chiudo la finestra corrente
+            }
+            .setCancelable(false)
+            .create()
+            .show()
     }
 
-    private fun updatePassword(password: String, oldPassword: String) {
-        val credential = EmailAuthProvider
+    private fun updatePassword(password: String, oldPassword: String) { //funzione per l'aggiornamento della password su firebase
+        val credential = EmailAuthProvider //otteniamo le credenziali dell'utente
             .getCredential(Global.utenteLoggato?.emailUtente.toString(), oldPassword)
-        if (mAuthUser == null) {
-            return
+
+        if (mAuthUser == null) { //se l'istanza di firebase è vuota
+            return //non proseguo
         }
 
         mAuthUser.reauthenticate(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                mAuthUser.updatePassword(password)
+            if (it.isSuccessful) { //se la riautenticazione va a buon fine
+                mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente nella sezione autenticazione di firebase
                     .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d(TAG, "Cambio password avvenuta con successo")
+                        if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
+                            Log.d(TAG, "Cambio password avvenuto con successo")
+                            //aggiorniamo la collezione su firestore riferito all'id utente specifico con la nuova password
                             mFireStore.document(Global.utenteLoggato!!.idUtente).update(
                                 "EncryptedPassword", BASE64.encrypt(password)
                             )
+                            //aggiorniamo l'informazione in locale della password dell'utente
                             Global.utenteLoggato?.encryptedPassword =
                                 BASE64.encrypt(password).toString()
-                            //toast
+                            //toast message
                             Toast.makeText(
                                 this,
                                 "Password aggiornata correttamente",
@@ -98,10 +110,10 @@ class EditPasswordActivity : AppCompatActivity() {
                                 .show()
                         } else {
                             Log.d(TAG, "Cambio password non avvenuto")
-                            //AlertBuilder
+                            //alert dialog se il cambio password non avviene correttamente
                             AlertDialog.Builder(this)
-                                .setTitle("Impossibile aggiornare la password")
-                                .setMessage("Spiacenti, non è stato possibile aggiornare la password")
+                                .setTitle(getString(R.string.titleUpdatePassword))
+                                .setMessage(getString(R.string.messageUpdatePassword))
                                 .setPositiveButton("Ok") { _, _ ->
                                     /*   Toast.makeText(
                                            this,
@@ -121,10 +133,10 @@ class EditPasswordActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun isValidPassword(pwd: String): Boolean {
-        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")
+    private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
+        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
         val pattern = Pattern.compile(PASSWORD_PATTERN)
-        val matcher = pattern.matcher(pwd)
-        return matcher.matches()
+        val matcher = pattern.matcher(pwd) //metto a confronto la password dell'utente e la regular expression
+        return matcher.matches() //restituisco un risultato booleano
     }
 }

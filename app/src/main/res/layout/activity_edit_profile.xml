@@ -8,18 +8,6 @@
     android:padding="20dp"
     tools:context=".View.accountPackage.EditProfileActivity">
 
-    <android.widget.Button
-        android:id="@+id/buttonUpdateAccount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="checkFields"
-        android:text="@string/update_account"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextModifyEmail" />
-
     <EditText
         android:id="@+id/editTextModifyNameSurname"
         android:layout_width="match_parent"
@@ -83,5 +71,20 @@
         app:layout_constraintEnd_toStartOf="@+id/radioGroupGenderModify"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextModifyNameSurname" />
+
+    <android.widget.Button
+        android:id="@+id/buttonUpdateAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#03A9F4"
+        android:onClick="checkFields"
+        android:text="@string/update_account"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextModifyEmail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

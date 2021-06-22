@@ -135,8 +135,9 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             .setTitle(getString(R.string.titleGPSNotEnable))
             .setMessage(getString(R.string.messageGPSNotEnable))
             .setCancelable(false)
-            .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
+            .setPositiveButton(getString(R.string.yesButton)) { dialog, _ ->
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) //il bottone positivo, spedisce l'utente nelle impostazioni dedicata alla localizzazione
+                dialog.cancel()
             }
             .setNegativeButton("No") { dialog, _ ->
                 dialog.cancel() // qualora l'utente non volesse andare nelle impostazioni, l'AlertDialog viene chiuso

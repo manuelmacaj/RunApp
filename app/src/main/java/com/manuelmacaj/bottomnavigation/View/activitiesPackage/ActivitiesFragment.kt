@@ -18,12 +18,12 @@ class ActivitiesFragment : Fragment() {
         val listView = view.findViewById(R.id.activitiesList) as ListView
 
         val something = arrayOf(
-            "Ciao",
-            "miao",
-            "bau"
+            "prova 1",
+            "prova 2",
+            "prova 3"
         )
 
-        val listViewAdapter: ArrayAdapter<String> = ArrayAdapter(this.activity!!, android.R.layout.simple_list_item_1, something)
+        val listViewAdapter: ArrayAdapter<String> = ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, something)
 
         listView.adapter = listViewAdapter
 

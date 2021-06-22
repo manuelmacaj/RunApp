@@ -1,34 +1,13 @@
 package com.manuelmacaj.bottomnavigation.Model
 
-class Corsa {
-
-    private var polylineString: String
-        get() = field
-        set(value) {
-            field = value
-        }
-
-    private var tempo: String
-        get() = field
-        set(value) {
-            field = value
-        }
-
-    private var km: String
-        get() = field
-        set(value) {
-            field = value
-        }
-    private var dataOrarioPartenza: String
-        get() = field
-        set(value) {
-            field = value
-        }
-
-    constructor(polylineEncode: String, time: String, chilometers: String, date: String) {
-        polylineString = polylineEncode
-        tempo = time
-        km = chilometers
-        dataOrarioPartenza = date
+class Corsa(
+    var polylineString: String,
+    var tempo: String,
+    var km: String,
+    var DataOrarioPartenza: String,
+    var andaturaMedia: String
+) { //Costruttore classe Corsa
+    fun toStringCorsa(): String { //metodo tostringCorsa
+        return "PolylineEncode:  ${polylineString}, time: ${tempo}, km: ${km}, date: ${DataOrarioPartenza}, averagePace: $andaturaMedia}"
     }
 }

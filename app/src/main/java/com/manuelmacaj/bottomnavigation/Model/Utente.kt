@@ -10,6 +10,6 @@ class Utente(
 ) { //costruttore della classe utente
 
     fun toStringUtente(): String { //metodo toStringUtente
-        return "ID utente: ${idUtente}, nome e cognome: ${nomeCognomeUtente}, email utente: ${emailUtente}, data di nascita: ${dataNascita}, genere: $genere, Password (AES): ${encryptedPassword.toString()}"
+        return "ID utente: ${idUtente}, nome e cognome: ${nomeCognomeUtente}, email utente: ${emailUtente}, data di nascita: ${dataNascita}, genere: $genere, Password (Encryped): ${encryptedPassword.toString()}"
     }
 }
