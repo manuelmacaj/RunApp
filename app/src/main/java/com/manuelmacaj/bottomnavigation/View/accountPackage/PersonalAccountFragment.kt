@@ -133,7 +133,7 @@ class PersonalAccountFragment : Fragment() {
 
         AlertDialog.Builder(requireActivity())
             .setTitle("Funzione ancora in beta")
-            .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata.\nNel prossimo aggiornmanto lo inseriremo")
+            .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata.\nNel prossimo aggiornamanto verrà migliorato")
             .setPositiveButton("Ok") {_, _ ->
                 val pickPhoto = Intent(
                     Intent.ACTION_PICK,
