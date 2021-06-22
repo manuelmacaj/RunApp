@@ -10,7 +10,7 @@
 
     <android.widget.Button
         android:id="@+id/buttonUpdateAccount"
-        android:layout_width="371dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="checkFields"
         android:text="@string/update_account"
@@ -22,7 +22,7 @@
 
     <EditText
         android:id="@+id/editTextModifyNameSurname"
-        android:layout_width="371dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
@@ -36,10 +36,8 @@
 
     <EditText
         android:id="@+id/editTextModifyEmail"
-        android:layout_width="371dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="86dp"
-        android:layout_marginBottom="178dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email_address"

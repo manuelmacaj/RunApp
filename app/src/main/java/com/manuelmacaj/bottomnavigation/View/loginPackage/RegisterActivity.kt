@@ -33,7 +33,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var genderRadio: RadioButton
     private lateinit var radioGroupGender: RadioGroup
     private lateinit var dateOfBirth: LocalDate
-    private lateinit var genderSelection : String
+    private lateinit var genderSelection: String
 
     private val BASE64: BASE64 = BASE64()
 
@@ -46,7 +46,8 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-        this.title = resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
+        this.title =
+            resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
 
         nameSurname = findViewById(R.id.editTextPersonNameSurname)
         emailField = findViewById(R.id.editTextEmailRegister)
@@ -76,10 +77,9 @@ class RegisterActivity : AppCompatActivity() {
         }
         mDateSetListener =
             OnDateSetListener { datePicker, year, month, day ->
-                var mese = month
-                mese = month + 1
+                val mese: Int = month + 1
                 Log.d(TAG, "onDateSet: mm/dd/yyy: $mese/$day/$year")
-                dateOfBirth = LocalDate.of(year, month, day)
+                dateOfBirth = LocalDate.of(year, mese, day)
                 mDisplayDate.text = dateOfBirth.toString()
             }
     }
@@ -106,7 +106,7 @@ class RegisterActivity : AppCompatActivity() {
         if (radioGroupGender.checkedRadioButtonId == -1) { //nessun radio button selezionato da parte dell'utente
             //genderSelection.error = resources.getString(R.string.gender_not_selected)
             genderSelection = resources.getString(R.string.gender_not_selected)
-            Toast.makeText(this, ""+genderSelection, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
             return
         }
 

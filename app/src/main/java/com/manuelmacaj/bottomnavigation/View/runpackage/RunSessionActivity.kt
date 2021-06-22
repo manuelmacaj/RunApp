@@ -19,171 +19,201 @@ import com.manuelmacaj.bottomnavigation.Service.GPSService
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.round
 
 
 class RunSessionActivity : AppCompatActivity() {
 
-    private var track: MutableList<LatLng> = ArrayList()
+    private var track: MutableList<LatLng> = ArrayList() //Lista di tipo LatLng in cui inserisco le coordinate
     private val TAG = "RunSessionActivity"
 
     private lateinit var btnRunSession: Button
     private lateinit var btnEndRun: Button
     private lateinit var chronometer: Chronometer
-
     private lateinit var textKM: TextView
+    private lateinit var avaragePale: TextView
+
+    private var andaturaAlKm: Double = 0.0
     private var isRunning: Boolean = false
     private var totalKM: Double = 0.0
     private var timeWhenStop = 0L
     private var currentTime: Date = Calendar.getInstance().time
 
-    private var broadcastReceiver: BroadcastReceiver? = null
+    private var broadcastReceiver: BroadcastReceiver? = null //oggetto di tipo BroadcastReceiver che gestirà i sendBroadcast provenienti dal Servizio
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run_session)
 
-        btnRunSession = findViewById(R.id.btnStartService)
-        btnEndRun = findViewById(R.id.btnStopService)
+        btnRunSession = findViewById(R.id.btnPlayPauseRun)
+        btnEndRun = findViewById(R.id.btnEndRunSession)
         chronometer = findViewById(R.id.chronometer)
         textKM = findViewById(R.id.textViewTotalKm)
+        avaragePale = findViewById(R.id.avaragePale)
 
+        //Il listener mi permette di poter creare il formato HH:MM:SS per il cronometro
+        //fonte: https://stackoverflow.com/questions/38237947/chronometer-with-hmmss/38238363
         chronometer.setOnChronometerTickListener {
             val time = SystemClock.elapsedRealtime() - chronometer.base
             val h = (time / 3600000).toInt()
             val m = (time - h * 3600000).toInt() / 60000
             val s = (time - h * 3600000 - m * 60000).toInt() / 1000
-            val t = (if (h < 10) "0$h" else h).toString() + ":" + (if (m < 10) "0$m" else m) + ":" + if (s < 10) "0$s" else s
+            val t =
+                (if (h < 10) "0$h" else h).toString() + ":" + (if (m < 10) "0$m" else m) + ":" + if (s < 10) "0$s" else s
             chronometer.text = t
         }
-        chronometer.base = SystemClock.elapsedRealtime()
-        chronometer.text = "00:00:00"
+        chronometer.text = "00:00:00" // come verrà visualizzato il cronometro prima dell'avvio
 
         enableButtons()
     }
 
-    private fun enableButtons() {
-
+    private fun enableButtons() { //metodo con annesso i buttons presenti all'interno dell'Activity
+        // setOnClick per la gestione della sessione corsa da parte dell'utente
         btnRunSession.setOnClickListener {
-
-            if (!isRunning) {
-                startGPSService()
-                chronometer.base = SystemClock.elapsedRealtime() + timeWhenStop
-                chronometer.start()
-                isRunning = true
+            if (!isRunning) { // se vuole correre
+                startGPSService() //avvio il servizio di localizzazione
+                chronometer.base =
+                    SystemClock.elapsedRealtime() + timeWhenStop // il cronometro si avvia/riprende da dove si è fermato
+                chronometer.start() // avvio il cronometro (si baserà sul calcolo fatto in precedenza)
+                isRunning = true // isRunning lo imposto a true
                 Log.d(TAG, "Avvio corsa")
-            } else {
-                timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
+            } else { // se invece non sta corendo o è in pausa
+                timeWhenStop =
+                    chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa (SystemClock.elapsedRealtime() = restituisce i millisecondi dall'avvio, incluso il tempo trascorso in modalità di sospensione).
                 chronometer.stop() // pausa cronometro
-                isRunning = false
+                isRunning = false //isRunning lo imposto a false
                 Log.d(TAG, "Stop corsa")
             }
-            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.pause)
-
+            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.pause) //in base al valore di isRunning il testo del bottone cambierà
         }
 
         btnEndRun.setOnClickListener {
-            Log.d(TAG, "Fine della corsa")
-
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(this) //AlertDialog che chiede all'utente se vuole terminare la corsa
                 .setTitle(getString(R.string.titleEndRun))
                 .setMessage(getString(R.string.messageEndRun))
-                .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
-
-                    timeWhenStop = chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa
+                .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se la risposta è si, allora la sessione corsa finisce qui
+                    Log.d(TAG, "Fine della corsa")
                     chronometer.stop() //fermo il cronometro
-                    isRunning = false //l'utente non corre più, lo imposto a false
+                    isRunning = false // l'utente non corre più, lo imposto a false
 
-                    val intent = Intent(applicationContext, GPSService::class.java)
+                    val intent = Intent(applicationContext, GPSService::class.java) // Creo un intent per poter fermare il Service
                     stopService(intent) //fermo il servizio
                     Log.d(TAG, PolyUtil.encode(track))
 
-                    sendToFirebase()
+                    sendToFirebase() //chiamo il metodo per che mi invierà i risultati a firebase
                 }
-                .setNegativeButton("No") { _, _ ->
+                .setNegativeButton("No") { dialog, _ ->
                     //non faccio niente, proseguo la corsa
+                    dialog.cancel()
                 }
                 .create()
                 .show()
         }
     }
 
-    private fun startGPSService() {
+    private fun startGPSService() { //metodo per avviare il servizio
         val intent = Intent(applicationContext, GPSService::class.java)
-        startForegroundService(intent)
+        startForegroundService(intent) //avvio il servizio (è simile a startService, ma posso far in modo che venga creata una notifica nel servizio
     }
 
     private fun sendToFirebase() {
-        //Creo una HashMap che mi servità quando caricherò i dati della sessione appena conclusa
+        //Creo una HashMap che mi servirà quando caricherò i dati della sessione appena conclusa
         val sessionMap = HashMap<String, Any>()
         sessionMap["TimeWhenStart"] = currentTime
         sessionMap["Polyline encode"] = PolyUtil.encode(track)
         sessionMap["Chilometri prercorsi"] = textKM.text.toString()
         sessionMap["Tempo"] = chronometer.text.toString()
+        sessionMap["AndaturaAlKm"] = avaragePale.text
 
         /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
          alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
-
-        val mFirestore = FirebaseFirestore.getInstance().collection("Utenti").document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
-        mFirestore.document().set(sessionMap).addOnCompleteListener { task -> //creo un nuovo documento (document è senza parametro, Firebase provvederà alla creazione di un documento un id generato)
-            if (task.isSuccessful) {
-                Toast.makeText(this, "Caricamento della sessione eseguita", Toast.LENGTH_LONG).show()
-                finish()
-            } else {
-                Toast.makeText(this, "Impossibile caricare la sessione", Toast.LENGTH_LONG).show()
+        val mFirestore = FirebaseFirestore.getInstance().collection("Utenti")
+            .document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
+        //creo un nuovo documento, passandogli l'HashMap configurata
+        mFirestore.document().set(sessionMap)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) { //se tutto va a buon fine, carico i risultati su firestore
+                    Toast.makeText(this, getString(R.string.sendToFirebaseOk), Toast.LENGTH_LONG)
+                        .show()
+                    finish()
+                } else {
+                    Toast.makeText(this, getString(R.string.sendToFirebaseFailed), Toast.LENGTH_LONG)
+                        .show()
+                    finish()
+                }
             }
-        }
     }
 
     override fun onResume() {
         super.onResume()
-
         if (broadcastReceiver == null) {
             broadcastReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
+                override fun onReceive(context: Context?, intent: Intent?) { //gestisco il broadcast receiver
+                    if (intent != null) { // se l'intent presenta qualcosa allora...
+                        val lat = intent.extras?.get("Lat") as Double //prelevo dall'intent la latitudine
+                        val lng = intent.extras?.get("Lng") as Double //prelevo dall'intent la latitudine
 
-                    if (intent != null) {
-                        val lat = intent.extras?.get("Lat") as Double
-                        val lng = intent.extras?.get("Lng") as Double
-
-                        if(isRunning) { //se l'utente sta correndo allora calcolo i km, se è in pausa non li calcolo
+                        if (isRunning) { //se l'utente sta correndo allora calcolo i km, se è in pausa non li calcolo
                             calculateKilometersDuringRun(lat, lng) //chiamata del metodo di calcolo dei km percorsi
                             textKM.text = String.format("%.2f", totalKM) //inserisco il risultato finale dei km percorsi
                             textKM.append(" Km") //aggiungo la stringa contenente l'unità di misura utilizzata
                         }
-
                         addCoordinates(lat, lng) //chiamata del metodo per l'aggiunta delle coordinate
                     }
                 }
             }
         }
-        registerReceiver(broadcastReceiver, IntentFilter("location_update"))
+        registerReceiver(broadcastReceiver, IntentFilter("location_update")) //registro il broadcastReceiver
     }
 
-    private fun calculateKilometersDuringRun(lat: Double, lng: Double) {
-
-        val currentLocation = Location("")
-        currentLocation.latitude = lat
+    private fun calculateKilometersDuringRun(lat: Double, lng: Double) { // metodo per il calcolo dei km durante la corsa
+        val currentLocation = Location("") //creo un oggetto di tipo Location
+        currentLocation.latitude = lat //currentLocation contiene le informazioni della latitudine e prelevati nell'onReceive
         currentLocation.longitude = lng
 
-        if (track.isNotEmpty()) {
-
-            val previousLocation = Location("")
-            previousLocation.latitude = track[track.size - 1].latitude
+        if (track.isNotEmpty()) { // Se la lista contiene già delle informazioni (quindi la lista non è vuota)
+            val previousLocation = Location("") //Creo un oggetto di tipo Location
+            previousLocation.latitude = track[track.size - 1].latitude //previousLocation contiene le ultime informazioni salvate nella lista
             previousLocation.longitude = track[track.size - 1].longitude
-
-            //val distanceInMeters = previousLocation.distanceTo(currentLocation)
+            /*
+            Creo un oggetto di tipo Measure, che ha come oggetto la funzione distanceTo.
+            DistanceTo è un metodo che permette di calcolare la distanza tra due oggetti Location: la
+            funzione restituisce la distanza in metri.
+            All'interno del costruttore Measure
+                + nel primo parametro: divido per 1000 il risultato che proviene da toDistance (così da avere il valore in KM);
+                + specifico che tipo di unità di misura è;
+             */
             val metersToKm = Measure(
                 previousLocation.distanceTo(currentLocation) / 1000,
                 MeasureUnit.KILOMETER
             )
 
-            totalKM += metersToKm.number.toDouble()
+            totalKM += metersToKm.number.toDouble() // effettuo la somma tra i km totali e km calcolati in precedenza
+            calculateAvaragePase() // chiamata al metodo per calcolare l'andatura della corsa
 
             Log.d(TAG, "km percorsi: $totalKM ${metersToKm.unit} ")
         }
     }
 
-    private fun addCoordinates(lat: Double, lng: Double) {
+    /*fonte sul funzionamento: https://www.polar.com/it/running-academy/running-pace-calculator*/
+    private fun calculateAvaragePase() {
+        val time = SystemClock.elapsedRealtime() - chronometer.base //prelevo il tempo così da trovare le ore, minuti e secondi
+        val h = (time / 3600000).toInt()
+        val m = (time - h * 3600000).toInt() / 60000
+        val s = (time - h * 3600000 - m * 60000).toInt() / 1000
+
+        val totMin = ((h * 60) + (m) + (s.toDouble() / 60)) //calcolo il totale dei muniti (converto le ore e i secondi in minuti)
+
+        andaturaAlKm = totMin / totalKM // calcolo l'andatura (rapporto tra il totale dei minuti e i km percorsi)
+
+        // calcolo l'andatura della corsa
+        val passoMinuti = (andaturaAlKm).toInt() //solo la parte intera del rapporto fatto in precedenza (la parte intera mi rappresenta i minuti)
+        val passoSecondi  = round((andaturaAlKm - passoMinuti) * 60).toInt() //calcolo i secondi e arrondo il risultato e poi fornisco la parte intera
+
+        avaragePale.text = (if (passoMinuti < 10) "0$passoMinuti'" else "$passoMinuti'") + "," + (if (passoSecondi < 10) "0$passoSecondi''" else "$passoSecondi''")
+    }
+
+    private fun addCoordinates(lat: Double, lng: Double) { // metodo per l'inserimento delle coordinate nella lista
         val currentLocation = Location("")
         currentLocation.latitude = lat
         currentLocation.longitude = lng
@@ -194,22 +224,22 @@ class RunSessionActivity : AppCompatActivity() {
             previousLocation.longitude = track[track.size - 1].longitude
 
             if (previousLocation != currentLocation) { //questa condizione mi permette di non aggiungere le geolocalizzazioni uguali, così da avere una polyline pulita
-                track.add(LatLng(lat, lng))
+                track.add(LatLng(currentLocation.latitude, currentLocation.longitude))
                 Log.d(TAG, "Acquisisco la posizione")
             } else {
                 Log.d(TAG, "Non acquisisco la posizione")
             }
-        }
-        else {
-            track.add(LatLng(lat, lng)) // aggiungo alla lista le coordinate che il service mi ha fornito
+        } else {
+            track.add(LatLng(currentLocation.latitude, currentLocation.longitude)) // aggiunto la nuova coordinata
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroy() { // metodo onDestroy
         super.onDestroy()
         if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver)
+            unregisterReceiver(broadcastReceiver) // annullo la registrazione del broadcastReceiver
         }
-        finish()
+        val intent = Intent(applicationContext, GPSService::class.java)
+        stopService(intent) //fermo il servizio
     }
 }

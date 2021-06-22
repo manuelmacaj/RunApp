@@ -49,4 +49,13 @@
     <string name="old_password_check">The old password does not match</string>
     <string name="choose_another_password">Choose a different password from the one used previously</string>
     <string name="end_run">End your run</string>
+    <string name="distance">Distance</string>
+    <string name="average_pale">Avarage Pale</string>
+    <string name="titleGPSNotEnable">GPS isn\'t enable</string>
+    <string name="messageGPSNotEnable">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="titleNoGooglePlayServices">Google Play Service not present on your device</string>
+    <string name="messageNoGooglePlayService">This app requires Google Play Service, please install and try again.</string>
+    <string name="sendToFirebaseOk">Session loaded</string>
+    <string name="sendToFirebaseFailed">Unable to load session</string>
+
 </resources>

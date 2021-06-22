@@ -51,4 +51,12 @@
     <string name="old_password_check">La vecchia password non corrisponde</string>
     <string name="choose_another_password">Scegliere una password diversa da quella usata precedentemente</string>
     <string name="end_run">Termina la tua corsa</string>
+    <string name="distance">Distanza</string>
+    <string name="average_pale">Andatura media</string>
+    <string name="titleGPSNotEnable">Il GPS non è attivo</string>
+    <string name="messageGPSNotEnable">Il GPS sembra disabilitato, vuoi abilitarlo?</string>
+    <string name="titleNoGooglePlayServices">Google Play Service non presente sul tuo dispositivo</string>
+    <string name="messageNoGooglePlayService">Questa app richiede Google Play Service, installa e riprova</string>
+    <string name="sendToFirebaseOk">Caricamento della sessione eseguita</string>
+    <string name="sendToFirebaseFailed">Impossibile caricare la sessione</string>
 </resources>
