@@ -49,7 +49,7 @@ class ActivitiesFragment : Fragment() {
             .addOnSuccessListener { result ->
                 if(result.isEmpty) {
                     //gestiamo il fatto che l'utente non presenta una collezione di sessioni di corsa
-                    Toast.makeText(requireContext(), "Non hai nessuna attività", Toast.LENGTH_LONG)
+                    Toast.makeText(requireContext(), "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
                         .show()
                 }
                 else{
@@ -65,6 +65,8 @@ class ActivitiesFragment : Fragment() {
                         )
                         listaSessioniCorsa.add(corsa)
                     }
+                    Toast.makeText(requireContext(), "Hai delle attività. Attualemnte non sono visibili (ci stiamo lavorando)", Toast.LENGTH_LONG)
+                        .show()
 
                     listaSessioniCorsa.forEach {
                         Log.d("->", it.toString())
