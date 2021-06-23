@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         val runFragment = RunFragment()
         val accountFragment = PersonalAccountFragment()
 
-        setCurrentFragment(activitiesFragment)
+        setCurrentFragment(activitiesFragment) // metodo per la visualizzazione del fragment (quando si avvia l'app, il fragment visualizzato à la sezione attività
 
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
+        bottomNavigationView.setOnNavigationItemSelectedListener { // listener per la gestione di un bottom navigation
+            when (it.itemId) { // in base all'item selezionato mostro il fragment
                 R.id.activities -> setCurrentFragment(activitiesFragment)
                 R.id.run -> setCurrentFragment(runFragment)
                 R.id.account -> setCurrentFragment(accountFragment)
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     private fun setCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragmentContainer, fragment)
-            commit()
+            commit() // con questa funzione, il fragment container mostrerà il fragment interessato dall'utente
         }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

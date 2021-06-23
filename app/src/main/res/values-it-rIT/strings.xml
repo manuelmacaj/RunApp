@@ -14,13 +14,13 @@
     <string name="setting">Impostazioni</string>
     <string name="notificationTitle">RunApp ti sta monitorando</string>
     <string name="notificationMessage">La tua sessione viene monitorata anche se non sei direttamente in app.</string>
-    <string name="time">Giorno:</string>
+    <string name="time">Tempo:</string>
     <string name="km_total">Km totali:</string>
     <string name="average_pace">Andatura media:</string>
     <string name="email_address">indirizzo email</string>
     <string name="password">password</string>
-    <string name="signin">accedi</string>
-    <string name="register">registrati</string>
+    <string name="signin">Accedi</string>
+    <string name="register">Registrati</string>
     <string name="invalid_email">Email non valida</string>
     <string name="invalid_password">Password non valida</string>
     <string name="confirm_password">conferma password</string>
@@ -29,7 +29,7 @@
     <string name="empty_name_surname">Campo vuoto</string>
     <string name="password_check">Le password non corrispondono</string>
     <string name="image_view">TODO</string>
-    <string name="day">Giorno</string>
+    <string name="day">Giorno:</string>
     <string name="start_Run">Corri</string>
     <string name="titleEndRun">"Sei sicuro di voler terminare la tua corsa? "</string>
     <string name="messageEndRun">Premendo si, la corsa terminerà completamente</string>
@@ -56,7 +56,7 @@
     <string name="messageGPSNotEnable">Il GPS sembra disabilitato, vuoi abilitarlo?</string>
     <string name="titleNoGooglePlayServices">Google Play Service non presente sul tuo dispositivo</string>
     <string name="messageNoGooglePlayService">Questa app richiede Google Play Service, installa e riprova</string>
-    <string name="sendToFirebaseOk">Caricamento della sessione eseguita</string>
+    <string name="sendToFirebaseOk">Caricamento della sessione completata</string>
     <string name="sendToFirebaseFailed">Impossibile caricare la sessione</string>
     <string name="edit_your_account">Modifica il tuo account</string>
     <string name="edit_your_password">Modifica la tua password</string>

@@ -18,8 +18,8 @@
     <string name="average_pace">Average pace:</string>
     <string name="email_address">email</string>
     <string name="password">password</string>
-    <string name="signin">SIGNIN</string>
-    <string name="register">REGISTER</string>
+    <string name="signin">Sign in</string>
+    <string name="register">Sign up</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
     <string name="confirm_password">confirm password</string>
@@ -28,7 +28,7 @@
     <string name="empty_name_surname">Empty field</string>
     <string name="password_check">Passwords don\'t match</string>
     <string name="image_view">TODO</string>
-    <string name="day">Day</string>
+    <string name="day">Day:</string>
     <string name="start_Run">Run</string>
     <string name="titleEndRun">Are you sure you want to finish your run?</string>
     <string name="messageEndRun">By pressing yes, the run will end completely</string>

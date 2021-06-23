@@ -1,5 +1,7 @@
 package com.manuelmacaj.bottomnavigation.Model
 
+import java.util.*
+
 class Corsa(
     var polylineString: String,
     var tempo: String,

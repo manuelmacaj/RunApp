@@ -121,7 +121,7 @@ class RunSessionActivity : AppCompatActivity() {
         val sessionMap = HashMap<String, Any>()
         sessionMap["TimeWhenStart"] = currentTime
         sessionMap["Polyline encode"] = PolyUtil.encode(track)
-        sessionMap["Chilometri prercorsi"] = textKM.text.toString()
+        sessionMap["Distanza"] = textKM.text.toString()
         sessionMap["Tempo"] = chronometer.text.toString()
         sessionMap["AndaturaAlKm"] = avaragePale.text
 
