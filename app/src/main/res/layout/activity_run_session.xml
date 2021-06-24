@@ -81,22 +81,28 @@
 
     </LinearLayout>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/btnPlayPauseRun"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#03A9F4"
         android:text="@string/start_Run"
+        android:textColor="#fff"
         app:layout_constraintBottom_toTopOf="@+id/btnEndRunSession"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/btnEndRunSession"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#03A9F4"
         android:text="@string/end_run"
+        android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

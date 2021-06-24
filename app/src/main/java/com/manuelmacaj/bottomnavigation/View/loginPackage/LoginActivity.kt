@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         this.title = resources.getString(R.string.signin) //imposto il titolo che verrà visualizzato sulla toolbar
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //la night mode viene disabilata
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //la night mode viene disabilata
     }
 
     override fun onStart() {

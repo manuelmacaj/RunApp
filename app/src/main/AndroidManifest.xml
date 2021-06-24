@@ -2,22 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.manuelmacaj.bottomnavigation">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Questi permessi ci permettono di accedere alla posizione, in partcolare ACCESS_FINE_LOCATION accede alla posisione esatta -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Permesso di utitlizzare il GPS_Provider (accesso alla posizione tramite GPS -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_run_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_run_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RunApp">
         <activity android:name=".View.accountPackage.EditProfileActivity" />
         <activity
             android:name=".View.loginPackage.RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".View.loginPackage.LoginActivity"
             android:screenOrientation="portrait">
@@ -27,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".View.runpackage.RunSessionActivity"
             android:screenOrientation="portrait" />

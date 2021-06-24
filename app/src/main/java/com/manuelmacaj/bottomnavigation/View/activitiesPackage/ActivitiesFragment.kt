@@ -24,19 +24,16 @@ class ActivitiesFragment : Fragment() {
     private lateinit var listView: ListView
     private val listaSessioniCorsa: MutableList<Corsa> = ArrayList()
     private lateinit var myAdapterActivities : AdapterActivities
-    val mRunSessionFirestore = FirebaseFirestore.getInstance().collection(collezioneUtenti) //accedo alla collezione "Utenti"
+    private val mRunSessionFirestore = FirebaseFirestore.getInstance()
+        .collection(collezioneUtenti) //accedo alla collezione "Utenti"
         .document(FirebaseAuth.getInstance().currentUser!!.uid) //accedo al documento riferito all'utente attualmente connesso
         .collection(collezioneSessioneCorsa) //accedo alla collezione "SessioniCorsa"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_activities, container, false)
 
         requireActivity().title = getString(R.string.activity)
         listView = view.findViewById(R.id.activitiesList) as ListView
-        // creo l'istanza di firestore;
-        //Collezione Utenti -> Documento utente -> Collezione SessioneCorsa
 
         return view
     }
