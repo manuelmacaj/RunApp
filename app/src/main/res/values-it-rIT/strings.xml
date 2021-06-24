@@ -70,4 +70,6 @@
     <string name="enterDateofBirth">Per favore inserire la propria data di nascita</string>
     <string name="titleUpdatePassword">Impossibile aggiornare la password</string>
     <string name="messageUpdatePassword">"Spiacenti, non è stato possibile aggiornare la password "</string>
+    <string name="warningPassword">Inserisci una password con un minimo di 8 e un massimo di 20 caratteri</string>
+    <string name="warningNameSurname">Inserisci il nome e cognome, devono essere entrambi di minimo due caratteri</string>
 </resources>

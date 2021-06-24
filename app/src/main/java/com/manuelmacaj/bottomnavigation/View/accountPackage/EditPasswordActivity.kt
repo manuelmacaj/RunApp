@@ -1,7 +1,9 @@
 package com.manuelmacaj.bottomnavigation.View.accountPackage
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -27,6 +29,7 @@ class EditPasswordActivity : AppCompatActivity() {
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
     private val mAuthUser = FirebaseAuth.getInstance().currentUser //istanza firebase riferita alla sezione di autenticazione
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_password)
@@ -35,6 +38,26 @@ class EditPasswordActivity : AppCompatActivity() {
         oldPassword = findViewById(R.id.editTextOldPassword)
         newPassword = findViewById(R.id.editTextNewPassword)
         confirmPassword = findViewById(R.id.editTextConfirmThePassword)
+
+        oldPassword.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //Do Something
+                    Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
+                }
+            }
+            v?.onTouchEvent(event) ?: true
+        }
+
+        newPassword.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //Do Something
+                    Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
+                }
+            }
+            v?.onTouchEvent(event) ?: true
+        }
     }
 
     fun checkPasswordFields(v: View?) { //funzione di verifica delle password inserite dall'utente

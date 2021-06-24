@@ -1,5 +1,6 @@
 package com.manuelmacaj.bottomnavigation.View.loginPackage
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
@@ -7,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +46,7 @@ class RegisterActivity : AppCompatActivity() {
     //istanza firestore riferita alla collezione utenti. Se non esiste, la crea
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -55,6 +58,26 @@ class RegisterActivity : AppCompatActivity() {
         firstPasswordField = findViewById(R.id.editTextPasswordRegister)
         confirmPasswordField = findViewById(R.id.editTextConfirmPassword2)
         radioGroupGender = findViewById(R.id.radioGroupGenderModify)
+
+        firstPasswordField.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //Do Something
+                    Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
+                }
+            }
+            v?.onTouchEvent(event) ?: true
+        }
+
+        nameSurname.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //Do Something
+                    Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG).show()
+                }
+            }
+            v?.onTouchEvent(event) ?: true
+        }
 
         radioGroupGender.setOnCheckedChangeListener { group, checkedId ->
             genderRadio = findViewById(checkedId)
@@ -180,6 +203,11 @@ class RegisterActivity : AppCompatActivity() {
                     Log.w(TAG, "Email già esistente", task.exception)
                 }
             }
+    }
+
+
+    fun passwordWarning(view: View) {
+        Toast.makeText(this, "Inserisci una password con un minimo di 8 e un massimo di 20 caratteri", Toast.LENGTH_LONG).show()
     }
 
     private fun isValidPassword(pwd: String): Boolean {
