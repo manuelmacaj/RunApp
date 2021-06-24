@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.manuelmacaj.bottomnavigation">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Permesso di utitlizzare il GPS_Provider (accesso alla posizione tramite GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Permesso di utitlizzare il GPS_Provider (accesso alla posizione tramite GPS) -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -13,10 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_run_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RunApp">
-        <activity android:name=".View.accountPackage.EditProfileActivity" />
+        <activity android:name=".View.activitiesPackage.DetailRunSessionActivity"></activity>
+        <activity
+            android:name=".View.accountPackage.EditProfileActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.loginPackage.RegisterActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.loginPackage.LoginActivity"
             android:screenOrientation="portrait">
@@ -26,7 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".View.runpackage.RunSessionActivity"
             android:screenOrientation="portrait" />
@@ -38,7 +40,6 @@
         <activity
             android:name=".View.MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".View.accountPackage.EditPasswordActivity"
             android:screenOrientation="portrait" />

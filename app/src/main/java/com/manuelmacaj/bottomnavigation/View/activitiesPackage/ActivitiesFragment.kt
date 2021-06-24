@@ -1,5 +1,6 @@
 package com.manuelmacaj.bottomnavigation.View.activitiesPackage
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,10 +32,8 @@ class ActivitiesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_activities, container, false)
-
         requireActivity().title = getString(R.string.activity)
         listView = view.findViewById(R.id.activitiesList) as ListView
-
         return view
     }
 
@@ -71,6 +70,19 @@ class ActivitiesFragment : Fragment() {
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val intent = Intent(requireActivity(), DetailRunSessionActivity::class.java)
+            intent.putExtra("polyline", listaSessioniCorsa[position].polylineString)
+            intent.putExtra("date", listaSessioniCorsa[position].DataOrarioPartenza)
+            intent.putExtra("time", listaSessioniCorsa[position].tempo)
+            intent.putExtra("distance", listaSessioniCorsa[position].km)
+            intent.putExtra("averagePale", listaSessioniCorsa[position].andaturaMedia)
+            startActivity(intent)
+        }
     }
 
     override fun onStop() {

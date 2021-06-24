@@ -70,4 +70,5 @@
     <string name="enterDateofBirth">Per favore inserire la propria data di nascita</string>
     <string name="titleUpdatePassword">Impossibile aggiornare la password</string>
     <string name="messageUpdatePassword">"Spiacenti, non è stato possibile aggiornare la password "</string>
+    <string name="timeDetail">Tempo</string>
 </resources>
