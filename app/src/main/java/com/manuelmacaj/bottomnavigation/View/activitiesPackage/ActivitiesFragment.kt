@@ -76,12 +76,8 @@ class ActivitiesFragment : Fragment() {
             }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
         listaSessioniCorsa.clear() //cancellazione di tutti gli elementi nella lista
         myAdapterActivities.notifyDataSetChanged() //notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
     }

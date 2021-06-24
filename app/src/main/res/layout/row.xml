@@ -11,41 +11,41 @@
        android:layout_height="144dp"
        android:layout_weight="1" /> -->
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/textViewDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:text="@string/day"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-        <TextView
-            android:id="@+id/textViewDay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/day"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    <TextView
+        android:id="@+id/textViewTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-        <TextView
-            android:id="@+id/textViewTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/time"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    <TextView
+        android:id="@+id/textViewChilometers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/km_total"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-        <TextView
-            android:id="@+id/textViewChilometers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/km_total"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-        <TextView
-            android:id="@+id/textViewAndaturaMedia"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/average_pace"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewAndaturaMedia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/average_pace"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+</LinearLayout>
     <!-- </LinearLayout> -->
