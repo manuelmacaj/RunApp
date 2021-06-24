@@ -117,31 +117,49 @@ class RunSessionActivity : AppCompatActivity() {
     }
 
     private fun sendToFirebase() {
-        //Creo una HashMap che mi servirà quando caricherò i dati della sessione appena conclusa
-        val sessionMap = HashMap<String, Any>()
-        sessionMap["TimeWhenStart"] = currentTime
-        sessionMap["Polyline encode"] = PolyUtil.encode(track)
-        sessionMap["Distanza"] = textKM.text.toString()
-        sessionMap["Tempo"] = chronometer.text.toString()
-        sessionMap["AndaturaAlKm"] = avaragePale.text
 
-        /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
-         alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
-        val mFirestore = FirebaseFirestore.getInstance().collection("Utenti")
-            .document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
-        //creo un nuovo documento, passandogli l'HashMap configurata
-        mFirestore.document().set(sessionMap)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) { //se tutto va a buon fine, carico i risultati su firestore
-                    Toast.makeText(this, getString(R.string.sendToFirebaseOk), Toast.LENGTH_LONG)
-                        .show()
-                    finish()
-                } else {
-                    Toast.makeText(this, getString(R.string.sendToFirebaseFailed), Toast.LENGTH_LONG)
-                        .show()
-                    finish()
+        //controllo se l'utente ha effettivamente corso, per evitare di caricare sessioni
+
+        if (totalKM >= 0.10) { //se l'utente ha percorso almeno 100m, allora salvo la sessione
+
+            //Creo una HashMap che mi servirà quando caricherò i dati della sessione appena conclusa
+            val sessionMap = HashMap<String, Any>()
+            sessionMap["TimeWhenStart"] = currentTime
+            sessionMap["Polyline encode"] = PolyUtil.encode(track)
+            sessionMap["Distanza"] = textKM.text.toString()
+            sessionMap["Tempo"] = chronometer.text.toString()
+            sessionMap["AndaturaAlKm"] = avaragePale.text
+
+            /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
+             alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
+            val mFirestore = FirebaseFirestore.getInstance().collection("Utenti")
+                .document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
+            //creo un nuovo documento, passandogli l'HashMap configurata
+            mFirestore.document().set(sessionMap)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) { //se tutto va a buon fine, carico i risultati su firestore
+                        Toast.makeText(
+                            this,
+                            getString(R.string.sendToFirebaseOk),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.sendToFirebaseFailed),
+                            Toast.LENGTH_LONG)
+                            .show()
+                        finish()
+                    }
                 }
-            }
+        } else { //avviso l'utente che la sessione non è stata caricata
+            Toast.makeText(this, getString(R.string.messageNoConsideration), Toast.LENGTH_LONG)
+                .show()
+            finish()
+
+        }
     }
 
     override fun onResume() {
