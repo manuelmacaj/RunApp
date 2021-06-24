@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.manuelmacaj.bottomnavigation.Model.Corsa
 import com.manuelmacaj.bottomnavigation.R
 import java.util.*
@@ -18,14 +19,16 @@ import kotlin.collections.ArrayList
 
 class ActivitiesFragment : Fragment() {
 
-    val mRunSessionFirestore = FirebaseFirestore.getInstance()
     private val collezioneUtenti = "Utenti"
     private val collezioneSessioneCorsa = "SessioniCorsa"
     private lateinit var listView: ListView
+    private val listaSessioniCorsa: MutableList<Corsa> = ArrayList()
+    private lateinit var myAdapterActivities : AdapterActivities
+    val mRunSessionFirestore = FirebaseFirestore.getInstance().collection(collezioneUtenti) //accedo alla collezione "Utenti"
+        .document(FirebaseAuth.getInstance().currentUser!!.uid) //accedo al documento riferito all'utente attualmente connesso
+        .collection(collezioneSessioneCorsa) //accedo alla collezione "SessioniCorsa"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_activities, container, false)
@@ -35,16 +38,13 @@ class ActivitiesFragment : Fragment() {
         // creo l'istanza di firestore;
         //Collezione Utenti -> Documento utente -> Collezione SessioneCorsa
 
-
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mRunSessionFirestore
-            .collection(collezioneUtenti)
-            .document(FirebaseAuth.getInstance().currentUser!!.uid)
-            .collection(collezioneSessioneCorsa)
+            .orderBy("TimeWhenStart", Query.Direction.DESCENDING) //applico un orderBy cosi mostro le sessioni dalla più recente fino alla più remota
             .get()
             .addOnSuccessListener { result ->
                 if(result.isEmpty) {
@@ -52,10 +52,10 @@ class ActivitiesFragment : Fragment() {
                     Toast.makeText(requireContext(), "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
                         .show()
                 }
-                else{
-                    val listaSessioniCorsa: MutableList<Corsa> = ArrayList()
+                else{ //se invece l'utente presenta una collezione di sessioni di corsa
+
                     for (document in result) {
-                        //Log.d("TAG", "${document.id} => ${document.data}")
+                        Log.d("TAG", "${document.id} => ${document.data}")
                         val corsa = Corsa(
                             document.getString("Polyline encode").toString(),
                             document.getString("Tempo").toString(),
@@ -63,19 +63,11 @@ class ActivitiesFragment : Fragment() {
                             document.getDate("TimeWhenStart").toString(),
                             document.getString("AndaturaAlKm").toString()
                         )
-                        listaSessioniCorsa.add(corsa)
+                        listaSessioniCorsa.add(corsa) //aggiungiamo all lista tutte le informazioni riguardanti la sessione di corsa
                     }
-                    Toast.makeText(requireContext(), "Hai delle attività. Attualemnte non sono visibili (ci stiamo lavorando)", Toast.LENGTH_LONG)
-                        .show()
+                    myAdapterActivities = AdapterActivities(requireContext(), listaSessioniCorsa)
 
-                    listaSessioniCorsa.forEach {
-                        Log.d("->", it.toString())
-                    }
-
-                    /*val listViewAdapter: ArrayAdapter<Corsa> = ArrayAdapter(
-                        requireActivity(), android.R.layout.simple_list_item_1, listaSessioniCorsa
-                    )
-                    listView.adapter = listViewAdapter*/
+                    listView.adapter = myAdapterActivities
                 }
 
             }
@@ -83,5 +75,16 @@ class ActivitiesFragment : Fragment() {
                 Log.d("TAG", "Error getting documents: ", exception)
             }
     }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        listaSessioniCorsa.clear() //cancellazione di tutti gli elementi nella lista
+        myAdapterActivities.notifyDataSetChanged() //notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
+    }
 }
+
 
