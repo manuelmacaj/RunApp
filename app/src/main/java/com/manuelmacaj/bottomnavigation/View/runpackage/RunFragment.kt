@@ -54,7 +54,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         mapView = view.findViewById(R.id.mapRun) as MapView
         mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this) // azione assolutamente necessaria nel momento in cui si include un oggetto di tipo MapView in questo caso
+        mapView.getMapAsync(this) // azione assolutamente necessaria nel momento in cui si include un oggetto di tipo MapView
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {

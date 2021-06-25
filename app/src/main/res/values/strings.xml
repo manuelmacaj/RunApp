@@ -18,8 +18,8 @@
     <string name="average_pace">Average pace:</string>
     <string name="email_address">email</string>
     <string name="password">password</string>
-    <string name="signin">SIGNIN</string>
-    <string name="register">REGISTER</string>
+    <string name="signin">Sign in</string>
+    <string name="register">Sign up</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
     <string name="confirm_password">confirm password</string>
@@ -28,7 +28,7 @@
     <string name="empty_name_surname">Empty field</string>
     <string name="password_check">Passwords don\'t match</string>
     <string name="image_view">TODO</string>
-    <string name="day">Day</string>
+    <string name="day">Day:</string>
     <string name="start_Run">Run</string>
     <string name="titleEndRun">Are you sure you want to finish your run?</string>
     <string name="messageEndRun">By pressing yes, the run will end completely</string>
@@ -57,7 +57,6 @@
     <string name="messageNoGooglePlayService">This app requires Google Play Service, please install and try again.</string>
     <string name="sendToFirebaseOk">Session loaded</string>
     <string name="sendToFirebaseFailed">Unable to load session</string>
-
     <string name="edit_your_account">Edit your account</string>
     <string name="edit_your_password">Edit your password</string>
     <string name="signout_app">Disconnected from the app</string>
@@ -70,6 +69,9 @@
     <string name="enterDateofBirth">Please enter your date of birth</string>
     <string name="titleUpdatePassword">Impossible to update password</string>
     <string name="messageUpdatePassword">Sorry, the password could not be updated</string>
+    <string name="timeDetail">Time</string>
+    <string name="messageNoConsideration">The session just held was not taken into consideration</string>
+    <string name="titleRunSession">Race session details</string>
     <string name="warningPassword">Enter a password with a minimum of 8 and a maximum of 20 characters</string>
     <string name="warningNameSurname">Enter your name and surname, both must be at least two characters long</string>
 </resources>
