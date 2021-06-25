@@ -29,7 +29,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_run_session)
-        title = "Dettaglio sessione corsa"
+        title = getString(R.string.titleRunSession)
         polylineEncode = intent.getStringExtra("polyline").toString()
         polylineList = PolyUtil.decode(polylineEncode)
         mapView =

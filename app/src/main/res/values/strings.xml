@@ -71,4 +71,5 @@
     <string name="messageUpdatePassword">Sorry, the password could not be updated</string>
     <string name="timeDetail">Time</string>
     <string name="messageNoConsideration">The session just held was not taken into consideration</string>
+    <string name="titleRunSession">Race session details</string>
 </resources>

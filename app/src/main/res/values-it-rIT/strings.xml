@@ -72,4 +72,5 @@
     <string name="messageUpdatePassword">"Spiacenti, non è stato possibile aggiornare la password "</string>
     <string name="timeDetail">Tempo</string>
     <string name="messageNoConsideration">La sessione appena sostenuta non è stata presa in considerazione</string>
+    <string name="titleRunSession">Dettaglio sessione corsa</string>
 </resources>
