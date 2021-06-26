@@ -21,13 +21,15 @@ import java.util.regex.Pattern
 class LoginActivity : AppCompatActivity() {
 
     private val mAuth = FirebaseAuth.getInstance() //istanza firebase, sezione autenticazione
-    private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
+    private val mFireStore = FirebaseFirestore.getInstance()
+        .collection("Utenti") //istanza firestore riferita alla collezione Utenti
     private val TAG = "LoginActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        this.title = resources.getString(R.string.signin) //imposto il titolo che verrà visualizzato sulla toolbar
+        this.title =
+            resources.getString(R.string.signin) //imposto il titolo dell'activity che verrà visualizzato sulla toolbar
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //la night mode viene disabilata
     }
 
@@ -41,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun openMainActivity() {
-        val intent = Intent( //apriamo l'altra activity
+    private fun openMainActivity() { //funzione permette di aprire activity main
+        val intent = Intent(
             this@LoginActivity,
             MainActivity::class.java
         )
@@ -60,14 +62,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun checkLogin(v: View?) { //deve capire se quello inserito in username e password è valido o meno e nel caso segnalare
-        val email: String = editTextEmailLogin.getText().toString()
-        if (!isValidEmail(email)) {
-            editTextEmailLogin.setError(getResources().getString(R.string.invalid_email))
+        val email: String = editTextEmailLogin.getText().toString() //prelevo l'email dal relativo editText
+        if (!isValidEmail(email)) { //faccio il controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
+            editTextEmailLogin.setError(getResources().getString(R.string.invalid_email)) //...imposto un errore sull'editText
             return //non proseguo (guard)
         }
 
-        val pwd = editTextPasswordRegister.getText().toString()
-        if (!isValidPassword(pwd)) {
+        val pwd = editTextPasswordRegister.getText().toString() //prelevo la password dal relativo editText
+        if (!isValidPassword(pwd)) {  //faccio il controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
             editTextPasswordRegister.setError(getResources().getString(R.string.invalid_password)) //...settiamo un errore
             return //non proseguo (guard)
         }
@@ -76,26 +78,30 @@ class LoginActivity : AppCompatActivity() {
 
     private fun readUserDocument(documentID: String) { // funzione per la lettura del documento su firestore.
         mFireStore.document(documentID).get()
-            .addOnSuccessListener { documentSnapshot -> //caso successo
+            .addOnSuccessListener { documentSnapshot -> //caso di successo
                 if (documentSnapshot.exists()) { //se il documento esiste
+                    //prelevo i dati dal documento
                     val idutente = documentSnapshot.getString("ID utente")
                     val nomeCognome = documentSnapshot.getString("Nome e Cognome")
                     val emailFirestore = documentSnapshot.getString("Email")
                     val dataNascita = documentSnapshot.getString("Data di nascita")
                     val genere = documentSnapshot.getString("Genere")
                     val pwdCriptata = documentSnapshot.getString("EncryptedPassword")
+                    val percorsoImmagineProfilo = documentSnapshot.getString("URIImage")
 
+                    //inserico le informazioni lette dal documento di firestore in utente loggato
                     Global.utenteLoggato = Utente(
                         idutente.toString(),
                         nomeCognome.toString(),
                         emailFirestore.toString(),
                         dataNascita.toString(),
                         genere.toString(),
-                        pwdCriptata.toString()
+                        pwdCriptata.toString(),
+                        percorsoImmagineProfilo.toString()
                     )
                     Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
                 } else {
-                    Log.d(TAG, "Non disp su firestore")
+                    Log.d(TAG, "Non disponibile su firestore")
                 }
             }
     }
@@ -103,13 +109,12 @@ class LoginActivity : AppCompatActivity() {
     private fun ChecktoFirebase(
         email: String,
         password: String
-    ) { //verifichiamo se utente è autenticato o meno
-        //verifichiamo email e password utente
+    ) { //verifichiamo se l'utente è autenticato o meno, controllando la sua email e password
         mAuth.signInWithEmailAndPassword(email, password)
-            //verifico ciò che è successo
+            //verifico ciò che è successo tramite il listener
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) { //tutto ok
-                    Toast.makeText(this, "Accesso effettuato", Toast.LENGTH_LONG).show()
+                if (task.isSuccessful) { //tutto andato a buon fine
+                    Toast.makeText(this, getString(R.string.signedIn), Toast.LENGTH_LONG).show()
 
                     val user = mAuth.currentUser //credenziali utente loggato
                     //preleviamo dati utenti
@@ -118,25 +123,24 @@ class LoginActivity : AppCompatActivity() {
                         openMainActivity()
                     }
                 } else { //autenticazione non è andata a buon fine
-                    Toast.makeText(this, "Accesso negato, registrati", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.notSignedIn), Toast.LENGTH_LONG).show()
                     Log.w(TAG, "Accesso fallito", task.exception)
                 }
             }
     }
 
-    private fun isValidPassword(pwd: String): Boolean {
-        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")
+    private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
+        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
         val pattern = Pattern.compile(PASSWORD_PATTERN)
-        val matcher = pattern.matcher(pwd)
-        return matcher.matches()
+        val matcher = pattern.matcher(pwd) //metto a confronto la password dell'utente e la regular expression
+        return matcher.matches() //restituisco un risultato booleano
     }
 
-    // validating email id
-    private fun isValidEmail(email: String): Boolean {
-        val EMAIL_PATTERN = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+    private fun isValidEmail(email: String): Boolean { //funzione prende in ingresso una email e mi restituisce un risultato booleano
+        val EMAIL_PATTERN = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" //regular expression che bisogna rispettare per l'email
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
         val pattern = Pattern.compile(EMAIL_PATTERN)
-        val matcher = pattern.matcher(email)
-        return matcher.matches() //se indirizzo email è soddisfatto, tutto bene sennò...
+        val matcher = pattern.matcher(email) //metto a confronto l'email dell'utente e la regular expression
+        return matcher.matches() //restituisco un risultato booleano
     }
 }

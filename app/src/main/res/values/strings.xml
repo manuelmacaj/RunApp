@@ -74,4 +74,8 @@
     <string name="titleRunSession">Race session details</string>
     <string name="warningPassword">Enter a password with a minimum of 8 and a maximum of 20 characters</string>
     <string name="warningNameSurname">Enter your name and surname, both must be at least two characters long</string>
+    <string name="signedIn">Signed in</string>
+    <string name="notSignedIn">Access denied, register</string>
+    <string name="registrationCompleted">Registration completed</string>
+    <string name="registrationFailed">Registration failed</string>
 </resources>

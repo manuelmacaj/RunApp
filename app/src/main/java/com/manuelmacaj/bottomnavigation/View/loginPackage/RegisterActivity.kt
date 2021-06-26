@@ -14,7 +14,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.manuelmacaj.bottomnavigation.BASE64
+import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.activity_register.*
 import java.time.LocalDate
@@ -43,7 +45,7 @@ class RegisterActivity : AppCompatActivity() {
     private val mRegister =
         FirebaseAuth.getInstance() //istanza firebase riferita alla sezione di autenticazione
 
-    //istanza firestore riferita alla collezione utenti. Se non esiste, la crea
+    //istanza firestore riferita alla collezione Utenti. Se non esiste, la crea
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
 
     @SuppressLint("ClickableViewAccessibility")
@@ -51,7 +53,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         this.title =
-            resources.getString(R.string.register) //imposto il titolo che verrà visualizzato sulla toolbar
+            resources.getString(R.string.register) //imposto il titolo che verrà visualizzato nella toolbar
 
         nameSurname = findViewById(R.id.editTextPersonNameSurname)
         emailField = findViewById(R.id.editTextEmailRegister)
@@ -62,7 +64,7 @@ class RegisterActivity : AppCompatActivity() {
         firstPasswordField.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    //Do Something
+                    //Toast di avviso
                     Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
                 }
             }
@@ -72,7 +74,7 @@ class RegisterActivity : AppCompatActivity() {
         nameSurname.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    //Do Something
+                    //Toast di avviso
                     Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG).show()
                 }
             }
@@ -101,7 +103,7 @@ class RegisterActivity : AppCompatActivity() {
                         year, month, day
                     )
                     dialog.datePicker.maxDate =
-                        System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corremte
+                        System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corrente
                     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.show()
                 }
@@ -114,11 +116,11 @@ class RegisterActivity : AppCompatActivity() {
                 val mese: Int = month + 1
                 Log.d(TAG, "onDateSet: mm/dd/yyy: $mese/$day/$year")
                 dateOfBirth = LocalDate.of(year, mese, day)
-                mDisplayDate.text = dateOfBirth.toString()
+                mDisplayDate.text = dateOfBirth.toString() //inserisco la data di nascita nella textView
             }
     }
 
-    fun checkRegister(v: View?) { //deve capire se quello inserito in username e password è valido o meno e nel caso segnalare
+    fun checkRegister(v: View?) { //funzione per verificare se username e password sono validi o meno
 
         val nomeCognome = nameSurname.text.toString()
         val email = emailField.text.toString()
@@ -126,20 +128,19 @@ class RegisterActivity : AppCompatActivity() {
         val confermaPassword = confirmPasswordField.text.toString()
 
         if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
-            //settiamo un errore se il campo in cui inserire nome e cognome è vuoto
-            nameSurname.error = resources.getString(R.string.empty_name_surname)
+            //settiamo un errore se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
+            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore
             return
         }
 
         if (radioGroupGender.checkedRadioButtonId == -1) { //nessun radio button selezionato da parte dell'utente
-            //genderSelection.error = resources.getString(R.string.gender_not_selected)
-            genderSelection = resources.getString(R.string.gender_not_selected)
+            genderSelection = resources.getString(R.string.gender_not_selected) //imposto un errore
             Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
             return
         }
 
-        if (dateOfBirth == null) {
-            Toast.makeText(
+        if (dateOfBirth == null) { //se la data di nascita è a null
+            Toast.makeText( //visualizzo un toast per avvisare l'utente
                 this,
                 getString(R.string.enterDateofBirth),
                 Toast.LENGTH_LONG
@@ -147,23 +148,18 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
-        if (!isValidEmail(email)) {
-            //settiamo un errore se l'email inserita dall'utente non è valida
-            emailField.error = resources.getString(R.string.invalid_email)
+        if (!isValidEmail(email)) { //verifico se l'email inserita dall'utente è valida o meno
+            emailField.error = resources.getString(R.string.invalid_email) //settiamo un errore
             return
         }
 
-
-
-        if (!isValidPassword(password)) {
-            //settiamo un errore se la password inserita dall'utente non soddisfa i requisiti di lunghezza
-            firstPasswordField.error = resources.getString(R.string.invalid_password)
+        if (!isValidPassword(password)) { //verifico se la password inserita dall'utente è valida o meno
+            firstPasswordField.error = resources.getString(R.string.invalid_password) //settiamo un errore
             return
         }
 
-        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) {
-            //settiamo un errore se le password non combaciano tra loro
-            confirmPasswordField.error = resources.getString((R.string.password_check))
+        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) { //verifico se le due password inserite dall'utente corrispondono o meno
+            confirmPasswordField.error = resources.getString((R.string.password_check)) //settiamo un errore
             return
         }
         registerNewAccount(nomeCognome, email, password)
@@ -178,6 +174,7 @@ class RegisterActivity : AppCompatActivity() {
                     val id = userAuth!!.uid
                     val userMap = HashMap<String, Any>()
 
+                    //inserisco le informazioni dell'utente in una HashMap
                     userMap["ID utente"] = id
                     userMap["Nome e Cognome"] = nomeCognome
                     userMap["Email"] = email
@@ -187,15 +184,16 @@ class RegisterActivity : AppCompatActivity() {
                     userMap["Data registrazione"] =
                         dateTime.format(DateTimeFormatter.ofPattern("d/M/y H:m:ss"))
                     userMap["EncryptedPassword"] = BASE64.encrypt(password).toString()
+                    userMap["URIImage"] = "userProfile/UPmale_profile_picture.png"
 
-                    //creazione documento
+                    //creazione documento con informazioni utente
                     mFireStore.document(id).set(userMap).addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) { //creazione documento andata a buon fine
-                            Toast.makeText(this, "Registrazione completata", Toast.LENGTH_LONG)
+                            Toast.makeText(this, getString(R.string.registrationCompleted), Toast.LENGTH_LONG)
                                 .show()
                             finish()
                         } else { //caricamento dati su firestore non riuscito
-                            Toast.makeText(this, "Registrazione fallita", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, getString(R.string.registrationFailed), Toast.LENGTH_LONG).show()
                             Log.w(TAG, "Accesso fallito", task.exception)
                         }
                     }
@@ -205,25 +203,19 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-
-    fun passwordWarning(view: View) {
-        Toast.makeText(this, "Inserisci una password con un minimo di 8 e un massimo di 20 caratteri", Toast.LENGTH_LONG).show()
-    }
-
-    private fun isValidPassword(pwd: String): Boolean {
-        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")
+    private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
+        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
         val pattern = Pattern.compile(PASSWORD_PATTERN)
-        val matcher = pattern.matcher(pwd)
-        return matcher.matches()
+        val matcher = pattern.matcher(pwd) //metto a confronto la password dell'utente e la regular expression
+        return matcher.matches() //restituisco un risultato booleano
     }
 
-    // validating email id
-    private fun isValidEmail(email: String): Boolean {
-        val EMAIL_PATTERN = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+    private fun isValidEmail(email: String): Boolean { //funzione prende in ingresso una email e mi restituisce un risultato booleano
+        val EMAIL_PATTERN = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" //regular expression che bisogna rispettare per l'email
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
         val pattern = Pattern.compile(EMAIL_PATTERN)
-        val matcher = pattern.matcher(email)
-        return matcher.matches() //se indirizzo email è soddisfatto, tutto bene sennò...
+        val matcher = pattern.matcher(email) //metto a confronto l'email dell'utente e la regular expression
+        return matcher.matches() //restituisco un risultato booleano
     }
 
     private fun isValidNameSurname(nameSurname: String): Boolean {

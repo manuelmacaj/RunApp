@@ -41,7 +41,6 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         time = findViewById(R.id.textViewTimeValue)
         distance = findViewById(R.id.textViewDistanceDetailValue)
         averagePale = findViewById(R.id.textViewAverageDetailValue)
-
     }
 
     override fun onResume() {
@@ -51,8 +50,6 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         time.text = intent.getStringExtra("time")
         distance.text = intent.getStringExtra("distance")
         averagePale.text = intent.getStringExtra("averagePale")
-
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) { //Metodo implementato da OnMapReadyCallback, per la gestione della mappa di GoogleMaps
@@ -74,7 +71,5 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
             .zoom(14f) // indico lo zoom della telecamera (minimo 1, massimo 20. consigliato tra il 15 e il 20 se vogliamo monitorare il posizionamento dell'utente)
             .build() // costruisco la variabile CameraPosition
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPositionPolyline))
-
     }
-
 }

@@ -1,5 +1,6 @@
 package com.manuelmacaj.bottomnavigation.View.activitiesPackage
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.manuelmacaj.bottomnavigation.Model.Corsa
 import com.manuelmacaj.bottomnavigation.R
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,6 +39,7 @@ class ActivitiesFragment : Fragment() {
         return view
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onStart() {
         super.onStart()
         mRunSessionFirestore
@@ -52,11 +55,14 @@ class ActivitiesFragment : Fragment() {
 
                     for (document in result) {
                         Log.d("TAG", "${document.id} => ${document.data}")
+                        val date: Date? = document.getDate("TimeWhenStart")
+                        val format = SimpleDateFormat("yyyy/MM/dd HH:mm")
+
                         val corsa = Corsa(
                             document.getString("Polyline encode").toString(),
                             document.getString("Tempo").toString(),
                             document.getString("Distanza").toString(),
-                            document.getDate("TimeWhenStart").toString(),
+                            format.format(date!!),
                             document.getString("AndaturaAlKm").toString()
                         )
                         listaSessioniCorsa.add(corsa) //aggiungiamo all lista tutte le informazioni riguardanti la sessione di corsa
@@ -87,8 +93,10 @@ class ActivitiesFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        listaSessioniCorsa.clear() //cancellazione di tutti gli elementi nella lista
-        myAdapterActivities.notifyDataSetChanged() //notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
+        if(listaSessioniCorsa.isNotEmpty()) {
+            listaSessioniCorsa.clear() //cancellazione di tutti gli elementi nella lista
+            myAdapterActivities.notifyDataSetChanged() //notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
+        }
     }
 }
 

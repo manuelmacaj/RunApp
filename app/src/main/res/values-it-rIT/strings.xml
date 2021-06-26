@@ -75,4 +75,8 @@
     <string name="titleRunSession">Dettaglio sessione corsa</string>
     <string name="warningPassword">Inserisci una password con un minimo di 8 e un massimo di 20 caratteri</string>
     <string name="warningNameSurname">Inserisci il nome e cognome, devono essere entrambi di minimo due caratteri</string>
+    <string name="signedIn">Accesso effettuato</string>
+    <string name="notSignedIn">Accesso negato, registrati</string>
+    <string name="registrationCompleted">Registrazione completata</string>
+    <string name="registrationFailed">Registrazione fallita</string>
 </resources>

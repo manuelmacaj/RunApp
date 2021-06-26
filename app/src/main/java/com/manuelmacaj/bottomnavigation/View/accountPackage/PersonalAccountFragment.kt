@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,17 +15,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
+import com.google.firebase.storage.StorageReference
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
+import com.squareup.picasso.Picasso
+import java.io.File
+import java.net.URI
 import java.time.LocalDate
+
 
 class PersonalAccountFragment : Fragment() {
 
     private val TAG = "PersonalAccountFragment"
-
     private lateinit var textFullName: TextView
     private lateinit var imageProfile: ImageView
     private lateinit var textEmail: TextView
@@ -35,6 +42,9 @@ class PersonalAccountFragment : Fragment() {
     private var currentTime: LocalDate = LocalDate.now()
     private val GALLERY_PERMISSION_REQUEST_CODE = 1
     private val galleryPhotoCode = 1
+    private var firebaseStorage = FirebaseStorage.getInstance()
+    private val collezioneUtenti = "Utenti"
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
@@ -68,13 +78,19 @@ class PersonalAccountFragment : Fragment() {
         return view
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onStart() {
         super.onStart()
-  /*     if (Global.utenteLoggato?.genere == "Maschio") { //controllo se l'utente connesso all'app è di sesso maschile
-            imageProfile.setImageDrawable(resources.getDrawable(R.drawable.male_profile_picture)) //carico un'immagine generica per utente maschio
-        } else imageProfile.setImageDrawable(resources.getDrawable(R.drawable.female_profile_picture)) //carico un'immagine generica per l'utente femmina
-*/
+        val storageRef = firebaseStorage.reference
+        val getImageReference = storageRef.child(Global.utenteLoggato?.pathImageProfile.toString()) //percorso dell'immagine
+
+        getImageReference //proviamo il download dell'URL che abbiamo passato
+            .downloadUrl
+            .addOnSuccessListener {
+                Picasso.with(requireContext()).load(it).into(imageProfile)
+            }
+            .addOnFailureListener {
+                Log.w(TAG, "Immagine non scaricata", it.cause)
+            }
     }
 
     override fun onResume() {
@@ -84,6 +100,7 @@ class PersonalAccountFragment : Fragment() {
         textEmail.text = Global.utenteLoggato?.emailUtente
         textGender.text = Global.utenteLoggato?.genere
         textDateofBirth.text = Global.utenteLoggato?.dataNascita
+
 
         //impostiamo un click listener per l'image view
         imageProfile.setOnClickListener {
@@ -114,10 +131,7 @@ class PersonalAccountFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray ){
         when (requestCode) { //switch per verificare il tipo di request code restituito
             GALLERY_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato al prelevamento delle foto dalla galleria,
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //se l'utente mi ha fornito l'autorizzazione...
@@ -130,11 +144,10 @@ class PersonalAccountFragment : Fragment() {
     }
 
     private fun takePictureFromGallery() {
-
         AlertDialog.Builder(requireActivity())
             .setTitle("Funzione ancora in beta")
             .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata.\nNel prossimo aggiornamanto verrà migliorato")
-            .setPositiveButton("Ok") {_, _ ->
+            .setPositiveButton("Ok") { _, _ ->
                 val pickPhoto = Intent(
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -150,9 +163,29 @@ class PersonalAccountFragment : Fragment() {
         when (requestCode) {
             galleryPhotoCode -> {
                 if (resultCode == RESULT_OK) {
+                    //preleviamo immagine dalla galleria
                     val selectedImage: Uri? = data?.data
-                    imageProfile.setImageURI(selectedImage)
-                    imageProfile.adjustViewBounds = true
+                    val storageRef = firebaseStorage.reference
+                    val image =
+                        storageRef.child("userProfile/${Global.utenteLoggato?.idUtente}.png") //percorso in cui caricare l'immagine profilo utente
+
+                    //facciamo l'upload dell'immagine
+                    val uploadTask = image.putFile(selectedImage!!)
+                    uploadTask
+                        .addOnSuccessListener { task ->
+                            Log.d(TAG, "Immagine caricata in " + image.path + "Dimensione " +
+                                    task.metadata?.sizeBytes)
+                            Global.utenteLoggato?.pathImageProfile = image.path
+                            //aggiornare firestore
+                            val mFirestore = FirebaseFirestore.getInstance()
+                            mFirestore.collection(collezioneUtenti)
+                                .document(Global.utenteLoggato?.idUtente!!)
+                                .update("URIImage", Global.utenteLoggato?.pathImageProfile)
+                            //imageProfile.setImageURI(selectedImage)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(TAG, "Immagine non caricata", exception.cause)
+                        }
                 }
             }
         }
