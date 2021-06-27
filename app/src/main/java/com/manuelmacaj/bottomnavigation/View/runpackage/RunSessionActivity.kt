@@ -31,7 +31,7 @@ class RunSessionActivity : AppCompatActivity() {
     private lateinit var btnEndRun: Button
     private lateinit var chronometer: Chronometer
     private lateinit var textKM: TextView
-    private lateinit var avaragePale: TextView
+    private lateinit var avaragePace: TextView
 
     private var andaturaAlKm: Double = 0.0
     private var isRunning: Boolean = false
@@ -49,7 +49,7 @@ class RunSessionActivity : AppCompatActivity() {
         btnEndRun = findViewById(R.id.btnEndRunSession)
         chronometer = findViewById(R.id.chronometer)
         textKM = findViewById(R.id.textViewTotalKm)
-        avaragePale = findViewById(R.id.avaragePale)
+        avaragePace = findViewById(R.id.avaragePace)
 
         //Il listener mi permette di poter creare il formato HH:MM:SS per il cronometro
         //fonte: https://stackoverflow.com/questions/38237947/chronometer-with-hmmss/38238363
@@ -100,7 +100,7 @@ class RunSessionActivity : AppCompatActivity() {
                     stopService(intent) //fermo il servizio
                     Log.d(TAG, PolyUtil.encode(track))
 
-                    sendToFirebase() //chiamo il metodo per che mi invierà i risultati a firebase
+                    sendToFirebaseFirestore() //chiamo il metodo per che mi invierà i risultati a firebase
                 }
                 .setNegativeButton("No") { dialog, _ ->
                     //non faccio niente, proseguo la corsa
@@ -116,7 +116,7 @@ class RunSessionActivity : AppCompatActivity() {
         startForegroundService(intent) //avvio il servizio (è simile a startService, ma posso far in modo che venga creata una notifica nel servizio
     }
 
-    private fun sendToFirebase() {
+    private fun sendToFirebaseFirestore() {
 
         //controllo se l'utente ha effettivamente corso, per evitare di caricare sessioni
 
@@ -128,7 +128,7 @@ class RunSessionActivity : AppCompatActivity() {
             sessionMap["Polyline encode"] = PolyUtil.encode(track)
             sessionMap["Distanza"] = textKM.text.toString()
             sessionMap["Tempo"] = chronometer.text.toString()
-            sessionMap["AndaturaAlKm"] = avaragePale.text
+            sessionMap["AndaturaAlKm"] = avaragePace.text
 
             /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
              alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
@@ -207,14 +207,17 @@ class RunSessionActivity : AppCompatActivity() {
             )
 
             totalKM += metersToKm.number.toDouble() // effettuo la somma tra i km totali e km calcolati in precedenza
-            calculateAvaragePase() // chiamata al metodo per calcolare l'andatura della corsa
 
-            Log.d(TAG, "km percorsi: $totalKM ${metersToKm.unit} ")
+            if(totalKM > 0.01)
+                calculateAveragePace() // chiamata al metodo per calcolare l'andatura della corsa
+
+            Log.d(TAG, "km percorsi: $totalKM Km ")
         }
     }
 
     /*fonte sul funzionamento: https://www.polar.com/it/running-academy/running-pace-calculator*/
-    private fun calculateAvaragePase() {
+
+    private fun calculateAveragePace() {
         val time = SystemClock.elapsedRealtime() - chronometer.base //prelevo il tempo così da trovare le ore, minuti e secondi
         val h = (time / 3600000).toInt()
         val m = (time - h * 3600000).toInt() / 60000
@@ -228,7 +231,7 @@ class RunSessionActivity : AppCompatActivity() {
         val passoMinuti = (andaturaAlKm).toInt() //solo la parte intera del rapporto fatto in precedenza (la parte intera mi rappresenta i minuti)
         val passoSecondi  = round((andaturaAlKm - passoMinuti) * 60).toInt() //calcolo i secondi e arrondo il risultato e poi fornisco la parte intera
 
-        avaragePale.text = (if (passoMinuti < 10) "0$passoMinuti'" else "$passoMinuti'") + "," + (if (passoSecondi < 10) "0$passoSecondi''" else "$passoSecondi''")
+        avaragePace.text = (if (passoMinuti < 10) "0$passoMinuti'" else "$passoMinuti'") + "," + (if (passoSecondi < 10) "0$passoSecondi''" else "$passoSecondi''")
     }
 
     private fun addCoordinates(lat: Double, lng: Double) { // metodo per l'inserimento delle coordinate nella lista

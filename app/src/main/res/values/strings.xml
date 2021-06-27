@@ -72,6 +72,8 @@
     <string name="timeDetail">Time</string>
     <string name="messageNoConsideration">The session just held was not taken into consideration</string>
     <string name="titleRunSession">Race session details</string>
-    <string name="warningPassword">Enter a password with a minimum of 8 and a maximum of 20 characters</string>
+    <string name="warningPassword">Enter a password with a minimum of 8 characters (maximum of 20), a lowercase letter, an uppercase letter and a number.</string>
     <string name="warningNameSurname">Enter your name and surname, both must be at least two characters long</string>
+    <string name="departureMarker">Start</string>
+    <string name="endMarker">End</string>
 </resources>

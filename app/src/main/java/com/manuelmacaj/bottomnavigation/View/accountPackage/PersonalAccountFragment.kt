@@ -14,12 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import java.time.LocalDate
+import java.time.Period
 
 class PersonalAccountFragment : Fragment() {
 
@@ -31,17 +31,16 @@ class PersonalAccountFragment : Fragment() {
     private lateinit var textAge: TextView
     private lateinit var textGender: TextView
     private lateinit var textDateofBirth: TextView
+
     private lateinit var dateOfBirth: LocalDate
-    private var currentTime: LocalDate = LocalDate.now()
+    private var currentDate: LocalDate = LocalDate.now()
     private val GALLERY_PERMISSION_REQUEST_CODE = 1
     private val galleryPhotoCode = 1
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
+
         val view = inflater.inflate(R.layout.fragment_personal_account, container, false)
 
         requireActivity().title = getString(R.string.account)
@@ -53,28 +52,20 @@ class PersonalAccountFragment : Fragment() {
         textGender = view.findViewById(R.id.userGender)
         textDateofBirth = view.findViewById(R.id.userBirthday)
 
-        val arrayDate: List<String> = Global.utenteLoggato?.dataNascita?.split("-")!!
-
-        dateOfBirth = LocalDate.of(arrayDate[0].toInt(), arrayDate[1].toInt(), arrayDate[2].toInt())
-
-        if ((currentTime.month <= dateOfBirth.month) && (currentTime.dayOfMonth < dateOfBirth.dayOfMonth))
-            textAge.text = ((currentTime.year - dateOfBirth.year) - 1).toString()
-        else
-            textAge.text = (currentTime.year - dateOfBirth.year).toString()
-
-        val age = resources.getString(R.string.user_years)
-        textAge.append(" $age")
+        calculateAge()
 
         return view
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onStart() {
-        super.onStart()
-  /*     if (Global.utenteLoggato?.genere == "Maschio") { //controllo se l'utente connesso all'app è di sesso maschile
-            imageProfile.setImageDrawable(resources.getDrawable(R.drawable.male_profile_picture)) //carico un'immagine generica per utente maschio
-        } else imageProfile.setImageDrawable(resources.getDrawable(R.drawable.female_profile_picture)) //carico un'immagine generica per l'utente femmina
-*/
+    private fun calculateAge() {
+        val arrayDate: List<String> = Global.utenteLoggato?.dataNascita?.split("-")!!
+
+        dateOfBirth = LocalDate.of(arrayDate[0].toInt(), arrayDate[1].toInt(), arrayDate[2].toInt())
+
+        val agePeriod = Period.between(dateOfBirth, currentDate)
+        val ageText = resources.getString(R.string.user_years)
+        textAge.text = "${agePeriod.years} $ageText"
+
     }
 
     override fun onResume() {
@@ -100,7 +91,6 @@ class PersonalAccountFragment : Fragment() {
                 requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
             requestPermissions(
                 arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                 GALLERY_PERMISSION_REQUEST_CODE
@@ -113,11 +103,8 @@ class PersonalAccountFragment : Fragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray) {
         when (requestCode) { //switch per verificare il tipo di request code restituito
             GALLERY_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato al prelevamento delle foto dalla galleria,
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //se l'utente mi ha fornito l'autorizzazione...
@@ -130,10 +117,10 @@ class PersonalAccountFragment : Fragment() {
     }
 
     private fun takePictureFromGallery() {
-
         AlertDialog.Builder(requireActivity())
             .setTitle("Funzione ancora in beta")
-            .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata.\nNel prossimo aggiornamanto verrà migliorato")
+            .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata." +
+                    "\nNel prossimo aggiornamanto verrà migliorato")
             .setPositiveButton("Ok") {_, _ ->
                 val pickPhoto = Intent(
                     Intent.ACTION_PICK,
