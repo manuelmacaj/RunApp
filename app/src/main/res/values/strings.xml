@@ -78,4 +78,6 @@
     <string name="notSignedIn">Access denied, register</string>
     <string name="registrationCompleted">Registration completed</string>
     <string name="registrationFailed">Registration failed</string>
+    <string name="titleSignOut">Disconnection</string>
+    <string name="messageSignOut">Are you sure you want to log out of your account?</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.manuelmacaj.bottomnavigation.View
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -71,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 openEditPasswordActivity()
             }
             R.id.logout -> {
-                Toast.makeText(this, getString(R.string.signout_app), Toast.LENGTH_SHORT).show()
                 signOut()
             }
         }
@@ -91,10 +92,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        mFirebaseAuth.signOut()
-        val intent = Intent(this@MainActivity, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-        finish()
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.titleSignOut))
+            .setMessage(getString(R.string.messageSignOut))
+            .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su ok, verrà disconnesso
+                mFirebaseAuth.signOut()
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                Toast.makeText(this, getString(R.string.signout_app), Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .setNegativeButton("No") { _, _ -> //se l'utente clicca su no, rimarrà nella finestra attuale
+            }
+            .setCancelable(false)
+            .create()
+            .show()
     }
 }

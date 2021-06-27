@@ -3,8 +3,10 @@ package com.manuelmacaj.bottomnavigation.View.accountPackage
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -17,15 +19,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
-import com.google.firebase.storage.StorageReference
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
-import com.squareup.picasso.Picasso
-import java.io.File
-import java.net.URI
 import java.time.LocalDate
 
 
@@ -44,6 +42,7 @@ class PersonalAccountFragment : Fragment() {
     private val galleryPhotoCode = 1
     private var firebaseStorage = FirebaseStorage.getInstance()
     private val collezioneUtenti = "Utenti"
+    private var context = null
 
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -63,9 +62,14 @@ class PersonalAccountFragment : Fragment() {
         textGender = view.findViewById(R.id.userGender)
         textDateofBirth = view.findViewById(R.id.userBirthday)
 
-        val arrayDate: List<String> = Global.utenteLoggato?.dataNascita?.split("-")!!
+        val arrayDate: List<String> =
+            Global.utenteLoggato?.dataNascita?.split("-")!! //faccio lo split della data di nascita
 
-        dateOfBirth = LocalDate.of(arrayDate[0].toInt(), arrayDate[1].toInt(), arrayDate[2].toInt())
+        dateOfBirth = LocalDate.of(
+            arrayDate[0].toInt(),
+            arrayDate[1].toInt(),
+            arrayDate[2].toInt()
+        ) //mi salvo la data di nascita
 
         if ((currentTime.month <= dateOfBirth.month) && (currentTime.dayOfMonth < dateOfBirth.dayOfMonth))
             textAge.text = ((currentTime.year - dateOfBirth.year) - 1).toString()
@@ -78,20 +82,6 @@ class PersonalAccountFragment : Fragment() {
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        val storageRef = firebaseStorage.reference
-        val getImageReference = storageRef.child(Global.utenteLoggato?.pathImageProfile.toString()) //percorso dell'immagine
-
-        getImageReference //proviamo il download dell'URL che abbiamo passato
-            .downloadUrl
-            .addOnSuccessListener {
-                Picasso.with(requireContext()).load(it).into(imageProfile)
-            }
-            .addOnFailureListener {
-                Log.w(TAG, "Immagine non scaricata", it.cause)
-            }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -101,6 +91,20 @@ class PersonalAccountFragment : Fragment() {
         textGender.text = Global.utenteLoggato?.genere
         textDateofBirth.text = Global.utenteLoggato?.dataNascita
 
+        val storageRef =
+            firebaseStorage.reference //creiamo un nuovo riferimento della sezione storage
+        val getImageReference =
+            storageRef.child(Global.utenteLoggato?.pathImageProfile.toString()) //percorso dell'immagine
+
+        getImageReference //proviamo il download dell'URL che abbiamo passato
+            .downloadUrl
+            .addOnSuccessListener {
+               //fonte: https://www.html.it/pag/71017/glide-e-il-caricamento-delle-immagini/
+                Glide.with(requireContext()).load(it).into(imageProfile)
+            }
+            .addOnFailureListener {
+                Log.w(TAG, "Immagine non scaricata", it.cause)
+            }
 
         //impostiamo un click listener per l'image view
         imageProfile.setOnClickListener {
@@ -110,9 +114,9 @@ class PersonalAccountFragment : Fragment() {
         }
     }
 
-    private fun checkGalleryPermission() { // funzione di  verifica dei permessi di accesso alla galleria (bisogna dichirare nel manifest)
+    private fun checkGalleryPermission() { //funzione di  verifica dei permessi di accesso alla galleria (bisogna dichirare nel manifest)
 
-        //Se l'utente non ha mai dato il consenso per accedere alla galleria o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso
+        //Se l'utente non ha mai dato il consenso per accedere alla galleria o è la prima volta che accede all'app, allora verrà richiesto di fornire il consenso
         if (ContextCompat.checkSelfPermission(
                 requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
@@ -131,7 +135,8 @@ class PersonalAccountFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray ){
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
         when (requestCode) { //switch per verificare il tipo di request code restituito
             GALLERY_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato al prelevamento delle foto dalla galleria,
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //se l'utente mi ha fornito l'autorizzazione...
@@ -143,26 +148,18 @@ class PersonalAccountFragment : Fragment() {
         }
     }
 
-    private fun takePictureFromGallery() {
-        AlertDialog.Builder(requireActivity())
-            .setTitle("Funzione ancora in beta")
-            .setMessage("E' possibile inserire un'immagine dalla galleria, ma non verrà salvata.\nNel prossimo aggiornamanto verrà migliorato")
-            .setPositiveButton("Ok") { _, _ ->
-                val pickPhoto = Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                )
-                startActivityForResult(pickPhoto, 1)
-            }
-            .setCancelable(false)
-            .create()
-            .show()
+    private fun takePictureFromGallery() { //funzione per prelevare foto dalla galleria
+        val pickPhoto = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(pickPhoto, 1)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             galleryPhotoCode -> {
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) { //se tutto va bene
                     //preleviamo immagine dalla galleria
                     val selectedImage: Uri? = data?.data
                     val storageRef = firebaseStorage.reference
@@ -173,15 +170,20 @@ class PersonalAccountFragment : Fragment() {
                     val uploadTask = image.putFile(selectedImage!!)
                     uploadTask
                         .addOnSuccessListener { task ->
-                            Log.d(TAG, "Immagine caricata in " + image.path + "Dimensione " +
-                                    task.metadata?.sizeBytes)
+                            Log.d(
+                                TAG, "Immagine caricata in " + image.path + "Dimensione " +
+                                        task.metadata?.sizeBytes
+                            )
                             Global.utenteLoggato?.pathImageProfile = image.path
                             //aggiornare firestore
                             val mFirestore = FirebaseFirestore.getInstance()
-                            mFirestore.collection(collezioneUtenti)
-                                .document(Global.utenteLoggato?.idUtente!!)
-                                .update("URIImage", Global.utenteLoggato?.pathImageProfile)
-                            //imageProfile.setImageURI(selectedImage)
+                            mFirestore.collection(collezioneUtenti) //accedo alla collezione utenti
+                                .document(Global.utenteLoggato?.idUtente!!) //accedo all'id dell'utente connesso
+                                .update(
+                                    "URIImage",
+                                    Global.utenteLoggato?.pathImageProfile
+                                ) //aggiorno il campo relativo all'URI dell'immagine
+                            Glide.with(requireContext()).load(selectedImage).into(imageProfile)
                         }
                         .addOnFailureListener { exception ->
                             Log.w(TAG, "Immagine non caricata", exception.cause)
