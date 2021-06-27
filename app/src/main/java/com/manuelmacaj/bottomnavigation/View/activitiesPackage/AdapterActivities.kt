@@ -11,8 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.manuelmacaj.bottomnavigation.Model.Corsa
 import com.manuelmacaj.bottomnavigation.R
 
-class AdapterActivities (private val context: Context, val data:MutableList<Corsa>) : BaseAdapter(){
-   /* OnMapReadyCallback*/
+class AdapterActivities (private val context: Context, val data:MutableList<Corsa>) : BaseAdapter(){ // classe che estende base adapter
 
     override fun getCount(): Int {
         return data.size
@@ -41,10 +40,6 @@ class AdapterActivities (private val context: Context, val data:MutableList<Cors
             distance.append(" ${data[position].km}")
             averagePale.append(" ${data[position].andaturaMedia}")
         }
-
         return newView
     }
-
-   /* override fun onMapReady(p0: GoogleMap) {
-    }*/
 }

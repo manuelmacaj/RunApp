@@ -58,11 +58,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
-            if(locationPermission == true && GPScheck) { // se ho il permesso e se il GPS è attivo
+
+            if (locationPermission == true && GPScheck) { // se ho il permesso e se il GPS è attivo
                 val intent = Intent(activity, RunSessionActivity::class.java) // Posso generare un
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
-            }
-            else{
+            } else {
                 AlertDialog.Builder(requireActivity())
                     .setTitle(getString(R.string.titleNoRun))
                     .setMessage(getString(R.string.messageNoRun))
@@ -123,11 +124,11 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     private fun checkGPSIsEnable() { //funzione di check
         manager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { // se il GPS non è abilitato
+        GPScheck = if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { // se il GPS non è abilitato
             buildAlertMessageNoGps() // chiamo il metodo buildAlertMessageNoGps()
-            GPScheck = false // imposto a false la variabile booleana GPScheck
+            false // imposto a false la variabile booleana GPScheck
         } else // se il gps è attivo
-            GPScheck = true // imposto a true la variabile booleana GPScheck
+            true // imposto a true la variabile booleana GPScheck
     }
 
     private fun buildAlertMessageNoGps() { // metodo con all'interno l'alert dialog che avvisa che il GPS non è abilitato

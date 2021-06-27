@@ -71,7 +71,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
-                android:id="@+id/avaragePale"
+                android:id="@+id/avaragePace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="--"

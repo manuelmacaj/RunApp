@@ -22,6 +22,8 @@ import kotlin.collections.ArrayList
 
 class ActivitiesFragment : Fragment() {
 
+    private val TAG = "ActivitiesFragment"
+
     private val collezioneUtenti = "Utenti"
     private val collezioneSessioneCorsa = "SessioniCorsa"
     private lateinit var listView: ListView
@@ -46,8 +48,7 @@ class ActivitiesFragment : Fragment() {
             .orderBy("TimeWhenStart", Query.Direction.DESCENDING) //applico un orderBy cosi mostro le sessioni dalla più recente fino alla più remota
             .get()
             .addOnSuccessListener { result ->
-                if(result.isEmpty) {
-                    //gestiamo il fatto che l'utente non presenta una collezione di sessioni di corsa
+                if(result.isEmpty) { //gestiamo il fatto che l'utente non presenta una collezione di sessioni di corsa
                     Toast.makeText(requireContext(), "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
                         .show()
                 }
@@ -65,13 +66,12 @@ class ActivitiesFragment : Fragment() {
                             format.format(date!!),
                             document.getString("AndaturaAlKm").toString()
                         )
-                        listaSessioniCorsa.add(corsa) //aggiungiamo all lista tutte le informazioni riguardanti la sessione di corsa
+                        listaSessioniCorsa.add(corsa) // Aggiungo il documento letto nella lista
                     }
-                    myAdapterActivities = AdapterActivities(requireContext(), listaSessioniCorsa)
 
+                    myAdapterActivities = AdapterActivities(requireContext(), listaSessioniCorsa) // creo l'oggetto per customizzare l'adapter
                     listView.adapter = myAdapterActivities
                 }
-
             }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
@@ -80,22 +80,22 @@ class ActivitiesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        listView.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(requireActivity(), DetailRunSessionActivity::class.java)
-            intent.putExtra("polyline", listaSessioniCorsa[position].polylineString)
+        listView.setOnItemClickListener { _, _, position, _ -> // setOnItemClickListener mi permette di capire quale elemento della listView è stato selezionato
+            val intent = Intent(requireActivity(), DetailRunSessionActivity::class.java) // genero un intent
+            intent.putExtra("polyline", listaSessioniCorsa[position].polylineString) //incapsulo le informazioni nell'intent
             intent.putExtra("date", listaSessioniCorsa[position].DataOrarioPartenza)
             intent.putExtra("time", listaSessioniCorsa[position].tempo)
             intent.putExtra("distance", listaSessioniCorsa[position].km)
             intent.putExtra("averagePale", listaSessioniCorsa[position].andaturaMedia)
-            startActivity(intent)
+            startActivity(intent) // avvio l'activity
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if(listaSessioniCorsa.isNotEmpty()) {
-            listaSessioniCorsa.clear() //cancellazione di tutti gli elementi nella lista
-            myAdapterActivities.notifyDataSetChanged() //notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
+        if(listaSessioniCorsa.isNotEmpty()) { // se l'utente presenta delle sessioni
+            listaSessioniCorsa.clear() // cancellazione di tutti gli elementi nella lista
+            myAdapterActivities.notifyDataSetChanged() // notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
         }
     }
 }

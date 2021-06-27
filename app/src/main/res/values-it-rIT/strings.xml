@@ -73,8 +73,10 @@
     <string name="timeDetail">Tempo</string>
     <string name="messageNoConsideration">La sessione appena sostenuta non è stata presa in considerazione</string>
     <string name="titleRunSession">Dettaglio sessione corsa</string>
-    <string name="warningPassword">Inserisci una password con un minimo di 8 e un massimo di 20 caratteri</string>
+    <string name="warningPassword">Inserisci una password con un minimo di 8 caratteri (massimo di 20), una lettera minuscola, una lettera maiuscola e un numero.</string>
     <string name="warningNameSurname">Inserisci il nome e cognome, devono essere entrambi di minimo due caratteri</string>
+    <string name="departureMarker">Partenza</string>
+    <string name="endMarker">Arrivo</string>
     <string name="signedIn">Accesso effettuato</string>
     <string name="notSignedIn">Accesso negato, registrati</string>
     <string name="registrationCompleted">Registrazione completata</string>
