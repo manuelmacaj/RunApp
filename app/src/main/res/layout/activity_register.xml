@@ -43,7 +43,6 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/password"
-        android:onClick="passwordWarning"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/editTextConfirmPassword2"
         app:layout_constraintEnd_toEndOf="parent"

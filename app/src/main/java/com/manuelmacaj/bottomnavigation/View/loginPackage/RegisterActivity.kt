@@ -14,11 +14,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.manuelmacaj.bottomnavigation.BASE64
-import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
-import kotlinx.android.synthetic.main.activity_register.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
