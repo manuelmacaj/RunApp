@@ -2,6 +2,7 @@ package com.manuelmacaj.bottomnavigation.View.runpackage
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -44,6 +45,15 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var manager: LocationManager
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
+
+    private var mContext: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(mContext == null) {
+            mContext = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Inizializzo il fragment della corsa
@@ -151,7 +161,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
 
         //Se l'utente non ha mai dato il consenso alla localizzazione o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso alla posizione
-        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro un AlertDialog
             //L'alert dialog informerà che dovrà fornire il consenso alla localizzazione
             val alertMessage = AlertDialog.Builder(requireActivity())
@@ -189,7 +199,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
                 } else { //se ha rifiutato allora la localizzazione non è abilitata
                     Log.d("", "Localizzazione disabilitata")
-                    Toast.makeText(requireContext(), "La localizzazione è disabilitata", Toast.LENGTH_LONG).show()
+                    Toast.makeText(mContext, "La localizzazione è disabilitata", Toast.LENGTH_LONG).show()
                 }
                 return
             }

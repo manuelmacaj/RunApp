@@ -15,7 +15,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import com.manuelmacaj.bottomnavigation.R
-import kotlinx.android.synthetic.main.activity_run_session.*
+import java.time.LocalTime
+import kotlin.time.hours
 
 
 class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -24,42 +25,56 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private var polylineList: MutableList<LatLng> = ArrayList()
-    private lateinit var sessionBeginDate: TextView
+    private lateinit var averageSpeed: TextView
     private lateinit var polylineEncode: String
     private lateinit var time: TextView
     private lateinit var distance: TextView
-    private lateinit var averagePale: TextView
+    private lateinit var averagePace: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_run_session)
 
-        title = getString(R.string.titleRunSession)
+        title = intent.getStringExtra("date")
+
         polylineEncode = intent.getStringExtra("polyline").toString()
         polylineList = PolyUtil.decode(polylineEncode)
         mapView = findViewById(R.id.mapViewDetailRun) //configurazione a livello visivo della mappa di google
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this) // azione assolutamente necessaria nel momento in cui si include un oggetto di tipo MapView
 
-        sessionBeginDate = findViewById(R.id.textViewTimeWhenStart)
         time = findViewById(R.id.textViewTimeValue)
         distance = findViewById(R.id.textViewDistanceDetailValue)
-        averagePale = findViewById(R.id.textViewAverageDetailValue)
+        averagePace = findViewById(R.id.textViewAverageDetailValue)
+        averageSpeed = findViewById(R.id.textViewAverageSpeedValue)
+
     }
 
     override fun onResume() {
         super.onResume()
         mapView.onResume()
 
-        sessionBeginDate.text = intent.getStringExtra("date")
         time.text = intent.getStringExtra("time")
         distance.text = intent.getStringExtra("distance")
-        averagePale.text = intent.getStringExtra("averagePale")
+        averagePace.text = intent.getStringExtra("averagePace")
+        calculateAverageSpeed()
+    }
+
+    private fun calculateAverageSpeed() {
+        val timeList = time.text.split(":")
+        val km = distance.text.split(" ")
+        //val timeRun = LocalTime.of(timeList[0].toInt(), timeList[1].toInt(), timeList[2].toInt())
+        val kmValue = km[0].toDouble()
+
+        val velocitaMedia:Double  =kmValue / (timeList[0].toDouble() + (timeList[1].toDouble() / 60) + (timeList[2].toDouble() / 3600))
+
+        averageSpeed.text = String.format("%.2f", velocitaMedia)
+        averageSpeed.append(" km/h")
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) { //Metodo implementato da OnMapReadyCallback, per la gestione della mappa di GoogleMaps
         map = googleMap
-        //map.uiSettings.setAllGesturesEnabled(false) //Tutte le gesture possibili sulla mappa sono disabilitate
         map.uiSettings.isMyLocationButtonEnabled = false // disabilito il location button.
         map.isBuildingsEnabled = false
 
@@ -104,7 +119,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
             builder.include(polylineList[i])
         }
         val bounds = builder.build()
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100), 1000, null)
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150), 2000, null)
     }
 
     override fun onStart() {

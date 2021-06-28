@@ -1,6 +1,7 @@
 package com.manuelmacaj.bottomnavigation.View.activitiesPackage
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -33,6 +34,14 @@ class ActivitiesFragment : Fragment() {
         .collection(collezioneUtenti) //accedo alla collezione "Utenti"
         .document(FirebaseAuth.getInstance().currentUser!!.uid) //accedo al documento riferito all'utente attualmente connesso
         .collection(collezioneSessioneCorsa) //accedo alla collezione "SessioniCorsa"
+    private var mContext: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(mContext == null) {
+            mContext = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_activities, container, false)
@@ -49,13 +58,13 @@ class ActivitiesFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 if(result.isEmpty) { //gestiamo il fatto che l'utente non presenta una collezione di sessioni di corsa
-                    Toast.makeText(requireContext(), "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
+                    Toast.makeText(mContext, "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
                         .show()
                 }
                 else{ //se invece l'utente presenta una collezione di sessioni di corsa
 
                     for (document in result) {
-                        Log.d("TAG", "${document.id} => ${document.data}")
+                        Log.d(TAG, "${document.id} => ${document.data}")
                         val date: Date? = document.getDate("TimeWhenStart")
                         val format = SimpleDateFormat("yyyy/MM/dd HH:mm")
 
@@ -69,7 +78,7 @@ class ActivitiesFragment : Fragment() {
                         listaSessioniCorsa.add(corsa) // Aggiungo il documento letto nella lista
                     }
 
-                    myAdapterActivities = AdapterActivities(requireContext(), listaSessioniCorsa) // creo l'oggetto per customizzare l'adapter
+                    myAdapterActivities = AdapterActivities(mContext!!, listaSessioniCorsa) // creo l'oggetto per customizzare l'adapter
                     listView.adapter = myAdapterActivities
                 }
             }
@@ -86,7 +95,7 @@ class ActivitiesFragment : Fragment() {
             intent.putExtra("date", listaSessioniCorsa[position].DataOrarioPartenza)
             intent.putExtra("time", listaSessioniCorsa[position].tempo)
             intent.putExtra("distance", listaSessioniCorsa[position].km)
-            intent.putExtra("averagePale", listaSessioniCorsa[position].andaturaMedia)
+            intent.putExtra("averagePace", listaSessioniCorsa[position].andaturaMedia)
             startActivity(intent) // avvio l'activity
         }
     }

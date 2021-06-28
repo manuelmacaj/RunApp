@@ -83,4 +83,5 @@
     <string name="registrationFailed">Registrazione fallita</string>
     <string name="titleSignOut">Disconnessione</string>
     <string name="messageSignOut">"Sei sicuro di volerti disconnettere dal tuo account? "</string>
+    <string name="average_speed">Velocità media</string>
 </resources>

@@ -2,6 +2,7 @@ package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -42,6 +43,14 @@ class PersonalAccountFragment : Fragment() {
     private val collezioneUtenti = "Utenti"
     private var context = null
 
+    private var mContext: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(mContext == null) {
+            mContext = context
+        }
+    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
@@ -93,7 +102,7 @@ class PersonalAccountFragment : Fragment() {
             .downloadUrl
             .addOnSuccessListener {
                //fonte: https://www.html.it/pag/71017/glide-e-il-caricamento-delle-immagini/
-                Glide.with(requireContext()).load(it).into(imageProfile)
+                Glide.with(mContext).load(it).into(imageProfile)
             }
             .addOnFailureListener {
                 Log.w(TAG, "Immagine non scaricata", it.cause)
@@ -111,7 +120,7 @@ class PersonalAccountFragment : Fragment() {
 
         //Se l'utente non ha mai dato il consenso per accedere alla galleria o è la prima volta che accede all'app, allora verrà richiesto di fornire il consenso
         if (ContextCompat.checkSelfPermission(
-                requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE
+                mContext!!, android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(
@@ -177,7 +186,7 @@ class PersonalAccountFragment : Fragment() {
                                     "URIImage",
                                     Global.utenteLoggato?.pathImageProfile
                                 ) //aggiorno il campo relativo all'URI dell'immagine
-                            Glide.with(requireContext()).load(selectedImage).into(imageProfile)
+                            Glide.with(mContext).load(selectedImage).into(imageProfile)
                         }
                         .addOnFailureListener { exception ->
                             Log.w(TAG, "Immagine non caricata", exception.cause)
