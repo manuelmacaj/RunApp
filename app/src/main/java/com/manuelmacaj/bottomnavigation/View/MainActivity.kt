@@ -63,17 +63,17 @@ class MainActivity : AppCompatActivity() {
 
     //Metodo chiamato ogni volta che viene selezionato un elemento dall'option menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        when (item.itemId) { // in base all'item selezionato, succederà qualcosa
             R.id.account -> {
                 Toast.makeText(this, getString(R.string.edit_your_account), Toast.LENGTH_SHORT).show()
-                openEditProfileActivity()
+                openEditProfileActivity() //apro activity per la modifica dell'account
             }
             R.id.password -> {
                 Toast.makeText(this, getString(R.string.edit_your_password), Toast.LENGTH_SHORT).show()
-                openEditPasswordActivity()
+                openEditPasswordActivity() //apro l'activity per la modifica della password
             }
             R.id.logout -> {
-                signOut()
+                signOut() //faccio il logout dell'account
             }
         }
         return true
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.titleSignOut))
             .setMessage(getString(R.string.messageSignOut))
-            .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su ok, verrà disconnesso
+            .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su sì, verrà disconnesso
                 mFirebaseAuth.signOut()
                 val intent = Intent(this@MainActivity, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

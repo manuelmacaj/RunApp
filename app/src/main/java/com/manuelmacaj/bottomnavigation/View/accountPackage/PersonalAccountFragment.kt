@@ -41,7 +41,6 @@ class PersonalAccountFragment : Fragment() {
     private val galleryPhotoCode = 1
     private var firebaseStorage = FirebaseStorage.getInstance()
     private val collezioneUtenti = "Utenti"
-    private var context = null
 
     private var mContext: Context? = null
 

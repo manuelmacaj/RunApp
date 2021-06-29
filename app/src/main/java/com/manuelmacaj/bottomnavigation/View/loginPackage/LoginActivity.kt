@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        //verifico se l'utente ha fatto la login o meno
+        //verifico se l'utente ha già fatto l'accesso o meno
         val user = mAuth.currentUser //credenziali utente loggato
         if (user != null) { //utente ha già fatto accesso
             readUserDocument(user.uid)
@@ -61,16 +61,20 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun checkLogin(v: View?) { //deve capire se quello inserito in username e password è valido o meno e nel caso segnalare
-        val email: String = editTextEmailLogin.getText().toString() //prelevo l'email dal relativo editText
+    fun checkLogin(v: View?) { //deve capire se quello inserito nei campi username e password sono validi o meno e nel caso segnalare
+        val email: String =
+            editTextEmailLogin.text.toString() //prelevo l'email dal relativo editText
         if (!isValidEmail(email)) { //faccio il controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
-            editTextEmailLogin.setError(getResources().getString(R.string.invalid_email)) //...imposto un errore sull'editText
+            editTextEmailLogin.error =
+                resources.getString(R.string.invalid_email) //...imposto un errore sull'editText
             return //non proseguo (guard)
         }
 
-        val pwd = editTextPasswordRegister.getText().toString() //prelevo la password dal relativo editText
+        val pwd =
+            editTextPasswordRegister.text.toString() //prelevo la password dal relativo editText
         if (!isValidPassword(pwd)) {  //faccio il controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
-            editTextPasswordRegister.setError(getResources().getString(R.string.invalid_password)) //...settiamo un errore
+            editTextPasswordRegister.error =
+                resources.getString(R.string.invalid_password) //...settiamo un errore
             return //non proseguo (guard)
         }
         ChecktoFirebase(email, pwd)
@@ -83,7 +87,6 @@ class LoginActivity : AppCompatActivity() {
                     //prelevo i dati dal documento
                     val idutente = documentSnapshot.getString("ID utente")
                     val nomeCognome = documentSnapshot.getString("Nome e Cognome")
-                    val emailFirestore = documentSnapshot.getString("Email")
                     val dataNascita = documentSnapshot.getString("Data di nascita")
                     val genere = documentSnapshot.getString("Genere")
                     val pwdCriptata = documentSnapshot.getString("EncryptedPassword")
@@ -93,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
                     Global.utenteLoggato = Utente(
                         idutente.toString(),
                         nomeCognome.toString(),
-                        emailFirestore.toString(),
+                        FirebaseAuth.getInstance().currentUser?.email.toString(),
                         dataNascita.toString(),
                         genere.toString(),
                         pwdCriptata.toString(),

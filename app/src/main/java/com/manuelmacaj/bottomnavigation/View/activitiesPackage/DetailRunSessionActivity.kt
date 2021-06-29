@@ -64,7 +64,11 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         val timeList = time.text.split(":")
         val km = distance.text.split(" ")
         //val timeRun = LocalTime.of(timeList[0].toInt(), timeList[1].toInt(), timeList[2].toInt())
-        val kmValue = km[0].toDouble()
+        var kmValue: Double = 0.0
+        kmValue = if (km[0].contains(","))
+            km[0].replace(",", ".").toDouble()
+        else
+            km[0].toDouble()
 
         val velocitaMedia:Double  =kmValue / (timeList[0].toDouble() + (timeList[1].toDouble() / 60) + (timeList[2].toDouble() / 3600))
 

@@ -68,7 +68,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
-
+            checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
             if (locationPermission == true && GPScheck) { // se ho il permesso e se il GPS è attivo
                 val intent = Intent(activity, RunSessionActivity::class.java) // Posso generare un
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -116,7 +116,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
+
         checkPermissions() // chiamata del metodo checkPermission
     }
 

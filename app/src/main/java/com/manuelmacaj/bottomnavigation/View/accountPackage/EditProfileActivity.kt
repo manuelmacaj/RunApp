@@ -117,10 +117,7 @@ class EditProfileActivity : AppCompatActivity() {
                 .addOnCompleteListener {
                     if (it.isSuccessful) { //se il cambio email è evvenuto con successo
                         Log.d(TAG, "Cambio email avvenuta con successo")
-                        //aggiorniamo la collezione su firestore riferito all'id utente specifico con la nuova email
-                        mFireStore.document(Global.utenteLoggato!!.idUtente).update(
-                            "Email", email
-                        )
+
                         //aggiorniamo l'informazione in locale dell'email dell'utente
                         Global.utenteLoggato?.emailUtente = email
                     } else {
