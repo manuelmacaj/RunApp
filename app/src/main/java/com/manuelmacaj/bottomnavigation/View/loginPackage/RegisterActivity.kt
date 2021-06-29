@@ -14,7 +14,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.R
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -37,7 +36,6 @@ class RegisterActivity : AppCompatActivity() {
     private var dateOfBirth: LocalDate? = null
     private lateinit var genderSelection: String
 
-    private val BASE64: BASE64 = BASE64()
 
     private val mRegister =
         FirebaseAuth.getInstance() //istanza firebase riferita alla sezione di autenticazione
@@ -174,13 +172,11 @@ class RegisterActivity : AppCompatActivity() {
                     //inserisco le informazioni dell'utente in una HashMap
                     userMap["ID utente"] = id
                     userMap["Nome e Cognome"] = nomeCognome
-                    userMap["Email"] = email
                     userMap["Genere"] = genderRadio.text
                     userMap["Data di nascita"] = dateOfBirth.toString()
                     val dateTime = LocalDateTime.now()
                     userMap["Data registrazione"] =
                         dateTime.format(DateTimeFormatter.ofPattern("d/M/y H:m:ss"))
-                    userMap["EncryptedPassword"] = BASE64.encrypt(password).toString()
                     userMap["URIImage"] = "userProfile/UPmale_profile_picture.png"
 
                     //creazione documento con informazioni utente

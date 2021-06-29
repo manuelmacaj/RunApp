@@ -50,7 +50,7 @@
     <string name="choose_another_password">Choose a different password from the one used previously</string>
     <string name="end_run">End your run</string>
     <string name="distance">Distance</string>
-    <string name="average_pale">Avarage Pace</string>
+    <string name="average_pale">Average Pace</string>
     <string name="titleGPSNotEnable">GPS isn\'t enable</string>
     <string name="messageGPSNotEnable">Your GPS seems to be disabled, do you want to enable it?</string>
     <string name="titleNoGooglePlayServices">Google Play Service not present on your device</string>
@@ -83,4 +83,6 @@
     <string name="titleSignOut">Disconnection</string>
     <string name="messageSignOut">Are you sure you want to log out of your account?</string>
     <string name="average_speed">Average speed</string>
+    <string name="password_update">Password update correctly</string>
+    <string name="re_auth_failed">Incorrect credentials. Unable to update, Please try again.</string>
 </resources>

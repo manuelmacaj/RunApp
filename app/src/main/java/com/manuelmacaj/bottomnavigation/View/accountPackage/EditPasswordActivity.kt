@@ -1,6 +1,7 @@
 package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -12,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import java.util.regex.Pattern
@@ -23,11 +23,9 @@ class EditPasswordActivity : AppCompatActivity() {
     private lateinit var oldPassword: EditText
     private lateinit var newPassword: EditText
     private lateinit var confirmPassword: EditText
-    private val BASE64: BASE64 = BASE64()
 
-    //istanza firestore riferita alla collezione utenti. Se non esiste, viene creata
-    private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
-    private val mAuthUser = FirebaseAuth.getInstance().currentUser //istanza firebase riferita alla sezione di autenticazione
+    //istanza firebase riferita alla sezione di autenticazione
+    private val mAuthUser = FirebaseAuth.getInstance().currentUser
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,11 +63,9 @@ class EditPasswordActivity : AppCompatActivity() {
         val vecchiaPassword = oldPassword.text.toString()
         val password = newPassword.text.toString()
         val confermaPassword = confirmPassword.text.toString()
-        val oldPasswordEncrypt = BASE64.encrypt(vecchiaPassword)
 
-        if (oldPasswordEncrypt != Global.utenteLoggato?.encryptedPassword) { //controllo se la vecchia password corrisponde a quella che abbiamo salvato
-            Log.d(TAG, "La vecchia password non corrisponde alla password utilizzata fino adesso")
-            oldPassword.error = resources.getString(R.string.old_password_check) //messaggio di errore
+        if (vecchiaPassword.isEmpty()){
+            oldPassword.error = "Old password is empty"
             return
         }
 
@@ -104,30 +100,26 @@ class EditPasswordActivity : AppCompatActivity() {
     }
 
     private fun updatePassword(password: String, oldPassword: String) { //funzione per l'aggiornamento della password su firebase
-        val credential = EmailAuthProvider //otteniamo le credenziali dell'utente
-            .getCredential(Global.utenteLoggato?.emailUtente.toString(), oldPassword)
 
-        if (mAuthUser == null) { //se l'istanza di firebase è vuota
-            return //non proseguo
+        val credential = EmailAuthProvider //otteniamo le credenziali dell'utente
+            .getCredential(Global.utenteLoggato?.emailUtente.toString(),
+                oldPassword
+            )
+
+        if (mAuthUser == null) {
+            return
         }
 
-        mAuthUser.reauthenticate(credential).addOnCompleteListener {
-            if (it.isSuccessful) { //se la riautenticazione va a buon fine
+        mAuthUser.reauthenticate(credential)
+            .addOnSuccessListener {
                 mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente nella sezione autenticazione di firebase
                     .addOnCompleteListener {
                         if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
                             Log.d(TAG, "Cambio password avvenuto con successo")
-                            //aggiorniamo la collezione su firestore riferito all'id utente specifico con la nuova password
-                            mFireStore.document(Global.utenteLoggato!!.idUtente).update(
-                                "EncryptedPassword", BASE64.encrypt(password)
-                            )
-                            //aggiorniamo l'informazione in locale della password dell'utente
-                            Global.utenteLoggato?.encryptedPassword =
-                                BASE64.encrypt(password).toString()
-                            //toast message
+                            // Password aggiornata
                             Toast.makeText(
                                 this,
-                                "Password aggiornata correttamente",
+                                getString(R.string.password_update),
                                 Toast.LENGTH_LONG
                             )
                                 .show()
@@ -138,24 +130,22 @@ class EditPasswordActivity : AppCompatActivity() {
                                 .setTitle(getString(R.string.titleUpdatePassword))
                                 .setMessage(getString(R.string.messageUpdatePassword))
                                 .setPositiveButton("Ok") { _, _ ->
-                                    /*   Toast.makeText(
-                                           this,
-                                           "Riprova a riaggiornare la password",
-                                           Toast.LENGTH_LONG
-                                       ).show()*/
                                 }
                                 .create()
                                 .show()
                         }
+                        finish()
                     }
-            } else {
-                Log.d(TAG, "La riautenticazione è fallita")
             }
-        }
-
-        finish()
+            .addOnFailureListener {
+                Toast.makeText(
+                        this,
+                        getString(R.string.re_auth_failed),
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+            }
     }
-
     private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
         val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
         val pattern = Pattern.compile(PASSWORD_PATTERN)

@@ -11,10 +11,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.activity_edit_profile.*

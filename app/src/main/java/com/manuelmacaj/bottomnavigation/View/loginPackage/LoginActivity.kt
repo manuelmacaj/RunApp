@@ -89,7 +89,6 @@ class LoginActivity : AppCompatActivity() {
                     val nomeCognome = documentSnapshot.getString("Nome e Cognome")
                     val dataNascita = documentSnapshot.getString("Data di nascita")
                     val genere = documentSnapshot.getString("Genere")
-                    val pwdCriptata = documentSnapshot.getString("EncryptedPassword")
                     val percorsoImmagineProfilo = documentSnapshot.getString("URIImage")
 
                     //inserico le informazioni lette dal documento di firestore in utente loggato
@@ -99,7 +98,6 @@ class LoginActivity : AppCompatActivity() {
                         FirebaseAuth.getInstance().currentUser?.email.toString(),
                         dataNascita.toString(),
                         genere.toString(),
-                        pwdCriptata.toString(),
                         percorsoImmagineProfilo.toString()
                     )
                     Log.d(TAG, Global.utenteLoggato!!.toStringUtente())
