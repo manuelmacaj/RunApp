@@ -15,8 +15,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import com.manuelmacaj.bottomnavigation.R
-import java.time.LocalTime
-import kotlin.time.hours
 
 
 class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {

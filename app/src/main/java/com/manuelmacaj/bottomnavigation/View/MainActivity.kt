@@ -3,14 +3,12 @@ package com.manuelmacaj.bottomnavigation.View
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.manuelmacaj.bottomnavigation.R
 import com.manuelmacaj.bottomnavigation.View.accountPackage.EditPasswordActivity

@@ -1,13 +1,15 @@
 package com.manuelmacaj.bottomnavigation.View.loginPackage
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.Global.Global
@@ -32,14 +34,32 @@ class LoginActivity : AppCompatActivity() {
             resources.getString(R.string.signin) //imposto il titolo dell'activity che verrà visualizzato sulla toolbar
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) //la night mode viene disabilata
     }
+    private fun checkGooglePlayService(): Boolean { // metodo per controllare se il device presenta il Google Play Service
+        val googleApiAvailability = GoogleApiAvailability.getInstance()
+        val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+        return resultCode == ConnectionResult.SUCCESS
+    }
 
     override fun onStart() {
         super.onStart()
-        //verifico se l'utente ha già fatto l'accesso o meno
-        val user = mAuth.currentUser //credenziali utente loggato
-        if (user != null) { //utente ha già fatto accesso
-            readUserDocument(user.uid)
-            openMainActivity()
+        if (!checkGooglePlayService()) { // Le funzionatià di Google Maps, FusedLocationProviderClient e Firebase sono disponibili solo se il dispositivo ha Google Play Service installato
+            AlertDialog.Builder(this.applicationContext) // Qualora il Play Services non fosse installato, informo l'utente del problema
+                .setTitle(getString(R.string.titleNoGooglePlayServices))
+                .setMessage(getString(R.string.messageNoGooglePlayService))
+                .setPositiveButton("Ok") { _, _ ->
+                    finish() // siccome il Google Play service è necessario, chiudo l'app
+                }
+                .setCancelable(false) // l'utente dovrà necessariamente premere il bottone ok, dato che il Play Service è necessario
+                .create()
+                .show()
+        } else {
+            Log.d(TAG, "Google Play Service installed")
+            //verifico se l'utente ha già fatto l'accesso o meno
+            val user = mAuth.currentUser //credenziali utente loggato
+            if (user != null) { //utente ha già fatto accesso
+                readUserDocument(user.uid)
+                openMainActivity()
+            }
         }
     }
 

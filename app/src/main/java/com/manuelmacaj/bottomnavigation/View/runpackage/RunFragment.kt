@@ -18,8 +18,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -89,29 +87,9 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    private fun checkGooglePlayService(): Boolean { // metodo per controllare se il device presenta il Google Play Service
-        val googleApiAvailability = GoogleApiAvailability.getInstance()
-        val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(requireActivity())
-        return resultCode == ConnectionResult.SUCCESS
-    }
-
     override fun onStart() {
         super.onStart()
-        if (!checkGooglePlayService()) { // Le funzionatià di Google Maps e FusedLocationProviderClient sono disponibili solo se il dispositivo ha Google Play Service installato
-            AlertDialog.Builder(requireActivity()) // Qualora il Play Services non fosse installato, informo l'utente del problema
-                .setTitle(getString(R.string.titleNoGooglePlayServices))
-                .setMessage(getString(R.string.messageNoGooglePlayService))
-                .setPositiveButton("Ok") { _, _ ->
-                    requireActivity().finish() // siccome il Google Play service è necessario, chiudo l'app
-                }
-                .setCancelable(false) // l'utente dovrà necessariamente premere il bottone ok, dato che il Play Service è necessario
-                .create()
-                .show()
-        } else {
-            Log.d(TAG, "Google Play Service installed")
-            checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
-
-        }
+        checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
     }
 
     override fun onResume() {

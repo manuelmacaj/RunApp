@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.manuelmacaj.bottomnavigation.Model.Corsa
 import com.manuelmacaj.bottomnavigation.R
 
