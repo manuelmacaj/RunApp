@@ -41,7 +41,7 @@ Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e g
 - L&#39;app necessita di Google Play Service per l&#39;uso di Firebase e Google Maps.
 - Il tema non è dinamico (solo modalità light mode).
 - Il GPS deve essere necessariamente attivo, altrimenti non sarà possibile monitorare la corsa correttamente.
-- Per gli utenti Xiaomi sarà necessario andare nelle impostazioni -\&gt; app -\&gt; RunApp -\&gt; risparmio batteria e disattivare le restrizioni della MIUI.
+- Per gli utenti Xiaomi sarà necessario andare nelle impostazioni -> app -> RunApp -> risparmio batteria e disattivare le restrizioni della MIUI.
 - Durante una sessione, l&#39;utente può navigare in altre applicazioni ed essere monitorato in background.
 - L&#39;utente deve ricordarsi le credenziali d&#39;accesso (non è presente un recupero password o recupero email).
 
