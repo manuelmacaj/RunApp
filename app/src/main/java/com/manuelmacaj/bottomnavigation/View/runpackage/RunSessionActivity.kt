@@ -88,6 +88,7 @@ class RunSessionActivity : AppCompatActivity() {
         }
 
         btnEndRun.setOnClickListener {
+            btnEndRun.isClickable = false //una volta cliccato sul bottone, è visibile ma viene disattivato
             AlertDialog.Builder(this) //AlertDialog che chiede all'utente se vuole terminare la corsa
                 .setTitle(getString(R.string.titleEndRun))
                 .setMessage(getString(R.string.messageEndRun))
@@ -105,7 +106,9 @@ class RunSessionActivity : AppCompatActivity() {
                 .setNegativeButton("No") { dialog, _ ->
                     //non faccio niente, proseguo la corsa
                     dialog.cancel()
+                    btnEndRun.isClickable = true //il bottone è di nuovo cliccabile
                 }
+                .setCancelable(false)
                 .create()
                 .show()
         }
