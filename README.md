@@ -5,7 +5,7 @@ Applicazione per il monitoraggio delle tue sessioni di corsa. Gli utenti registr
 possibilità di salvare le proprie corse e di visualizzare nel dettaglio le informazioni annesse. 
 La sessione viene salvata se l’utente percorre almeno 100m. 
 
-Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e gestione dei dati.
+Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e gestione dei dati. <br/>
 **Servizi utilizzati:**
 - Firebase Authentication: gestione credenziali utenti (Provider: e-mail e password)
 - Firebase Firestore database: collezione di utenti e di sessioni corsa 
