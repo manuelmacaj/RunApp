@@ -1,6 +1,7 @@
 package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -12,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.manuelmacaj.bottomnavigation.BASE64
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
 import java.util.regex.Pattern
 
 class EditPasswordActivity : AppCompatActivity() {
@@ -23,12 +24,9 @@ class EditPasswordActivity : AppCompatActivity() {
     private lateinit var oldPassword: EditText
     private lateinit var newPassword: EditText
     private lateinit var confirmPassword: EditText
-    private val BASE64: BASE64 = BASE64()
 
-    //istanza firestore riferita alla collezione Utenti. Se non esiste, viene creata
-    private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
-    private val mAuthUser =
-        FirebaseAuth.getInstance().currentUser //istanza firebase riferita alla sezione di autenticazione
+    //istanza firebase riferita alla sezione di autenticazione
+    private val mAuthUser = FirebaseAuth.getInstance().currentUser
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,12 +64,10 @@ class EditPasswordActivity : AppCompatActivity() {
         val vecchiaPassword = oldPassword.text.toString()
         val password = newPassword.text.toString()
         val confermaPassword = confirmPassword.text.toString()
-        val oldPasswordEncrypt = BASE64.encrypt(vecchiaPassword)
 
-        if (oldPasswordEncrypt != Global.utenteLoggato?.encryptedPassword) { //controllo se la vecchia password corrisponde a quella che abbiamo salvato
-            Log.d(TAG, "La vecchia password non corrisponde alla password utilizzata fino adesso")
-            oldPassword.error = resources.getString(R.string.old_password_check) //messaggio di errore
-            return //non proseguo(guard)
+        if (vecchiaPassword.isEmpty()){
+            oldPassword.error = getString(R.string.empty_old_password)
+            return
         }
 
         if (vecchiaPassword == password) { //controllo se la nuova password è diversa da quella usata in precedenza
@@ -104,56 +100,55 @@ class EditPasswordActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun updatePassword(password: String, oldPassword: String) { //funzione per l'aggiornamento della password
-        val credential = EmailAuthProvider //otteniamo le credenziali (email e password) dell'utente
-            .getCredential(Global.utenteLoggato?.emailUtente.toString(), oldPassword)
+    private fun updatePassword(password: String, oldPassword: String) { //funzione per l'aggiornamento della password su firebase
 
-        if (mAuthUser == null) { //se l'utente non presenta le credenziali (nella cache)
-            return //non proseguo
+        val credential = EmailAuthProvider //otteniamo le credenziali dell'utente
+            .getCredential(Global.utenteLoggato?.emailUtente.toString(),
+                oldPassword)
+
+        if (mAuthUser == null) { // se le credenziali sono scadute, allora torno nella sezione Login
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
-        mAuthUser.reauthenticate(credential).addOnCompleteListener {
-            if (it.isSuccessful) { //se la riautenticazione va a buon fine
-                mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente in firebase authentication
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
-                            Log.d(TAG, "Cambio password avvenuto con successo")
-                            //aggiorniamo la collezione su firestore dell'id utente connesso con la nuova password
-                            mFireStore.document(Global.utenteLoggato!!.idUtente).update(
-                                "EncryptedPassword", BASE64.encrypt(password)
-                            )
-                            //aggiorniamo la password dell'utente in locale
-                            Global.utenteLoggato?.encryptedPassword =
-                                BASE64.encrypt(password).toString()
-                            //Toast per notificare all'utente che la password non è stata aggiornata
-                            Toast.makeText(
-                                this,
-                                "Password aggiornata correttamente",
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                        } else {
-                            Log.d(TAG, "Cambio password non avvenuto")
-                            //alert dialog se il cambio password non avviene correttamente
-                            AlertDialog.Builder(this)
-                                .setTitle(getString(R.string.titleUpdatePassword))
-                                .setMessage(getString(R.string.messageUpdatePassword))
-                                .setPositiveButton("Ok") { _, _ ->
-                                    /*   Toast.makeText(
-                                           this,
-                                           "Riprova a riaggiornare la password",
-                                           Toast.LENGTH_LONG
-                                       ).show()*/
-                                }
-                                .create()
-                                .show()
+        else{
+            mAuthUser.reauthenticate(credential)
+                .addOnSuccessListener {
+                    mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente nella sezione autenticazione di firebase
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
+                                Log.d(TAG, "Cambio password avvenuto con successo")
+                                // Password aggiornata
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.password_update),
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            } else {
+                                Log.d(TAG, "Cambio password non avvenuto")
+                                //alert dialog se il cambio password non avviene correttamente
+                                AlertDialog.Builder(this)
+                                    .setTitle(getString(R.string.titleUpdatePassword))
+                                    .setMessage(getString(R.string.messageUpdatePassword))
+                                    .setPositiveButton("Ok") { _, _ ->
+                                    }
+                                    .create()
+                                    .show()
+                            }
+                            finish()
                         }
-                    }
-            } else {
-                Log.d(TAG, "La riautenticazione è fallita")
-            }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.re_auth_failed),
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
         }
-        finish() //chiudo la finestra
     }
 
     private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
