@@ -8,7 +8,7 @@ class Utente(
     var genere: String,
     var encryptedPassword: String,
     var pathImageProfile: String
-) { //costruttore della classe utente
+) { //costruttore della classe Utente
 
     fun toStringUtente(): String { //metodo toStringUtente
         return "ID utente: ${idUtente}, nome e cognome: ${nomeCognomeUtente}, email utente: ${emailUtente}, data di nascita: ${dataNascita}, genere: $genere, Password (Encryped): ${encryptedPassword.toString()}, URI immagine: $pathImageProfile"

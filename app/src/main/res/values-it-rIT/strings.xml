@@ -26,7 +26,7 @@
     <string name="confirm_password">conferma password</string>
     <string name="register_app">RegisterForm</string>
     <string name="first_second_name">nome e cognome</string>
-    <string name="empty_name_surname">Campo vuoto</string>
+    <string name="empty_name_surname">Campo vuoto o caratteri insufficienti</string>
     <string name="password_check">Le password non corrispondono</string>
     <string name="image_view">TODO</string>
     <string name="day">Giorno:</string>

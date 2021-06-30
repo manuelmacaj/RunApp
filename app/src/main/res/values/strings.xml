@@ -25,7 +25,7 @@
     <string name="confirm_password">confirm password</string>
     <string name="register_app">RegisterForm</string>
     <string name="first_second_name">name and surname</string>
-    <string name="empty_name_surname">Empty field</string>
+    <string name="empty_name_surname">Empty field or insufficient characters</string>
     <string name="password_check">Passwords don\'t match</string>
     <string name="image_view">TODO</string>
     <string name="day">Day:</string>

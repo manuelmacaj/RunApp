@@ -40,9 +40,9 @@ class RegisterActivity : AppCompatActivity() {
     private val BASE64: BASE64 = BASE64()
 
     private val mRegister =
-        FirebaseAuth.getInstance() //istanza firebase riferita alla sezione di autenticazione
+        FirebaseAuth.getInstance() //istanza firebase, riferita alla sezione di autenticazione
 
-    //istanza firestore riferita alla collezione Utenti. Se non esiste, la crea
+    //istanza firestore riferita alla collezione Utenti. Se non esiste, viene creata
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
 
     @SuppressLint("ClickableViewAccessibility")
@@ -61,7 +61,7 @@ class RegisterActivity : AppCompatActivity() {
         firstPasswordField.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    //Toast di avviso
+                    //Toast di avviso per inserimento della password
                     Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
                 }
             }
@@ -85,39 +85,40 @@ class RegisterActivity : AppCompatActivity() {
         mDisplayDate = findViewById(R.id.textViewDate)
         mDisplayDate.setOnClickListener {
 
-            //AlertDialog per la data di nascita utente
+            //AlertDialog per inserimento data di nascita utente
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.titleDateofBirth))
                 .setMessage(getString(R.string.messageDateofBirth))
-                .setPositiveButton(getString(R.string.yesButton)) { _, _ ->
-                    val cal = Calendar.getInstance()
-                    val year = cal[Calendar.YEAR]
-                    val month = cal[Calendar.MONTH]
-                    val day = cal[Calendar.DAY_OF_MONTH]
+                .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su sì
+                    val cal = Calendar.getInstance() //istanza classe Calendar
+                    val year = cal[Calendar.YEAR]  //prelevo l'anno dal Calendario
+                    val month = cal[Calendar.MONTH] //prelevo il mese dal Calendario
+                    val day = cal[Calendar.DAY_OF_MONTH] //prelevo il giorno dal Calendario
 
-                    val dialog = DatePickerDialog(
+                    val dialog = DatePickerDialog( //creazione finestra di dialogo per selezione della data di nascita
                         this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener,
                         year, month, day
                     )
                     dialog.datePicker.maxDate =
                         System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corrente
                     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    dialog.show()
+                    dialog.show() //finestra di dialogo avviata e mostrata a schermo
                 }
                 .setCancelable(false)
                 .create()
                 .show()
         }
         mDateSetListener =
-            OnDateSetListener { datePicker, year, month, day ->
+            OnDateSetListener { datePicker, year, month, day -> //listener indica che l'utente ha finito di selezionare la data dal datapicker
                 val mese: Int = month + 1
                 Log.d(TAG, "onDateSet: mm/dd/yyy: $mese/$day/$year")
-                dateOfBirth = LocalDate.of(year, mese, day)
+                dateOfBirth = LocalDate.of(year, mese, day) //ricaviano la data di nascita dell'utente
                 mDisplayDate.text = dateOfBirth.toString() //inserisco la data di nascita nella textView
             }
     }
 
-    fun checkRegister(v: View?) { //funzione per verificare se username e password sono validi o meno
+    //funzione per verificare se quello inserito nei campi di username e password sono validi o meno e nel caso segnalare
+    fun checkRegister(v: View?) {
 
         val nomeCognome = nameSurname.text.toString()
         val email = emailField.text.toString()
@@ -125,15 +126,16 @@ class RegisterActivity : AppCompatActivity() {
         val confermaPassword = confirmPasswordField.text.toString()
 
         if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
-            //settiamo un errore se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
-            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore
-            return
+            //se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
+            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore sulla editText
+            return //non proseguo(guard)
         }
 
-        if (radioGroupGender.checkedRadioButtonId == -1) { //nessun radio button selezionato da parte dell'utente
+        if (radioGroupGender.checkedRadioButtonId == -1) {
+            //se nessun radio button è stato selezionato da parte dell'utente
             genderSelection = resources.getString(R.string.gender_not_selected) //imposto un errore
             Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
-            return
+            return //non proseguo(guard)
         }
 
         if (dateOfBirth == null) { //se la data di nascita è a null
@@ -142,32 +144,32 @@ class RegisterActivity : AppCompatActivity() {
                 getString(R.string.enterDateofBirth),
                 Toast.LENGTH_LONG
             ).show()
-            return
+            return //non proseguo(guard)
         }
 
-        if (!isValidEmail(email)) { //verifico se l'email inserita dall'utente è valida o meno
-            emailField.error = resources.getString(R.string.invalid_email) //settiamo un errore
-            return
+        if (!isValidEmail(email)) { //Controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
+            emailField.error = resources.getString(R.string.invalid_email) //...settiamo un errore
+            return //non proseguo(guard)
         }
 
-        if (!isValidPassword(password)) { //verifico se la password inserita dall'utente è valida o meno
-            firstPasswordField.error = resources.getString(R.string.invalid_password) //settiamo un errore
-            return
+        if (!isValidPassword(password)) { //Controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
+            firstPasswordField.error = resources.getString(R.string.invalid_password) //...settiamo un errore
+            return //non proseguo(guard)
         }
 
         if (!isValidPassword(confermaPassword) && (confermaPassword != password)) { //verifico se le due password inserite dall'utente corrispondono o meno
             confirmPasswordField.error = resources.getString((R.string.password_check)) //settiamo un errore
-            return
+            return //non proseguo(guard)
         }
         registerNewAccount(nomeCognome, email, password)
     }
 
     private fun registerNewAccount(nomeCognome: String, email: String, password: String) {
-
+        //funzione per registrare un nuovo utente con le informazioni inserite in fase di registrazione
         mRegister.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task -> //proviamo a registrare utente
                 if (task.isSuccessful) { //email utente non era presente nella sezione di autenticazione
-                    val userAuth = mRegister.currentUser //prelevo informazioni utente
+                    val userAuth = mRegister.currentUser //prelevo informazioni utente connesso
                     val id = userAuth!!.uid
                     val userMap = HashMap<String, Any>()
 
@@ -177,7 +179,7 @@ class RegisterActivity : AppCompatActivity() {
                     userMap["Email"] = email
                     userMap["Genere"] = genderRadio.text
                     userMap["Data di nascita"] = dateOfBirth.toString()
-                    val dateTime = LocalDateTime.now()
+                    val dateTime = LocalDateTime.now() //otteniamo la data corrente
                     userMap["Data registrazione"] =
                         dateTime.format(DateTimeFormatter.ofPattern("d/M/y H:m:ss"))
                     userMap["EncryptedPassword"] = BASE64.encrypt(password).toString()

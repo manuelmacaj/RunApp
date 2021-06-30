@@ -8,7 +8,7 @@ class Corsa(
     var km: String,
     var DataOrarioPartenza: String,
     var andaturaMedia: String
-) { //Costruttore classe Corsa
+) { //Costruttore della classe Corsa
     fun toStringCorsa(): String { //metodo tostringCorsa
         return "PolylineEncode:  ${polylineString}, time: ${tempo}, km: ${km}, date: ${DataOrarioPartenza}, averagePace: $andaturaMedia}"
     }

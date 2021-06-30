@@ -61,10 +61,11 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun checkLogin(v: View?) { //deve capire se quello inserito nei campi username e password sono validi o meno e nel caso segnalare
+    //deve capire se quello inserito nei campi username e password sono validi o meno e nel caso segnalare
+    fun checkLogin(v: View?) {
         val email: String =
             editTextEmailLogin.text.toString() //prelevo l'email dal relativo editText
-        if (!isValidEmail(email)) { //faccio il controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
+        if (!isValidEmail(email)) { //Controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
             editTextEmailLogin.error =
                 resources.getString(R.string.invalid_email) //...imposto un errore sull'editText
             return //non proseguo (guard)
@@ -72,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
 
         val pwd =
             editTextPasswordRegister.text.toString() //prelevo la password dal relativo editText
-        if (!isValidPassword(pwd)) {  //faccio il controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
+        if (!isValidPassword(pwd)) {  //Controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
             editTextPasswordRegister.error =
                 resources.getString(R.string.invalid_password) //...settiamo un errore
             return //non proseguo (guard)
@@ -84,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
         mFireStore.document(documentID).get()
             .addOnSuccessListener { documentSnapshot -> //caso di successo
                 if (documentSnapshot.exists()) { //se il documento esiste
-                    //prelevo i dati dal documento
+                    //prelevo i dati dal documento presente in firestore
                     val idutente = documentSnapshot.getString("ID utente")
                     val nomeCognome = documentSnapshot.getString("Nome e Cognome")
                     val dataNascita = documentSnapshot.getString("Data di nascita")
@@ -114,14 +115,14 @@ class LoginActivity : AppCompatActivity() {
         password: String
     ) { //verifichiamo se l'utente è autenticato o meno, controllando la sua email e password
         mAuth.signInWithEmailAndPassword(email, password)
-            //verifico ciò che è successo tramite il listener
+            //verifico ciò che è successo tramite listener
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) { //tutto andato a buon fine
+                if (task.isSuccessful) { //se tutto è andato a buon fine
                     Toast.makeText(this, getString(R.string.signedIn), Toast.LENGTH_LONG).show()
 
-                    val user = mAuth.currentUser //credenziali utente loggato
+                    val user = mAuth.currentUser //credenziali utente connesso
                     //preleviamo dati utenti
-                    if (user != null) {
+                    if (user != null) { //utente ha già fatto accesso
                         readUserDocument(user.uid)
                         openMainActivity()
                     }
