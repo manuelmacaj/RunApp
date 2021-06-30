@@ -23,7 +23,7 @@ Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e g
 - Sezione attività che mostra le sessioni di corsa sostenute raggruppate in una lista
 - Monitoraggio della sessione di corsa (calcolo km, calcolo andatura media, cronometro, salvataggio delle coordinate)
 - Sezione profilo utente
-- Salvataggio delle sessioni un una collezione dedicata (visibile solo all&#39;utente che l&#39;ha sostenuto)
+- Salvataggio delle sessioni in una collezione dedicata (visibile solo all&#39;utente che l&#39;ha sostenuto)
 - Visualizzazione della posizione corrente su Google Maps
 - Possibilità di modificare le proprie informazioni (nome e cognome, genere, e-mail, password)
 - Possibilità di effettuare il Logout
