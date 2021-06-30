@@ -192,6 +192,7 @@ class RegisterActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.w(TAG, "Email già esistente", task.exception)
+                    Toast.makeText(this, "Email esistente, usare un altra email", Toast.LENGTH_LONG).show()
                 }
             }
     }

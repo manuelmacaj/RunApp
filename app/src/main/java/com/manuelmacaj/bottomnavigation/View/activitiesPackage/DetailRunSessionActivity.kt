@@ -63,14 +63,14 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun calculateAverageSpeed() {
         val timeList = time.text.split(":")
         val km = distance.text.split(" ")
-        //val timeRun = LocalTime.of(timeList[0].toInt(), timeList[1].toInt(), timeList[2].toInt())
-        var kmValue: Double = 0.0
-        kmValue = if (km[0].contains(","))
+
+        val kmValue: Double = if (km[0].contains(","))
             km[0].replace(",", ".").toDouble()
         else
             km[0].toDouble()
 
-        val velocitaMedia:Double  =kmValue / (timeList[0].toDouble() + (timeList[1].toDouble() / 60) + (timeList[2].toDouble() / 3600))
+        val velocitaMedia: Double =
+            kmValue / (timeList[0].toDouble() + (timeList[1].toDouble() / 60) + (timeList[2].toDouble() / 3600))
 
         averageSpeed.text = String.format("%.2f", velocitaMedia)
         averageSpeed.append(" km/h")
@@ -83,11 +83,11 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         map.isBuildingsEnabled = false
 
         map.addPolyline(
-            PolylineOptions() //funzione per decodificare polyline in una lista
-                .addAll(polylineList)
+            PolylineOptions()
+                .addAll(polylineList) // costruisco una polyline in base alla lista che ho a disposizione
                 .width(5F) //quanto è marcata la polyline
                 .color(Color.RED)
-                .geodesic(true)
+                .geodesic(false)
         )
 
         zoomToFit()

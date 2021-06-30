@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
 import java.util.regex.Pattern
 
 class EditPasswordActivity : AppCompatActivity() {
@@ -65,7 +66,7 @@ class EditPasswordActivity : AppCompatActivity() {
         val confermaPassword = confirmPassword.text.toString()
 
         if (vecchiaPassword.isEmpty()){
-            oldPassword.error = "Old password is empty"
+            oldPassword.error = getString(R.string.empty_old_password)
             return
         }
 
@@ -103,48 +104,51 @@ class EditPasswordActivity : AppCompatActivity() {
 
         val credential = EmailAuthProvider //otteniamo le credenziali dell'utente
             .getCredential(Global.utenteLoggato?.emailUtente.toString(),
-                oldPassword
-            )
+                oldPassword)
 
-        if (mAuthUser == null) {
-            return
+        if (mAuthUser == null) { // se le credenziali sono scadute, allora torno nella sezione Login
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
-
-        mAuthUser.reauthenticate(credential)
-            .addOnSuccessListener {
-                mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente nella sezione autenticazione di firebase
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
-                            Log.d(TAG, "Cambio password avvenuto con successo")
-                            // Password aggiornata
-                            Toast.makeText(
-                                this,
-                                getString(R.string.password_update),
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                        } else {
-                            Log.d(TAG, "Cambio password non avvenuto")
-                            //alert dialog se il cambio password non avviene correttamente
-                            AlertDialog.Builder(this)
-                                .setTitle(getString(R.string.titleUpdatePassword))
-                                .setMessage(getString(R.string.messageUpdatePassword))
-                                .setPositiveButton("Ok") { _, _ ->
-                                }
-                                .create()
-                                .show()
+        
+        else{
+            mAuthUser.reauthenticate(credential)
+                .addOnSuccessListener {
+                    mAuthUser.updatePassword(password) //aggiorniamo la password dell'utente nella sezione autenticazione di firebase
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) { //se il cambio password è avvenuto correttamente
+                                Log.d(TAG, "Cambio password avvenuto con successo")
+                                // Password aggiornata
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.password_update),
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            } else {
+                                Log.d(TAG, "Cambio password non avvenuto")
+                                //alert dialog se il cambio password non avviene correttamente
+                                AlertDialog.Builder(this)
+                                    .setTitle(getString(R.string.titleUpdatePassword))
+                                    .setMessage(getString(R.string.messageUpdatePassword))
+                                    .setPositiveButton("Ok") { _, _ ->
+                                    }
+                                    .create()
+                                    .show()
+                            }
+                            finish()
                         }
-                        finish()
-                    }
-            }
-            .addOnFailureListener {
-                Toast.makeText(
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
                         this,
                         getString(R.string.re_auth_failed),
                         Toast.LENGTH_LONG
                     )
                         .show()
-            }
+                }
+        }
     }
     private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
         val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password

@@ -68,7 +68,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
-            checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
             if (locationPermission == true && GPScheck) { // se ho il permesso e se il GPS è attivo
                 val intent = Intent(activity, RunSessionActivity::class.java) // Posso generare un
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -110,13 +109,14 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 .show()
         } else {
             Log.d(TAG, "Google Play Service installed")
+            checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
+
         }
     }
 
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-
         checkPermissions() // chiamata del metodo checkPermission
     }
 
@@ -134,11 +134,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     private fun checkGPSIsEnable() { //funzione di check
         manager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-        GPScheck = if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { // se il GPS non è abilitato
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { // se il GPS non è abilitato
             buildAlertMessageNoGps() // chiamo il metodo buildAlertMessageNoGps()
-            false // imposto a false la variabile booleana GPScheck
+            GPScheck = false // imposto a false la variabile booleana GPScheck
+            return
         } else // se il gps è attivo
-            true // imposto a true la variabile booleana GPScheck
+            GPScheck = true // imposto a true la variabile booleana GPScheck
     }
 
     private fun buildAlertMessageNoGps() { // metodo con all'interno l'alert dialog che avvisa che il GPS non è abilitato
@@ -156,7 +157,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             .create()
             .show()
     }
-
 
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
 
@@ -239,12 +239,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             locationRequest?.let { locationRequest ->
                 locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Massima accuratezza nella localizzazione
 
-                locationRequest.interval = 2500 // intervallo di localizzazione (ogni 2,5 secondi)
+                locationRequest.interval = 1500 // intervallo di localizzazione (ogni 1,5 secondi)
                 locationRequest.fastestInterval = 1000 // intervallo di localizzazione accelerata (ogni secondo)
 
                 locationCallback = object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult?) { // gestisco la locationCallback, se avviene un cambiamento di posizione avvio la funzione get location
-                        getLocation() //richiamo la funzione di localizzazione
+                        getLocation() //richiamo il metodo getLocation
                     }
                 }
                 fusedLocationClient.requestLocationUpdates( //questa funzione richiede aggiornamenti sulla posizione da parte dell'oggetto locationCallback
