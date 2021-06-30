@@ -179,7 +179,8 @@ class RegisterActivity : AppCompatActivity() {
                     val dateTime = LocalDateTime.now() //otteniamo la data corrente
                     userMap["Data registrazione"] =
                         dateTime.format(DateTimeFormatter.ofPattern("d/M/y H:m:ss"))
-                    userMap["URIImage"] = "userProfile/UPmale_profile_picture.png"
+                    userMap["URIImage"] =
+                        if (genderRadio.text.toString() == getString(R.string.male)) "userProfile/UPmale_profile_picture.png" else "userProfile/UPfemale_profile_picture.png"
 
                     //creazione documento con informazioni utente
                     mFireStore.document(id).set(userMap).addOnCompleteListener(this) { task ->

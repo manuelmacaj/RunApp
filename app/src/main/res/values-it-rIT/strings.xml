@@ -86,4 +86,5 @@
     <string name="average_speed">Velocità media</string>
     <string name="password_update">Password aggiornata correttamente</string>
     <string name="re_auth_failed">Credenziali non corrette. Non è possibile aggiornare, Riprovare.</string>
+    <string name="empty_old_password">Il campo della vecchia password è vuoto</string>
 </resources>
