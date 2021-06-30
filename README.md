@@ -5,15 +5,16 @@ Applicazione per il monitoraggio delle tue sessioni di corsa. Gli utenti registr
 possibilità di salvare le proprie corse e di visualizzare nel dettaglio le informazioni annesse. 
 La sessione viene salvata se l’utente percorre almeno 100m. 
 
-Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e gestione dei dati. <br/>
-**Servizi utilizzati:**
+Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e gestione dei dati. <br/><br/>
+
+## Servizi di Firebase utilizzati
 - Firebase Authentication: gestione credenziali utenti (Provider: e-mail e password)
 - Firebase Firestore database: collezione di utenti e di sessioni corsa 
 - Firebase Storage: servizio per memorizzare le foto profilo degli utenti 
 - Firebase Crashlytics: servizio per monitoraggio dei crash che possono capitare agli utenti durante l’utilizzo
 - Firebase Analytics: servizio per il monitoraggio degli utenti. 
 
-**Funzionalità applicazione:**
+## Funzionalità applicazione:
 
 - Registrazione tramite e-mail e password
 - Login tramite e-mail e password
@@ -28,12 +29,12 @@ Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e g
 - Possibilità di mostrare in dettaglio una specifica sessione sostenuta con una mappa che mostra il tracciato percorso.
 - Possibilità di impostare l&#39;immagine profilo.
 
-**Liste di permessi che l&#39;app chiederà**
+## Liste di permessi che l&#39;app chiederà
 
 - Permesso di accesso alla posizione corrente (senza tale permesso, l&#39;app non potrà avviare una sessione corsa)
 - Permesso di accesso alla galleria dell&#39;utente per impostare un&#39;immagine di profilo.
 
-**Altre informazioni**
+## Altre informazioni
 
 - L&#39;app necessita di Google Play Service per l&#39;uso di Firebase e Google Maps.
 - Il tema non è dinamico (solo modalità light mode).
