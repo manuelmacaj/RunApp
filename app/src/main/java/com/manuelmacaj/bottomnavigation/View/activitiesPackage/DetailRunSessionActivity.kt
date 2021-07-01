@@ -106,11 +106,6 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
                 .title(getString(R.string.endMarker))
         )
     }
-    private fun checkGooglePlayService(): Boolean { // metodo per controllare se il device presenta il Google Play Service
-        val googleApiAvailability = GoogleApiAvailability.getInstance()
-        val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
-        return resultCode == ConnectionResult.SUCCESS
-    }
 
     // fonte: https://stackoverflow.com/questions/25531477/google-map-v2-zoom-to-fit-all-markers-and-poly-lines
     private fun zoomToFit() { // metodo per il posizionamento della telecamera sulla mappa
@@ -121,22 +116,5 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         val bounds = builder.build()
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150), 2000, null)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!checkGooglePlayService()) {
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.titleNoGooglePlayServices))
-                .setMessage(getString(R.string.messageNoGooglePlayService))
-                .setPositiveButton("Ok") { _, _ ->
-                    finish() // siccome il Google Play service è necessario, chiudo l'app
-                }
-                .setCancelable(false) // l'utente dovrà necessariamente premere il bottone ok, dato che il Play Service è necessario
-                .create()
-                .show()
-        } else {
-            Log.d(TAG, "Google Play Service installed")
-        }
     }
 }
