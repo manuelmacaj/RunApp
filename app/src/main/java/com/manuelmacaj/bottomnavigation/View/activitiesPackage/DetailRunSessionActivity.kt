@@ -78,6 +78,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) { //Metodo implementato da OnMapReadyCallback, per la gestione della mappa di GoogleMaps
         map = googleMap
         map.uiSettings.isMyLocationButtonEnabled = false // disabilito il location button.
+        map.isBuildingsEnabled = false // non mostro le costruzioni in 3d sulla mappa
 
         map.addPolyline(
             PolylineOptions()

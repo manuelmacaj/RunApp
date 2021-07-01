@@ -2,8 +2,8 @@ package com.manuelmacaj.bottomnavigation.View.accountPackage
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -12,6 +12,9 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.EmailAuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.Global.Global
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.radioGroupGenderModify
 import java.util.regex.Pattern
 
+
 class EditProfileActivity : AppCompatActivity() {
 
     private val TAG = "EditProfileActivity"
@@ -31,6 +35,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var genderRadio: RadioButton
     private lateinit var genderSelection: String
     private lateinit var passwordUtente: String
+    private var passwordText = ""
 
     //istanza firestore riferita alla collezione Utenti. Se non esiste, viene creata
     private val mFireStore = FirebaseFirestore.getInstance().collection("Utenti")
@@ -51,7 +56,8 @@ class EditProfileActivity : AppCompatActivity() {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //Toast di avviso per l'inserimento del nome e del cognome utente
-                    Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
             v?.onTouchEvent(event) ?: true
@@ -115,21 +121,70 @@ class EditProfileActivity : AppCompatActivity() {
         if (email != Global.utenteLoggato?.emailUtente) { //se l'email inserita nel campo è diversa da quella presente...
             if (mAuthUser == null) //...e se l'utente non presenta le credenziali (nella cache)
                 openLoginActivity() //torno alla activity dedicata al login dell'utente
-            else {
-                mAuthUser.updateEmail(email) //aggiornamento email su firebase
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) { //se il cambio email è evvenuto con successo
-                            Log.d(TAG, "Cambio email avvenuta con successo")
 
-                            //aggiorniamo l'email in locale dell'utente
-                            Global.utenteLoggato?.emailUtente = email
-                        } else {
-                            Log.d(TAG, "Cambio email non avvenuto.")
+            else {
+
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle(getString(R.string.titleRequestPassword))
+
+                val input = EditText(this)
+                input.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                builder.setView(input)
+
+                builder.setPositiveButton("OK") { _, _ ->
+                    passwordText = input.text.toString()
+
+                    val credential = EmailAuthProvider.getCredential(
+                        Global.utenteLoggato?.emailUtente.toString(),
+                        passwordText
+                    )
+
+                    mAuthUser.reauthenticate(credential)
+                        .addOnSuccessListener {
+                            mAuthUser.updateEmail(email) //aggiornamento email su firebase
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) { //se il cambio email è evvenuto con successo
+                                        Log.d(TAG, "Cambio email avvenuta con successo")
+                                        //aggiorniamo l'email in locale dell'utente
+                                        Global.utenteLoggato?.emailUtente =
+                                            mAuthUser.email.toString()
+                                        sendToFirestore(nomeCognome)
+                                        Toast.makeText(
+                                            this,
+                                            getString(R.string.email_change_success),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        Log.w(TAG, "Cambio email non avvenuto.", it.exception)
+                                        Toast.makeText(
+                                            this,
+                                            getString(R.string.email_change_unsuccess),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+
                         }
-                    }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.re_auth_failed),
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                        }
+                }
+                    .setCancelable(false)
+                    .create()
+                    .show()
             }
         }
+        else
+            sendToFirestore(nomeCognome)
+    }
 
+    private fun sendToFirestore(nomeCognome: String){
         //aggiorniamo la collezione di firestore riferito all'id utente specifico con il nuovo nome e cognome e genere
         mFireStore.document(Global.utenteLoggato!!.idUtente).update(
             "Nome e Cognome", nomeCognome,
@@ -138,6 +193,7 @@ class EditProfileActivity : AppCompatActivity() {
         //aggiorniamo le informazioni in locale del nome e cognome e genere dell'utente
         Global.utenteLoggato?.nomeCognomeUtente = nomeCognome
         Global.utenteLoggato?.genere = genderRadio.text.toString()
+        Toast.makeText(this, getString(R.string.Update_complete), Toast.LENGTH_SHORT).show()
         finish() //chiudo la finestra
     }
 

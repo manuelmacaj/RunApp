@@ -87,4 +87,8 @@
     <string name="password_update">Password aggiornata correttamente</string>
     <string name="re_auth_failed">Credenziali non corrette. Non è possibile aggiornare, Riprovare.</string>
     <string name="empty_old_password">Il campo della vecchia password è vuoto</string>
+    <string name="email_change_unsuccess">Impossibile modificare l\'e-mail. Per favore riprovare</string>
+    <string name="email_change_success">La modifica dell\'email è andata a buon fine</string>
+    <string name="Update_complete">Aggiornamento dei dati completato</string>
+    <string name="titleRequestPassword">Inserire la tua password utente</string>
 </resources>

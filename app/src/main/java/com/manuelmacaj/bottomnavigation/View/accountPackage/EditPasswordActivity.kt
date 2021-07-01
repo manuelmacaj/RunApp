@@ -69,6 +69,11 @@ class EditPasswordActivity : AppCompatActivity() {
             return
         }
 
+        if (!isValidPassword(vecchiaPassword)){
+            oldPassword.error = getString(R.string.invalid_password)
+            return
+        }
+
         if (vecchiaPassword == password) { //controllo se la nuova password è diversa da quella usata in precedenza
             newPassword.error = resources.getString(R.string.choose_another_password) //messaggio di errore
             return //non proseguo(guard)
@@ -79,7 +84,7 @@ class EditPasswordActivity : AppCompatActivity() {
             return //non proseguo(guard)
         }
 
-        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) { //controllo se le password corrispondono
+        if (!isValidPassword(confermaPassword) != (confermaPassword != password)) { //controllo se le password corrispondono
             confirmPassword.error = resources.getString(R.string.password_check) //messaggio di errore
             return //non proseguo(guard)
         }

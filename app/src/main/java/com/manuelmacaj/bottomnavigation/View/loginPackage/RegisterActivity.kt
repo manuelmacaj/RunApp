@@ -155,7 +155,7 @@ class RegisterActivity : AppCompatActivity() {
             return //non proseguo(guard)
         }
 
-        if (!isValidPassword(confermaPassword) && (confermaPassword != password)) { //verifico se le due password inserite dall'utente corrispondono o meno
+        if (!isValidPassword(confermaPassword) || (confermaPassword != password)) { //verifico se le due password inserite dall'utente corrispondono o meno
             confirmPasswordField.error = resources.getString((R.string.password_check)) //settiamo un errore
             return //non proseguo(guard)
         }

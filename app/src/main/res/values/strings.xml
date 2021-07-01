@@ -86,4 +86,8 @@
     <string name="password_update">Password update correctly</string>
     <string name="re_auth_failed">Incorrect credentials. Unable to update, Please try again.</string>
     <string name="empty_old_password">Old password field is empty</string>
+    <string name="email_change_success">Email change was successful</string>
+    <string name="email_change_unsuccess">Unable to edit email, please try again</string>
+    <string name="Update_complete">Data update completed</string>
+    <string name="titleRequestPassword">Please, insert your user password</string>
 </resources>
