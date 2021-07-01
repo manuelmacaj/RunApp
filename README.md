@@ -23,7 +23,7 @@ Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e g
 - Sezione attività che mostra le sessioni di corsa sostenute raggruppate in una lista
 - Monitoraggio della sessione di corsa (calcolo km, calcolo andatura media, cronometro, salvataggio delle coordinate)
 - Sezione profilo utente
-- Salvataggio delle sessioni un una collezione dedicata (visibile solo all&#39;utente che l&#39;ha sostenuto)
+- Salvataggio delle sessioni in una collezione dedicata (visibile solo all&#39;utente che l&#39;ha sostenuto)
 - Visualizzazione della posizione corrente su Google Maps
 - Possibilità di modificare le proprie informazioni (nome e cognome, genere, e-mail, password)
 - Possibilità di effettuare il Logout
@@ -41,7 +41,7 @@ Abbiamo utilizzato il servizio Firebase come architettura per il salvataggio e g
 - L&#39;app necessita di Google Play Service per l&#39;uso di Firebase e Google Maps.
 - Il tema non è dinamico (solo modalità light mode).
 - Il GPS deve essere necessariamente attivo, altrimenti non sarà possibile monitorare la corsa correttamente.
-- Per gli utenti Xiaomi sarà necessario andare nelle impostazioni -\&gt; app -\&gt; RunApp -\&gt; risparmio batteria e disattivare le restrizioni della MIUI.
+- Per gli utenti Xiaomi sarà necessario andare nelle impostazioni -> app -> RunApp -> risparmio batteria e disattivare le restrizioni della MIUI.
 - Durante una sessione, l&#39;utente può navigare in altre applicazioni ed essere monitorato in background.
 - L&#39;utente deve ricordarsi le credenziali d&#39;accesso (non è presente un recupero password o recupero email).
 
