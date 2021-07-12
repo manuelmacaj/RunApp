@@ -91,4 +91,6 @@
     <string name="email_change_success">La modifica dell\'email è andata a buon fine</string>
     <string name="Update_complete">Aggiornamento dei dati completato</string>
     <string name="titleRequestPassword">Inserire la tua password utente</string>
+    <string name="noActivity">Non hai nessuna attività, inizia a correre</string>
+    <string name="localizationDisable">La localizzazione è disabilitata</string>
 </resources>

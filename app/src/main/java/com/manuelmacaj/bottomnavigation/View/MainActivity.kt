@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
 import com.manuelmacaj.bottomnavigation.View.accountPackage.EditPasswordActivity
 import com.manuelmacaj.bottomnavigation.View.accountPackage.EditProfileActivity
@@ -99,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 Toast.makeText(this, getString(R.string.signout_app), Toast.LENGTH_SHORT).show()
+                Global.utenteLoggato = null
                 finish()
             }
             .setNegativeButton("No") { _, _ -> //se l'utente clicca su no, rimarrà nella finestra attuale

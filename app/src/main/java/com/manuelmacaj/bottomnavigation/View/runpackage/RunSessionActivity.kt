@@ -21,7 +21,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.round
 
-
 class RunSessionActivity : AppCompatActivity() {
 
     private var track: MutableList<LatLng> = ArrayList() //Lista di tipo LatLng in cui inserisco le coordinate
@@ -172,7 +171,7 @@ class RunSessionActivity : AppCompatActivity() {
                 override fun onReceive(context: Context?, intent: Intent?) { //gestisco il broadcast receiver
                     if (intent != null) { // se l'intent presenta qualcosa allora...
                         val lat = intent.extras?.get("Lat") as Double //prelevo dall'intent la latitudine
-                        val lng = intent.extras?.get("Lng") as Double //prelevo dall'intent la latitudine
+                        val lng = intent.extras?.get("Lng") as Double //prelevo dall'intent la longitudine
 
                         if (isRunning) { //se l'utente sta correndo allora calcolo i km, se è in pausa non li calcolo
                             calculateKilometersDuringRun(lat, lng) //chiamata del metodo di calcolo dei km percorsi
@@ -189,7 +188,7 @@ class RunSessionActivity : AppCompatActivity() {
 
     private fun calculateKilometersDuringRun(lat: Double, lng: Double) { // metodo per il calcolo dei km durante la corsa
         val currentLocation = Location("") //creo un oggetto di tipo Location
-        currentLocation.latitude = lat //currentLocation contiene le informazioni della latitudine e prelevati nell'onReceive
+        currentLocation.latitude = lat //currentLocation contiene le informazioni della latitudine e longitudine prelevati nell'onReceive
         currentLocation.longitude = lng
 
         if (track.isNotEmpty()) { // Se la lista contiene già delle informazioni (quindi la lista non è vuota)
@@ -226,7 +225,7 @@ class RunSessionActivity : AppCompatActivity() {
         val m = (time - h * 3600000).toInt() / 60000
         val s = (time - h * 3600000 - m * 60000).toInt() / 1000
 
-        val totMin = ((h * 60) + (m) + (s.toDouble() / 60)) //calcolo il totale dei muniti (converto le ore e i secondi in minuti)
+        val totMin = ((h * 60) + (m) + (s.toDouble() / 60)) //calcolo il totale dei minuti (converto le ore e i secondi in minuti)
 
         andaturaAlKm = totMin / totalKM // calcolo l'andatura (rapporto tra il totale dei minuti e i km percorsi)
 

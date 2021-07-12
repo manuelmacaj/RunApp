@@ -90,4 +90,6 @@
     <string name="email_change_unsuccess">Unable to edit email, please try again</string>
     <string name="Update_complete">Data update completed</string>
     <string name="titleRequestPassword">Please, insert your user password</string>
+    <string name="noActivity">You have no activity, start running</string>
+    <string name="localizationDisable">Localization is disabled</string>
 </resources>

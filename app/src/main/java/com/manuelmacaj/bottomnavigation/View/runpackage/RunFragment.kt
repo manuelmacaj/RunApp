@@ -168,7 +168,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         locationPermission = false //inizializzo la variabile booleana a false
 
         when(requestCode) { //switch che verifica il tipo di request code restituito
-            LOCATION_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato alla geolarizzazione, allora verifico
+            LOCATION_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato alla geolocalizzazione, allora verifico
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { // se l'utente mi ha fornito l'autorizzazione...
                     Log.d("", "Localizzazione abilitata") //posso localizzarlo
                     mapView.invalidate()
@@ -177,7 +177,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
                 } else { //se ha rifiutato allora la localizzazione non è abilitata
                     Log.d("", "Localizzazione disabilitata")
-                    Toast.makeText(mContext, "La localizzazione è disabilitata", Toast.LENGTH_LONG).show()
+                    Toast.makeText(mContext, getString(R.string.localizationDisable), Toast.LENGTH_LONG).show()
                 }
                 return
             }
@@ -196,7 +196,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
             else { // se invece location è diverso da null, allora
                 lastLocation = location //last location assumerà l'ultima posizione recente
-                val currentLaLng = LatLng(lastLocation.latitude, lastLocation.longitude) // l'oggetto di tipo LatLng avrò come valori di latitudine e longitudine i valori presenti in lastLocation
+                val currentLaLng = LatLng(lastLocation.latitude, lastLocation.longitude) // l'oggetto di tipo LatLng avrà come valori di latitudine e longitudine i valori presenti in lastLocation
                 Log.d(TAG, "lat: ${currentLaLng.latitude} log: ${currentLaLng.longitude} ")
                 val cameraPositionUser = CameraPosition.builder() // mi costruisco la "Telecamera" che segue il "tondino blu"
                     .target(currentLaLng) // indico dove si deve posizionare la camera

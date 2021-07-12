@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.manuelmacaj.bottomnavigation.Model.Corsa
 import com.manuelmacaj.bottomnavigation.R
 
-class AdapterActivities (private val context: Context, val data:MutableList<Corsa>) : BaseAdapter(){ // classe che estende base adapter
+class AdapterActivities (private val context: Context, private val data:MutableList<Corsa>) : BaseAdapter(){ // classe che estende base adapter
 
     override fun getCount(): Int {
         return data.size

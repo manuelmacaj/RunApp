@@ -31,7 +31,7 @@ class ActivitiesFragment : Fragment() {
     private lateinit var myAdapterActivities : AdapterActivities
     private val mRunSessionFirestore = FirebaseFirestore.getInstance()
         .collection(collezioneUtenti) //accedo alla collezione "Utenti"
-        .document(FirebaseAuth.getInstance().currentUser!!.uid) //accedo al documento riferito all'utente attualmente connesso
+        .document(FirebaseAuth.getInstance().currentUser!!.uid) //accedo al documento riferito all'id dell'utente attualmente connesso
         .collection(collezioneSessioneCorsa) //accedo alla collezione "SessioniCorsa"
     private var mContext: Context? = null
 
@@ -57,7 +57,8 @@ class ActivitiesFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 if(result.isEmpty) { //gestiamo il fatto che l'utente non presenta una collezione di sessioni di corsa
-                    Toast.makeText(mContext, "Non hai nessuna attività, inizia a correre", Toast.LENGTH_LONG)
+                    //Toast che avvisa la mancanza di sessioni di corsa
+                    Toast.makeText(mContext, getString(R.string.noActivity), Toast.LENGTH_LONG)
                         .show()
                 }
                 else{ //se invece l'utente presenta una collezione di sessioni di corsa
@@ -78,7 +79,7 @@ class ActivitiesFragment : Fragment() {
                     }
 
                     myAdapterActivities = AdapterActivities(mContext!!, listaSessioniCorsa) // creo l'oggetto per customizzare l'adapter
-                    listView.adapter = myAdapterActivities
+                    listView.adapter = myAdapterActivities //impostiamo l'adapter per questa listview
                 }
             }
             .addOnFailureListener { exception ->
@@ -88,8 +89,9 @@ class ActivitiesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         listView.setOnItemClickListener { _, _, position, _ -> // setOnItemClickListener mi permette di capire quale elemento della listView è stato selezionato
-            val intent = Intent(requireActivity(), DetailRunSessionActivity::class.java) // genero un intent
+            val intent = Intent(requireActivity(), DetailRunSessionActivity::class.java) // genero un intent per l'apertura di un activity
             intent.putExtra("polyline", listaSessioniCorsa[position].polylineString) //incapsulo le informazioni nell'intent
             intent.putExtra("date", listaSessioniCorsa[position].DataOrarioPartenza)
             intent.putExtra("time", listaSessioniCorsa[position].tempo)
@@ -101,9 +103,9 @@ class ActivitiesFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        if(listaSessioniCorsa.isNotEmpty()) { // se l'utente presenta delle sessioni
+        if(listaSessioniCorsa.isNotEmpty()) { // se l'utente presenta delle sessioni di corsa
             listaSessioniCorsa.clear() // cancellazione di tutti gli elementi nella lista
-            myAdapterActivities.notifyDataSetChanged() // notifico all'adapter che deve gestire l'aggiornamento della lista perchè sono stati cancellati i dati
+            myAdapterActivities.notifyDataSetChanged() // notifico all'adapter che deve gestire l'aggiornamento della lista, perchè sono stati cancellati i dati al suo interno
         }
     }
 }

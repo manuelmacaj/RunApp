@@ -37,7 +37,7 @@ class PersonalAccountFragment : Fragment() {
 
     private lateinit var dateOfBirth: LocalDate
     private var currentDate: LocalDate = LocalDate.now()
-    private val GALLERY_PERMISSION_REQUEST_CODE = 1
+    private val GALLERY_PERMISSION_REQUEST_CODE = 1 //codice riconoscimento per gestire il tipo di permesso
     private val galleryPhotoCode = 1
     private var firebaseStorage = FirebaseStorage.getInstance()
     private val collezioneUtenti = "Utenti"
@@ -86,7 +86,7 @@ class PersonalAccountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        //aggiorno i dati dell'utente che sono stati modificati
+        //mostro i dati dell'utente
         textFullName.text = Global.utenteLoggato?.nomeCognomeUtente
         textEmail.text = Global.utenteLoggato?.emailUtente
         textGender.text = Global.utenteLoggato?.genere
@@ -95,7 +95,7 @@ class PersonalAccountFragment : Fragment() {
         val storageRef =
             firebaseStorage.reference //creiamo un nuovo riferimento della sezione storage
         val getImageReference =
-            storageRef.child(Global.utenteLoggato?.pathImageProfile.toString()) //percorso dell'immagine
+            storageRef.child(Global.utenteLoggato?.pathImageProfile.toString()) //accedo al percorso dell'immagine
 
         getImageReference //proviamo il download dell'URL che abbiamo passato
             .downloadUrl
@@ -166,7 +166,7 @@ class PersonalAccountFragment : Fragment() {
                     val selectedImage: Uri? = data?.data
                     val storageRef = firebaseStorage.reference
                     val image =
-                        storageRef.child("userProfile/${Global.utenteLoggato?.idUtente}.png") //percorso in cui caricare l'immagine profilo utente
+                        storageRef.child("userProfile/${Global.utenteLoggato?.idUtente}.png") //creazione percorso in cui caricare l'immagine profilo utente
 
                     //facciamo l'upload dell'immagine
                     val uploadTask = image.putFile(selectedImage!!)
@@ -179,11 +179,13 @@ class PersonalAccountFragment : Fragment() {
                             Global.utenteLoggato?.pathImageProfile = image.path
                             //aggiornare firestore
                             val mFirestore = FirebaseFirestore.getInstance()
+
                             mFirestore.collection(collezioneUtenti) //accedo alla collezione utenti
                                 .document(Global.utenteLoggato?.idUtente!!) //accedo all'id dell'utente connesso
                                 .update(
                                     "URIImage",
                                     Global.utenteLoggato?.pathImageProfile
+
                                 ) //aggiorno il campo relativo all'URI dell'immagine
                             Glide.with(mContext).load(selectedImage).into(imageProfile)
                         }

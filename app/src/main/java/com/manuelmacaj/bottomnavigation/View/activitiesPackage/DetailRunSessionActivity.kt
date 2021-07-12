@@ -1,13 +1,9 @@
 package com.manuelmacaj.bottomnavigation.View.activitiesPackage
 
-import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -15,7 +11,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import com.manuelmacaj.bottomnavigation.R
-
 
 class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -36,7 +31,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         title = intent.getStringExtra("date")
 
         polylineEncode = intent.getStringExtra("polyline").toString()
-        polylineList = PolyUtil.decode(polylineEncode)
+        polylineList = PolyUtil.decode(polylineEncode) //decodifica della polyline
         mapView = findViewById(R.id.mapViewDetailRun) //configurazione a livello visivo della mappa di google
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this) // azione assolutamente necessaria nel momento in cui si include un oggetto di tipo MapView
@@ -52,13 +47,14 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onResume()
         mapView.onResume()
 
+        //prelevo informazioni dall'intent
         time.text = intent.getStringExtra("time")
         distance.text = intent.getStringExtra("distance")
         averagePace.text = intent.getStringExtra("averagePace")
         calculateAverageSpeed()
     }
 
-    private fun calculateAverageSpeed() {
+    private fun calculateAverageSpeed() { //funzione per il calcolo della velocità media
         val timeList = time.text.split(":")
         val km = distance.text.split(" ")
 
@@ -67,7 +63,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         else
             km[0].toDouble()
 
-        val velocitaMedia: Double =
+        val velocitaMedia: Double = //calcolo velocità media come distanza/tempo(in minuti)
             kmValue / (timeList[0].toDouble() + (timeList[1].toDouble() / 60) + (timeList[2].toDouble() / 3600))
 
         averageSpeed.text = String.format("%.2f", velocitaMedia)
@@ -83,7 +79,7 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addPolyline(
             PolylineOptions()
                 .addAll(polylineList) // costruisco una polyline in base alla lista che ho a disposizione
-                .width(5F) //quanto è marcata la polyline
+                .width(5F) //quanto è lo spessore della polyline
                 .color(Color.RED)
                 .geodesic(false)
         )
@@ -91,8 +87,8 @@ class DetailRunSessionActivity : AppCompatActivity(), OnMapReadyCallback {
         zoomToFit()
 
         val markerStartSession =
-            LatLng(polylineList.first().latitude, polylineList.first().longitude)
-        val markerEndSession = LatLng(polylineList.last().latitude, polylineList.last().longitude)
+            LatLng(polylineList.first().latitude, polylineList.first().longitude) // coordinate marker di partenza del tracciato
+        val markerEndSession = LatLng(polylineList.last().latitude, polylineList.last().longitude) //coordinate marker di arrivo del tracciato
 
         // Marker per indicare la partenza
         map.addMarker(

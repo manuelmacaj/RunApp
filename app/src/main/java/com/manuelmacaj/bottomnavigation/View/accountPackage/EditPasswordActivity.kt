@@ -84,7 +84,7 @@ class EditPasswordActivity : AppCompatActivity() {
             return //non proseguo(guard)
         }
 
-        if (!isValidPassword(confermaPassword) != (confermaPassword != password)) { //controllo se le password corrispondono
+        if (!isValidPassword(confermaPassword) || (confermaPassword != password)) { //controllo se le password corrispondono
             confirmPassword.error = resources.getString(R.string.password_check) //messaggio di errore
             return //non proseguo(guard)
         }
