@@ -36,7 +36,7 @@ We used the Firebase service as an architecture for saving and managing data. <b
 - Access permission to the current location (without this permission, the app will not be able to start a running session)
 - User gallery access permission to set a profile picture.
 
-## Altre informazioni
+## Other information
 
 - The app needs Google Play Service for the use of Firebase and Google Maps.
 - The theme is not dynamic (light mode only).
