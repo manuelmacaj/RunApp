@@ -93,13 +93,10 @@ class RegisterActivity : AppCompatActivity() {
                     val month = cal[Calendar.MONTH] //prelevo il mese dal Calendario
                     val day = cal[Calendar.DAY_OF_MONTH] //prelevo il giorno dal Calendario
 
-                    val dialog = DatePickerDialog( //creazione finestra di dialogo per selezione della data di nascita
-                        this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener,
-                        year, month, day
-                    )
+                    val dialog = DatePickerDialog(this, mDateSetListener, year, month, day)
+
                     dialog.datePicker.maxDate =
                         System.currentTimeMillis() //il datapicker mostrerà le date fino al giorno corrente
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.show() //finestra di dialogo avviata e mostrata a schermo
                 }
                 .setCancelable(false)
