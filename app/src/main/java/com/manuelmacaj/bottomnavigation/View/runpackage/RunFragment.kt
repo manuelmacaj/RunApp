@@ -7,9 +7,9 @@ import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +18,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.manuelmacaj.bottomnavigation.R
 import kotlinx.android.synthetic.main.fragment_run.view.*
 
+
 class RunFragment : Fragment(), OnMapReadyCallback {
 
     private val TAG = "RunFragment"
@@ -36,10 +38,13 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient //nota: è necessario il Google Play Services installato sul proprio dispositivo (reale o virtuale), per poter utilizzare FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private var locationRequest: LocationRequest? = null // l'oggetto LocationRequest permette di migliorare il servizio di localizzazione dell'utente
-    private var locationCallback: LocationCallback? = null // oggetto che notifica il possibile cambiamento di posizione
+
     private var locationPermission: Boolean? = null
     private var GPScheck = false
+    private var GPSPopUpEnable = false;
+
+    private lateinit var listener: LocationListener
+    private var locationManager: LocationManager? = null
 
     private lateinit var manager: LocationManager
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
@@ -53,7 +58,11 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         //Inizializzo il fragment della corsa
 
         requireActivity().title = getString(R.string.run) //imposto il titolo che verrà visualizzato nella toolbar
@@ -89,7 +98,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        checkGPSIsEnable() // chiamata del metodo checkGPSIsEnable
+        checkGPSIsEnable()
     }
 
     override fun onResume() {
@@ -100,7 +109,10 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     override fun onPause() {
         super.onPause()
+        val mgr = MapStateManager(mContext!!)
+        mgr.saveMapState(map)
         mapView.onPause()
+        //Toast.makeText(mContext, "Map State has been save?", Toast.LENGTH_SHORT).show()
     }
 
     override fun onMapReady(googleMap: GoogleMap) { //Metodo implementato da OnMapReadyCallback, per la gestione della mappa di GoogleMaps
@@ -108,6 +120,15 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         map.uiSettings.setAllGesturesEnabled(false) //Tutte le gesture possibili sulla mappa sono disabilitate
         map.uiSettings.isMyLocationButtonEnabled = false // disabilito il location button.
         map.isBuildingsEnabled = false
+
+        val mgr = MapStateManager(mContext!!)
+        val position = mgr.savedCameraPosition
+        if (position != null) {
+            val update = CameraUpdateFactory.newCameraPosition(position)
+            //Toast.makeText(mContext, "entering Resume State", Toast.LENGTH_SHORT).show()
+            map.moveCamera(update)
+            map.mapType = mgr.savedMapType
+        }
     }
 
     private fun checkGPSIsEnable() { //funzione di check
@@ -115,9 +136,10 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) { // se il GPS non è abilitato
             buildAlertMessageNoGps() // chiamo il metodo buildAlertMessageNoGps()
             GPScheck = false // imposto a false la variabile booleana GPScheck
-            return
-        } else // se il gps è attivo
+        } else{  // se il gps è attivo
             GPScheck = true // imposto a true la variabile booleana GPScheck
+            GPSPopUpEnable = false
+        }
     }
 
     private fun buildAlertMessageNoGps() { // metodo con all'interno l'alert dialog che avvisa che il GPS non è abilitato
@@ -134,19 +156,21 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             }
             .create()
             .show()
+        GPSPopUpEnable = true
     }
 
     private fun checkPermissions() { // funzione di  verifica dei permessi di accesso alla posizione (ovviamente, bisogna dichirare nel manifest)
-
+        
         //Se l'utente non ha mai dato il consenso alla localizzazione o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso alla posizione
-        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION
+        if (ContextCompat.checkSelfPermission(
+                mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro un AlertDialog
             //L'alert dialog informerà che dovrà fornire il consenso alla localizzazione
             val alertMessage = AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.titleRequestPermission))
                 .setMessage(getString(R.string.messageRequestPermission))
-                .setPositiveButton("Ok"
-                ) { _, _ ->
+                .setPositiveButton(
+                    "Ok") { _, _ ->
                     //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
                     requestPermissions(
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
@@ -157,15 +181,14 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                 .create()
                 .show()
         } else { // se il permesso di localizzazione è attivo, allora avvio la localizzazione
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
+            locationPermission = true
+            getLocation()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray) { // metodo che permette di verificare i permessi che l'utente ha fornito
-        locationPermission = false //inizializzo la variabile booleana a false
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray) { // controllo permessi
+        locationPermission = false 
 
         when(requestCode) { //switch che verifica il tipo di request code restituito
             LOCATION_PERMISSION_REQUEST_CODE -> { //se il request code corrisponde al code dedicato alla geolocalizzazione, allora verifico
@@ -177,7 +200,11 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
                 } else { //se ha rifiutato allora la localizzazione non è abilitata
                     Log.d("", "Localizzazione disabilitata")
-                    Toast.makeText(mContext, getString(R.string.localizationDisable), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        mContext,
+                        getString(R.string.localizationDisable),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 return
             }
@@ -186,15 +213,10 @@ class RunFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission") // mi permette di non considerare i warning riguardanti ai permessi.
     private fun getLocation() {
-        //mostra il punto blu sulla mappa che indicherà la mia posizione corrente
-        map.isMyLocationEnabled = true
-        //fusedLocationClient.lastLocation.addOnSuccessListener(this) ci restituisce la posizione più recente dell'utente
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location == null) { // se il risultato è null, allora risulta impossibile la localizzazione
-                Log.d(TAG, "Impossibile localizzare l'utente")
-            }
 
-            else { // se invece location è diverso da null, allora
+        listener = object : LocationListener {
+            override fun onLocationChanged(location: Location) { // viene invocato quando il listener nota un cambiamento di posizione
+                map.isMyLocationEnabled = true
                 lastLocation = location //last location assumerà l'ultima posizione recente
                 val currentLaLng = LatLng(lastLocation.latitude, lastLocation.longitude) // l'oggetto di tipo LatLng avrà come valori di latitudine e longitudine i valori presenti in lastLocation
                 Log.d(TAG, "lat: ${currentLaLng.latitude} log: ${currentLaLng.longitude} ")
@@ -204,38 +226,20 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                     .build() // costruisco la variabile CameraPosition
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPositionUser)) // eseguo la funzione di animazione
             }
-        }
 
-        /* Queste righe di codice mi permettono di verificare
-        in tempo reale il posizionamento dell'utemte.
-        Senza questa sezione di codice non potremmo seguire
-        l'utente sulla mappa, ma la localizzazione funzionerebbe lo stesso
-        */
+            override fun onProviderEnabled(provider: String) {
+                GPScheck = true
+            }
 
-        if (locationRequest == null) {
-            locationRequest = LocationRequest.create() //creo il location request
-            locationRequest?.let { locationRequest ->
-                locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Massima accuratezza nella localizzazione
-
-                locationRequest.interval = 1500 // intervallo di localizzazione (ogni 1,5 secondi)
-                locationRequest.fastestInterval = 1000 // intervallo di localizzazione accelerata (ogni secondo)
-
-                locationCallback = object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult?) { // gestisco la locationCallback, se avviene un cambiamento di posizione avvio la funzione get location
-                        getLocation() //richiamo il metodo getLocation
-                    }
+            override fun onProviderDisabled(provider: String) {
+                map.isMyLocationEnabled = false
+                if (!GPSPopUpEnable) {
+                    checkGPSIsEnable()
                 }
-                fusedLocationClient.requestLocationUpdates( //questa funzione richiede aggiornamenti sulla posizione da parte dell'oggetto locationCallback
-                    locationRequest,
-                    locationCallback,
-                    Looper.getMainLooper()
-                )
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        fusedLocationClient.removeLocationUpdates(locationCallback) //quando il fragment si distrugge, l'app smetterà di localizzare l'utente
+        locationManager = mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        //il listener viene registrato all'interno del location manager che specifica il tipo di provider (in questo caso GPS_PROVIDER), il tempo minimo di aggiornamento della posizione (ogni 2 secondi) e la posizone minima di aggiornamento (espresso in metri)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0f, listener)
     }
 }

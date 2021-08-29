@@ -33,10 +33,10 @@ class AdapterActivities (private val context: Context, private val data:MutableL
             val time = newView.findViewById<TextView>(R.id.textViewTime)
             val distance = newView.findViewById<TextView>(R.id.textViewChilometers)
             val averagePale = newView.findViewById<TextView>(R.id.textViewAndaturaMedia)
-            day.append(" ${data[position].DataOrarioPartenza}")
-            time.append(" ${data[position].tempo}")
-            distance.append(" ${data[position].km}")
-            averagePale.append(" ${data[position].andaturaMedia}")
+            day.text = ("${context.getString(R.string.day)} ${data[position].DataOrarioPartenza}")
+            time.text = ("${context.getString(R.string.time)} ${data[position].tempo}")
+            distance.text = ("${context.getString(R.string.km_total)} ${data[position].km}")
+            averagePale.text = ("${context.getString(R.string.average_pace)} ${data[position].andaturaMedia}")
         }
         return newView
     }
