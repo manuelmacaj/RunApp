@@ -29,4 +29,17 @@
             app:cornerRadius="50dp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/accuracyTextField"
+        android:layout_width="146dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonWrapper"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="242dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="528dp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 </RelativeLayout>

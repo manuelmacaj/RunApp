@@ -64,14 +64,6 @@ class GPSService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun getGPSLocation() {
-        // se non ho il permesso, non avvio il servizio, l'if viene saltato se il permesso è stato concesso in precedenza
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Stop GPSService")
-            stopSelf()
-            return
-        }
-
         Log.d(TAG, "Get location")
 
         // il listener gestisce gli aggiornamenti della posizione
@@ -95,7 +87,9 @@ class GPSService : Service() {
         }
         locationManager =
             applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        //il listener viene registrato all'interno del location manager che specifica il tipo di provider (in questo caso GPS_PROVIDER), il tempo minimo di aggiornamento della posizione (ogni 2 secondi) e la posizone minima di aggiornamento (espresso in metri)
+        //il listener viene registrato all'interno del location manager che specifica il tipo
+        // di provider (in questo caso GPS_PROVIDER), il tempo minimo di aggiornamento della
+        // posizione (ogni 2 secondi) e la posizone minima di aggiornamento (espresso in metri)
         locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, listener)
 
     }

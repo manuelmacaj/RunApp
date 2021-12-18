@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -17,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.R
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Pattern
@@ -35,6 +34,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var radioGroupGender: RadioGroup
     private var dateOfBirth: LocalDate? = null
     private lateinit var genderSelection: String
+    private var currentDate: LocalDate = LocalDate.now()
 
 
     private val mRegister =
@@ -76,7 +76,7 @@ class RegisterActivity : AppCompatActivity() {
             v?.onTouchEvent(event) ?: true
         }
 
-        radioGroupGender.setOnCheckedChangeListener { group, checkedId ->
+        radioGroupGender.setOnCheckedChangeListener { _, checkedId ->
             genderRadio = findViewById(checkedId)
         }
 
@@ -104,7 +104,7 @@ class RegisterActivity : AppCompatActivity() {
                 .show()
         }
         mDateSetListener =
-            OnDateSetListener { datePicker, year, month, day -> //listener indica che l'utente ha finito di selezionare la data dal datapicker
+            OnDateSetListener { _, year, month, day -> //listener indica che l'utente ha finito di selezionare la data dal datapicker
                 val mese: Int = month + 1
                 Log.d(TAG, "onDateSet: mm/dd/yyy: $mese/$day/$year")
                 dateOfBirth = LocalDate.of(year, mese, day) //ricaviano la data di nascita dell'utente
@@ -120,27 +120,10 @@ class RegisterActivity : AppCompatActivity() {
         val password = firstPasswordField.text.toString()
         val confermaPassword = confirmPasswordField.text.toString()
 
-        if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
-            //se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
-            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore sulla editText
-            return //non proseguo(guard)
-        }
+        checkNameSurname(nomeCognome)
+        checkGenger()
+        checkDateBirth()
 
-        if (radioGroupGender.checkedRadioButtonId == -1) {
-            //se nessun radio button è stato selezionato da parte dell'utente
-            genderSelection = resources.getString(R.string.gender_not_selected) //imposto un errore
-            Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
-            return //non proseguo(guard)
-        }
-
-        if (dateOfBirth == null) { //se la data di nascita è a null
-            Toast.makeText( //visualizzo un toast per avvisare l'utente
-                this,
-                getString(R.string.enterDateofBirth),
-                Toast.LENGTH_LONG
-            ).show()
-            return //non proseguo(guard)
-        }
 
         if (!isValidEmail(email)) { //Controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
             emailField.error = resources.getString(R.string.invalid_email) //...settiamo un errore
@@ -157,6 +140,45 @@ class RegisterActivity : AppCompatActivity() {
             return //non proseguo(guard)
         }
         registerNewAccount(nomeCognome, email, password)
+    }
+
+    private fun checkDateBirth() {
+        if (dateOfBirth == null) { //se la data di nascita è a null
+            Toast.makeText( //visualizzo un toast per avvisare l'utente
+                this,
+                getString(R.string.enterDateofBirth),
+                Toast.LENGTH_LONG
+            ).show()
+            return //non proseguo(guard)
+        }
+
+        val agePeriod = Period.between(dateOfBirth, currentDate)
+
+        if (agePeriod.years < 14) {
+            Toast.makeText( //visualizzo un toast per avvisare l'utente
+                this,
+                "Sorry, you too young to sign up on this app.",
+                Toast.LENGTH_LONG
+            ).show()
+            return //non proseguo(guard)
+        }
+    }
+
+    private fun checkGenger() {
+        if (radioGroupGender.checkedRadioButtonId == -1) {
+            //se nessun radio button è stato selezionato da parte dell'utente
+            genderSelection = resources.getString(R.string.gender_not_selected) //imposto un errore
+            Toast.makeText(this, "" + genderSelection, Toast.LENGTH_LONG).show()
+            return //non proseguo(guard)
+        }
+    }
+
+    private fun checkNameSurname(nomeCognome: String) {
+        if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
+            //se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
+            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore sulla editText
+            return //non proseguo(guard)
+        }
     }
 
     private fun registerNewAccount(nomeCognome: String, email: String, password: String) {
@@ -187,7 +209,7 @@ class RegisterActivity : AppCompatActivity() {
                             finish()
                         } else { //caricamento dati su firestore non riuscito
                             Toast.makeText(this, getString(R.string.registrationFailed), Toast.LENGTH_LONG).show()
-                            Log.w(TAG, "Accesso fallito", task.exception)
+                            Log.w(TAG, "Registrazione fallito", task.exception)
                         }
                     }
                 } else {

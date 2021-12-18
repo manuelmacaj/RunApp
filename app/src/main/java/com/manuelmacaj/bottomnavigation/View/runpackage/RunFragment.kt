@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,8 +16,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -40,11 +43,12 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     private lateinit var lastLocation: Location
 
     private var locationPermission: Boolean? = null
+    private val ORANGE = -0xcd00
     private var GPScheck = false
-    private var GPSPopUpEnable = false;
-
+    private var GPSPopUpEnable = false
     private lateinit var listener: LocationListener
     private var locationManager: LocationManager? = null
+    private lateinit var accuracyText: TextView
 
     private lateinit var manager: LocationManager
     private val LOCATION_PERMISSION_REQUEST_CODE = 54 // codice indetificativo per la richiesta della geolocalizzazione
@@ -72,6 +76,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         mapView = view.findViewById(R.id.mapRun) as MapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this) // azione assolutamente necessaria nel momento in cui si include un oggetto di tipo MapView
+        accuracyText = view.findViewById(R.id.accuracyTextField)
 
         // on click listener sul bottone
         view.startRunButton.setOnClickListener {
@@ -164,18 +169,18 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         //Se l'utente non ha mai dato il consenso alla localizzazione o è la prima volta che accede all'app, allora verrà richiesto fornire il consenso alla posizione
         if (ContextCompat.checkSelfPermission(
                 mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) { // se l'utente non ha dato il permesso, mostro un AlertDialog
-            //L'alert dialog informerà che dovrà fornire il consenso alla localizzazione
-            val alertMessage = AlertDialog.Builder(requireActivity())
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.titleRequestPermission))
                 .setMessage(getString(R.string.messageRequestPermission))
                 .setPositiveButton(
-                    "Ok") { _, _ ->
-                    //dopo aver premuto il tasto ok, viene generato l'Alert dialog dedicato ai permessi
+                    "Ok"
+                ) { _, _ ->
                     requestPermissions(
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                         LOCATION_PERMISSION_REQUEST_CODE
-                    ) //invierò il risultato alla funzione override fun onRequestPermissionsResult, per comprendere se l'app ha l'autorizzazione o no
+                    )
                 }
                 .setCancelable(false)
                 .create()
@@ -187,7 +192,7 @@ class RunFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray) { // controllo permessi
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         locationPermission = false 
 
         when(requestCode) { //switch che verifica il tipo di request code restituito
@@ -225,6 +230,28 @@ class RunFragment : Fragment(), OnMapReadyCallback {
                     .zoom(16f) // indico lo zoom della telecamera (minimo 1, massimo 20. consigliato tra il 15 e il 20 se vogliamo monitorare il posizionamento dell'utente)
                     .build() // costruisco la variabile CameraPosition
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPositionUser)) // eseguo la funzione di animazione
+                Log.d(TAG, location.accuracy.toString())
+
+                if (location.accuracy < 10) {
+                    accuracyText.isVisible = true
+                    val accuracyFormat = String.format("%.0f", location.accuracy)
+
+                    when {
+                        location.accuracy < 5 -> {
+                            accuracyText.setTextColor(Color.RED)
+                            accuracyText.text = mContext!!.getString(R.string.accuracyString) + accuracyFormat
+
+                        }
+                        location.accuracy < 8 -> {
+                            accuracyText.setTextColor(ORANGE)
+                            accuracyText.text = mContext!!.getString(R.string.accuracyString) + accuracyFormat
+                        }
+                        else -> {
+                            accuracyText.setTextColor(Color.GREEN)
+                            accuracyText.text = mContext!!.getString(R.string.accuracyString) + accuracyFormat
+                        }
+                    }
+                }
             }
 
             override fun onProviderEnabled(provider: String) {
@@ -232,6 +259,8 @@ class RunFragment : Fragment(), OnMapReadyCallback {
             }
 
             override fun onProviderDisabled(provider: String) {
+                accuracyText.isVisible = false
+
                 map.isMyLocationEnabled = false
                 if (!GPSPopUpEnable) {
                     checkGPSIsEnable()
@@ -240,6 +269,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         }
         locationManager = mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         //il listener viene registrato all'interno del location manager che specifica il tipo di provider (in questo caso GPS_PROVIDER), il tempo minimo di aggiornamento della posizione (ogni 2 secondi) e la posizone minima di aggiornamento (espresso in metri)
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0f, listener)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, listener)
     }
 }

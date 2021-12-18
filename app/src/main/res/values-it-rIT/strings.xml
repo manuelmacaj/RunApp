@@ -93,4 +93,5 @@
     <string name="titleRequestPassword">Inserire la tua password utente</string>
     <string name="noActivity">Non hai nessuna attività, inizia a correre</string>
     <string name="localizationDisable">La localizzazione è disabilitata</string>
+    <string name="accuracyString">"Precisione: "</string>
 </resources>

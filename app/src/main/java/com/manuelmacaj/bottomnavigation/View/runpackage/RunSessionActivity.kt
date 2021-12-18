@@ -71,19 +71,13 @@ class RunSessionActivity : AppCompatActivity() {
         btnRunSession.setOnClickListener {
             if (!isRunning) { // se vuole correre
                 startGPSService() //avvio il servizio di localizzazione
-                chronometer.base =
-                    SystemClock.elapsedRealtime() + timeWhenStop // il cronometro si avvia/riprende da dove si è fermato
-                chronometer.start() // avvio il cronometro (si baserà sul calcolo fatto in precedenza)
-                isRunning = true // isRunning lo imposto a true
+                startResumeRun()
                 Log.d(TAG, "Avvio corsa")
             } else { // se invece non sta corendo o è in pausa
-                timeWhenStop =
-                    chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa (SystemClock.elapsedRealtime() = restituisce i millisecondi dall'avvio, incluso il tempo trascorso in modalità di sospensione).
-                chronometer.stop() // pausa cronometro
-                isRunning = false //isRunning lo imposto a false
+                stopRun()
                 Log.d(TAG, "Stop corsa")
             }
-            btnRunSession.setText(if (!isRunning) R.string.resume else R.string.pause) //in base al valore di isRunning il testo del bottone cambierà
+            //btnRunSession.setText(if (!isRunning) R.string.resume else R.string.pause) //in base al valore di isRunning il testo del bottone cambierà
         }
 
         btnEndRun.setOnClickListener {
@@ -113,55 +107,25 @@ class RunSessionActivity : AppCompatActivity() {
         }
     }
 
+    private fun startResumeRun() {
+        chronometer.base =
+            SystemClock.elapsedRealtime() + timeWhenStop // il cronometro si avvia/riprende da dove si è fermato
+        chronometer.start() // avvio il cronometro (si baserà sul calcolo fatto in precedenza)
+        isRunning = true // isRunning lo imposto a true
+    }
+
+    private fun stopRun() {
+        timeWhenStop =
+            chronometer.base - SystemClock.elapsedRealtime() //calcolo il tempo che avanza tra il valore attuale del cronometro e il tempo trascorso dalla pausa (SystemClock.elapsedRealtime() = restituisce i millisecondi dall'avvio, incluso il tempo trascorso in modalità di sospensione).
+        chronometer.stop() // pausa cronometro
+        isRunning = false //isRunning lo imposto a false
+        Log.d(TAG, "Stop corsa")
+
+    }
+
     private fun startGPSService() { //metodo per avviare il servizio
         val intent = Intent(applicationContext, GPSService::class.java)
         startForegroundService(intent) //avvio il servizio (è simile a startService, ma posso far in modo che venga creata una notifica nel servizio
-    }
-
-    private fun sendToFirebaseFirestore() {
-
-        //controllo se l'utente ha effettivamente corso, per evitare di caricare sessioni
-
-        if (totalKM >= 0.10) { //se l'utente ha percorso almeno 100m, allora salvo la sessione
-
-            //Creo una HashMap che mi servirà quando caricherò i dati della sessione appena conclusa
-            val sessionMap = HashMap<String, Any>()
-            sessionMap["TimeWhenStart"] = currentTime
-            sessionMap["Polyline encode"] = PolyUtil.encode(track)
-            sessionMap["Distanza"] = textKM.text.toString()
-            sessionMap["Tempo"] = chronometer.text.toString()
-            sessionMap["AndaturaAlKm"] = avaragePace.text
-
-            /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
-             alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
-            val mFirestore = FirebaseFirestore.getInstance().collection("Utenti")
-                .document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
-            //creo un nuovo documento, passandogli l'HashMap configurata
-            mFirestore.document().set(sessionMap)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) { //se tutto va a buon fine, carico i risultati su firestore
-                        Toast.makeText(
-                            this,
-                            getString(R.string.sendToFirebaseOk),
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.sendToFirebaseFailed),
-                            Toast.LENGTH_LONG)
-                            .show()
-                        finish()
-                    }
-                }
-        } else { //avviso l'utente che la sessione non è stata caricata
-            Toast.makeText(this, getString(R.string.messageNoConsideration), Toast.LENGTH_LONG)
-                .show()
-            finish()
-
-        }
     }
 
     override fun onResume() {
@@ -195,14 +159,7 @@ class RunSessionActivity : AppCompatActivity() {
             val previousLocation = Location("") //Creo un oggetto di tipo Location
             previousLocation.latitude = track[track.size - 1].latitude //previousLocation contiene le ultime informazioni salvate nella lista
             previousLocation.longitude = track[track.size - 1].longitude
-            /*
-            Creo un oggetto di tipo Measure, che ha come oggetto la funzione distanceTo.
-            DistanceTo è un metodo che permette di calcolare la distanza tra due oggetti Location: la
-            funzione restituisce la distanza in metri.
-            All'interno del costruttore Measure
-                + nel primo parametro: divido per 1000 il risultato che proviene da toDistance (così da avere il valore in KM);
-                + specifico che tipo di unità di misura è;
-             */
+
             val metersToKm = Measure(
                 previousLocation.distanceTo(currentLocation) / 1000,
                 MeasureUnit.KILOMETER
@@ -246,14 +203,65 @@ class RunSessionActivity : AppCompatActivity() {
             previousLocation.latitude = track[track.size - 1].latitude
             previousLocation.longitude = track[track.size - 1].longitude
 
-            if (previousLocation != currentLocation) { //questa condizione mi permette di non aggiungere le geolocalizzazioni uguali, così da avere una polyline pulita
+            if (previousLocation.longitude != currentLocation.longitude && previousLocation.latitude != currentLocation.latitude) { //questa condizione mi permette di non aggiungere le geolocalizzazioni uguali, così da avere una polyline pulita
                 track.add(LatLng(currentLocation.latitude, currentLocation.longitude))
                 Log.d(TAG, "Acquisisco la posizione")
+                if (!isRunning) {
+                    chronometer.base =
+                        SystemClock.elapsedRealtime() + timeWhenStop // il cronometro si avvia/riprende da dove si è fermato
+                    chronometer.start() // avvio il cronometro (si baserà sul calcolo fatto in precedenza)
+                    isRunning = true // isRunning lo imposto a true
+                }
             } else {
                 Log.d(TAG, "Non acquisisco la posizione")
+                Toast.makeText(this, "Sessione in pausa", Toast.LENGTH_LONG).show()
+                stopRun()
             }
         } else {
             track.add(LatLng(currentLocation.latitude, currentLocation.longitude)) // aggiunto la nuova coordinata
+        }
+    }
+
+    private fun sendToFirebaseFirestore() {
+
+        if (totalKM >= 0.10) { //se l'utente ha percorso almeno 100m, allora salvo la sessione
+            //Creo una HashMap che mi servirà quando caricherò i dati della sessione appena conclusa
+            val sessionMap = HashMap<String, Any>()
+            sessionMap["TimeWhenStart"] = currentTime
+            sessionMap["Polyline encode"] = PolyUtil.encode(track)
+            sessionMap["Distanza"] = textKM.text.toString()
+            sessionMap["Tempo"] = chronometer.text.toString()
+            sessionMap["AndaturaAlKm"] = avaragePace.text
+
+            /*Creo un oggetto di tipo Collection Reference che mi permette di accedere
+             alla collezione Utenti -> documento (idUtente) -> collezione SessioneCorsa */
+            val mFirestore = FirebaseFirestore.getInstance().collection("Utenti")
+                .document(Global.utenteLoggato?.idUtente.toString()).collection("SessioniCorsa")
+            //creo un nuovo documento, passandogli l'HashMap configurata
+            mFirestore.document().set(sessionMap)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) { //se tutto va a buon fine, carico i risultati su firestore
+                        Toast.makeText(
+                            this,
+                            getString(R.string.sendToFirebaseOk),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.sendToFirebaseFailed),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        finish()
+                    }
+                }
+        } else { //avviso l'utente che la sessione non è stata caricata
+            Toast.makeText(this, getString(R.string.messageNoConsideration), Toast.LENGTH_LONG)
+                .show()
+            finish()
         }
     }
 
