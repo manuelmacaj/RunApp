@@ -14,7 +14,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
-import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivityMaterial
 import java.util.regex.Pattern
 
 class EditPasswordActivity : AppCompatActivity() {
@@ -111,7 +111,7 @@ class EditPasswordActivity : AppCompatActivity() {
                 oldPassword)
 
         if (mAuthUser == null) { // se le credenziali sono scadute, allora torno nella sezione Login
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, LoginActivityMaterial::class.java)
             startActivity(intent)
             finish()
         }

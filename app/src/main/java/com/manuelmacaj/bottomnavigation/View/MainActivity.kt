@@ -16,7 +16,7 @@ import com.manuelmacaj.bottomnavigation.View.accountPackage.EditPasswordActivity
 import com.manuelmacaj.bottomnavigation.View.accountPackage.EditProfileActivity
 import com.manuelmacaj.bottomnavigation.View.accountPackage.PersonalAccountFragment
 import com.manuelmacaj.bottomnavigation.View.activitiesPackage.ActivitiesFragment
-import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivityMaterial
 import com.manuelmacaj.bottomnavigation.View.runpackage.RunFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -64,11 +64,13 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) { // in base all'item selezionato, succederà qualcosa
             R.id.account -> {
-                Toast.makeText(this, getString(R.string.edit_your_account), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.edit_your_account), Toast.LENGTH_SHORT)
+                    .show()
                 openEditProfileActivity() //apro activity per la modifica dell'account
             }
             R.id.password -> {
-                Toast.makeText(this, getString(R.string.edit_your_password), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.edit_your_password), Toast.LENGTH_SHORT)
+                    .show()
                 openEditPasswordActivity() //apro l'activity per la modifica della password
             }
             R.id.logout -> {
@@ -96,7 +98,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage(getString(R.string.messageSignOut))
             .setPositiveButton(getString(R.string.yesButton)) { _, _ -> //se l'utente clicca su sì, verrà disconnesso
                 mFirebaseAuth.signOut()
-                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                val intent = Intent(this@MainActivity, LoginActivityMaterial::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 Toast.makeText(this, getString(R.string.signout_app), Toast.LENGTH_SHORT).show()

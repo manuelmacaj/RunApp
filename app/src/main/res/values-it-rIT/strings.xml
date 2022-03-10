@@ -17,15 +17,15 @@
     <string name="time">Tempo:</string>
     <string name="km_total">Km totali:</string>
     <string name="average_pace">Andatura media:</string>
-    <string name="email_address">indirizzo email</string>
-    <string name="password">password</string>
+    <string name="email_address">Indirizzo e-mail</string>
+    <string name="password">Password</string>
     <string name="signin">Accedi</string>
     <string name="register">Registrati</string>
     <string name="invalid_email">Email non valida</string>
     <string name="invalid_password">Password non valida</string>
-    <string name="confirm_password">conferma password</string>
+    <string name="confirm_password">Conferma password</string>
     <string name="register_app">RegisterForm</string>
-    <string name="first_second_name">nome e cognome</string>
+    <string name="first_second_name">Nome e cognome</string>
     <string name="empty_name_surname">Campo vuoto o caratteri insufficienti</string>
     <string name="password_check">Le password non corrispondono</string>
     <string name="image_view">TODO</string>
@@ -45,7 +45,7 @@
     <string name="edit_password">Modifica password</string>
     <string name="update_account">Aggiorna account</string>
     <string name="user_years">anni</string>
-    <string name="old_password">vecchia password</string>
+    <string name="old_password">Vecchia password</string>
     <string name="update_password">Aggiorna password</string>
     <string name="old_password_check">La vecchia password non corrisponde</string>
     <string name="choose_another_password">Scegliere una password diversa da quella usata precedentemente</string>
@@ -94,4 +94,6 @@
     <string name="noActivity">Non hai nessuna attività, inizia a correre</string>
     <string name="localizationDisable">La localizzazione è disabilitata</string>
     <string name="accuracyString">"Precisione: "</string>
+    <string name="yearsOld">Spiacente, non hai l\'età per registarti su quest\'ap</string>
+    <string name="DontHaveAccount">Non hai un account?</string>
 </resources>

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:icon="@mipmap/ic_launcher_run_round"
         android:label="@string/app_name"
@@ -14,34 +15,42 @@
         android:theme="@style/Theme.RunApp">
         <activity
             android:name=".View.activitiesPackage.DetailRunSessionActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".View.accountPackage.EditProfileActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".View.loginPackage.RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
+
         <activity
-            android:name=".View.loginPackage.LoginActivity"
-            android:screenOrientation="portrait">
+            android:name=".View.runpackage.RunSessionActivity"
+            android:screenOrientation="fullSensor" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyC9mxGVoXrH_7ZY4kUit7HkRSIW_t8xqcM" />
+
+        <activity
+            android:name=".View.loginPackage.RegisterActivityMaterial"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".View.MainActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".View.accountPackage.EditPasswordActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".View.loginPackage.LoginActivityMaterial"
+            android:exported="true"
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".View.runpackage.RunSessionActivity"
-            android:screenOrientation="portrait" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyC9mxGVoXrH_7ZY4kUit7HkRSIW_t8xqcM" />
-        <activity
-            android:name=".View.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".View.accountPackage.EditPasswordActivity"
-            android:screenOrientation="portrait" />
+
         <service
             android:name=".Service.GPSService"
             android:foregroundServiceType="location"

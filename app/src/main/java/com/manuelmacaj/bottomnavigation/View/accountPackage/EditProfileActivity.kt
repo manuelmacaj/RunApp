@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.manuelmacaj.bottomnavigation.Global.Global
 import com.manuelmacaj.bottomnavigation.R
-import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivity
+import com.manuelmacaj.bottomnavigation.View.loginPackage.LoginActivityMaterial
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.radioGroupGenderModify
@@ -214,7 +214,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun openLoginActivity() { //funzione permette di aprire login activity
         val intent = Intent(
             this,
-            LoginActivity::class.java
+            LoginActivityMaterial::class.java
         )
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)

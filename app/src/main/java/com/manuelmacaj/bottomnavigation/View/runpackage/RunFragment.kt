@@ -120,6 +120,11 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         //Toast.makeText(mContext, "Map State has been save?", Toast.LENGTH_SHORT).show()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        locationManager!!.removeUpdates(listener)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) { //Metodo implementato da OnMapReadyCallback, per la gestione della mappa di GoogleMaps
         map = googleMap
         map.uiSettings.setAllGesturesEnabled(false) //Tutte le gesture possibili sulla mappa sono disabilitate
@@ -269,6 +274,6 @@ class RunFragment : Fragment(), OnMapReadyCallback {
         }
         locationManager = mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         //il listener viene registrato all'interno del location manager che specifica il tipo di provider (in questo caso GPS_PROVIDER), il tempo minimo di aggiornamento della posizione (ogni 2 secondi) e la posizone minima di aggiornamento (espresso in metri)
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, listener)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0f, listener)
     }
 }

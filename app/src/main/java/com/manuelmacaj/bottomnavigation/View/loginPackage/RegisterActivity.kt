@@ -60,7 +60,8 @@ class RegisterActivity : AppCompatActivity() {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //Toast di avviso per inserimento della password
-                    Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.warningPassword), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
             v?.onTouchEvent(event) ?: true
@@ -70,7 +71,8 @@ class RegisterActivity : AppCompatActivity() {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     //Toast di avviso
-                    Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.warningNameSurname), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
             v?.onTouchEvent(event) ?: true
@@ -107,8 +109,10 @@ class RegisterActivity : AppCompatActivity() {
             OnDateSetListener { _, year, month, day -> //listener indica che l'utente ha finito di selezionare la data dal datapicker
                 val mese: Int = month + 1
                 Log.d(TAG, "onDateSet: mm/dd/yyy: $mese/$day/$year")
-                dateOfBirth = LocalDate.of(year, mese, day) //ricaviano la data di nascita dell'utente
-                mDisplayDate.text = dateOfBirth.toString() //inserisco la data di nascita nella textView
+                dateOfBirth =
+                    LocalDate.of(year, mese, day) //ricaviano la data di nascita dell'utente
+                mDisplayDate.text =
+                    dateOfBirth.toString() //inserisco la data di nascita nella textView
             }
     }
 
@@ -124,19 +128,20 @@ class RegisterActivity : AppCompatActivity() {
         checkGenger()
         checkDateBirth()
 
-
         if (!isValidEmail(email)) { //Controllo sull'email che l'utente ha inserito, se c'è qualcosa che non va...
             emailField.error = resources.getString(R.string.invalid_email) //...settiamo un errore
             return //non proseguo(guard)
         }
 
         if (!isValidPassword(password)) { //Controllo sulla password che l'utente ha inserito, se c'è qualcosa che non va...
-            firstPasswordField.error = resources.getString(R.string.invalid_password) //...settiamo un errore
+            firstPasswordField.error =
+                resources.getString(R.string.invalid_password) //...settiamo un errore
             return //non proseguo(guard)
         }
 
         if (!isValidPassword(confermaPassword) || (confermaPassword != password)) { //verifico se le due password inserite dall'utente corrispondono o meno
-            confirmPasswordField.error = resources.getString((R.string.password_check)) //settiamo un errore
+            confirmPasswordField.error =
+                resources.getString((R.string.password_check)) //settiamo un errore
             return //non proseguo(guard)
         }
         registerNewAccount(nomeCognome, email, password)
@@ -157,7 +162,7 @@ class RegisterActivity : AppCompatActivity() {
         if (agePeriod.years < 14) {
             Toast.makeText( //visualizzo un toast per avvisare l'utente
                 this,
-                "Sorry, you too young to sign up on this app.",
+                getString(R.string.yearsOld),
                 Toast.LENGTH_LONG
             ).show()
             return //non proseguo(guard)
@@ -176,7 +181,8 @@ class RegisterActivity : AppCompatActivity() {
     private fun checkNameSurname(nomeCognome: String) {
         if (nomeCognome.isEmpty() || !isValidNameSurname(nomeCognome)) {
             //se il campo in cui inserire nome e cognome è vuoto o non rispetta la regular expression
-            nameSurname.error = resources.getString(R.string.empty_name_surname) //imposto un errore sulla editText
+            nameSurname.error =
+                resources.getString(R.string.empty_name_surname) //imposto un errore sulla editText
             return //non proseguo(guard)
         }
     }
@@ -202,35 +208,48 @@ class RegisterActivity : AppCompatActivity() {
                         if (genderRadio.text.toString() == getString(R.string.male)) "userProfile/UPmale_profile_picture.png" else "userProfile/UPfemale_profile_picture.png"
 
                     //creazione documento con informazioni utente
-                    mFireStore.document(id).set(userMap).addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) { //creazione documento andata a buon fine
-                            Toast.makeText(this, getString(R.string.registrationCompleted), Toast.LENGTH_LONG)
+                    mFireStore.document(id).set(userMap).addOnCompleteListener(this) { task2 ->
+                        if (task2.isSuccessful) { //creazione documento andata a buon fine
+                            Toast.makeText(
+                                this,
+                                getString(R.string.registrationCompleted),
+                                Toast.LENGTH_LONG
+                            )
                                 .show()
                             finish()
                         } else { //caricamento dati su firestore non riuscito
-                            Toast.makeText(this, getString(R.string.registrationFailed), Toast.LENGTH_LONG).show()
-                            Log.w(TAG, "Registrazione fallito", task.exception)
+                            Toast.makeText(
+                                this,
+                                getString(R.string.registrationFailed),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            Log.w(TAG, "Registrazione fallito", task2.exception)
                         }
                     }
                 } else {
                     Log.w(TAG, "Email già esistente", task.exception)
-                    Toast.makeText(this, "Email esistente, usare un altra email", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Email esistente, usare un altra email", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
     }
 
     private fun isValidPassword(pwd: String): Boolean { //funzione prende in ingresso una password e mi restituisce un risultato booleano
-        val PASSWORD_PATTERN = ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
+        val PASSWORD_PATTERN =
+            ("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$") //regular expression che bisogna rispettare per la password
         val pattern = Pattern.compile(PASSWORD_PATTERN)
-        val matcher = pattern.matcher(pwd) //metto a confronto la password dell'utente e la regular expression
+        val matcher =
+            pattern.matcher(pwd) //metto a confronto la password dell'utente e la regular expression
         return matcher.matches() //restituisco un risultato booleano
     }
 
     private fun isValidEmail(email: String): Boolean { //funzione prende in ingresso una email e mi restituisce un risultato booleano
-        val EMAIL_PATTERN = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" //regular expression che bisogna rispettare per l'email
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+        val EMAIL_PATTERN =
+            ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" //regular expression che bisogna rispettare per l'email
+                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
         val pattern = Pattern.compile(EMAIL_PATTERN)
-        val matcher = pattern.matcher(email) //metto a confronto l'email dell'utente e la regular expression
+        val matcher =
+            pattern.matcher(email) //metto a confronto l'email dell'utente e la regular expression
         return matcher.matches() //restituisco un risultato booleano
     }
 

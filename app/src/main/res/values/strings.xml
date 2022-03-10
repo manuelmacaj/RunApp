@@ -16,15 +16,15 @@
     <string name="time">Time:</string>
     <string name="km_total">Km total:</string>
     <string name="average_pace">Average pace:</string>
-    <string name="email_address">email</string>
-    <string name="password">password</string>
+    <string name="email_address">E-mail</string>
+    <string name="password">Password</string>
     <string name="signin">Sign in</string>
     <string name="register">Sign up</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
-    <string name="confirm_password">confirm password</string>
+    <string name="confirm_password">Confirm password</string>
     <string name="register_app">RegisterForm</string>
-    <string name="first_second_name">name and surname</string>
+    <string name="first_second_name">Name and surname</string>
     <string name="empty_name_surname">Empty field or insufficient characters</string>
     <string name="password_check">Passwords don\'t match</string>
     <string name="image_view">TODO</string>
@@ -44,7 +44,7 @@
     <string name="edit_password">Edit password</string>
     <string name="update_account">Update account</string>
     <string name="user_years">years</string>
-    <string name="old_password">old password</string>
+    <string name="old_password">Old password</string>
     <string name="update_password">Update password</string>
     <string name="old_password_check">The old password does not match</string>
     <string name="choose_another_password">Choose a different password from the one used previously</string>
@@ -93,4 +93,6 @@
     <string name="noActivity">You have no activity, start running</string>
     <string name="localizationDisable">Localization is disabled</string>
     <string name="accuracyString">"Accuracy: "</string>
+    <string name="yearsOld">Sorry, you\'re too young to sign up on this app.</string>
+    <string name="DontHaveAccount">Don\'t have an account?</string>
 </resources>
