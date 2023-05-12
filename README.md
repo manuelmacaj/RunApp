@@ -5,7 +5,7 @@ Application for monitoring your running sessions. Registered users have the
 ability to save your rides and view the related information in detail.
 The session is saved if the user travels at least 100m.
 
-![Poster 1](app/src/main/RunApp.png)
+
 
 We used the Firebase service as an architecture for saving and managing data. <br/><br/>
 
